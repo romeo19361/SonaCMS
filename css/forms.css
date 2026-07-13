@@ -1,0 +1,163 @@
+/* /css/forms.css
+ *
+ * Frontend form styling for SonaCMS-V1.1.
+ * Kept separate from styles.css because forms are conversion-critical and
+ * deserve focused, easily-customised styling.
+ *
+ * Everything is scoped under .cms-block--form — the wrapper the renderer
+ * puts around any form inserted via the editor's Form block. This means
+ * these styles apply to forms in page content WITHOUT needing any classes
+ * added to the form HTML itself, and without leaking into the admin UI or
+ * other page elements.
+ *
+ * Design: clean, generous spacing, clear focus states, accessible tap
+ * targets, works on mobile out of the box.
+ */
+
+.cms-block--form {
+    max-width: 640px;
+}
+
+/* The form itself */
+.cms-block--form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Arial, sans-serif;
+}
+
+/* Each field is wrapped in a bare <div> — treat those as field rows.
+   :not() guards keep the honeypot and checkbox rows from inheriting the
+   default stacked layout. */
+.cms-block--form form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Labels */
+.cms-block--form label {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #2a2f3a;
+}
+
+/* Text-like inputs and textarea */
+.cms-block--form input[type="text"],
+.cms-block--form input[type="email"],
+.cms-block--form input[type="tel"],
+.cms-block--form input[type="url"],
+.cms-block--form input[type="number"],
+.cms-block--form input[type="password"],
+.cms-block--form input[type="date"],
+.cms-block--form select,
+.cms-block--form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1em;
+    font-family: inherit;
+    color: #1d202b;
+    background: #ffffff;
+    border: 1px solid #cdd3d8;
+    border-radius: 6px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.cms-block--form input::placeholder,
+.cms-block--form textarea::placeholder {
+    color: #9aa3ab;
+}
+
+/* Focus — clear, accessible ring */
+.cms-block--form input:focus,
+.cms-block--form select:focus,
+.cms-block--form textarea:focus {
+    outline: none;
+    border-color: #1b7a8c;
+    box-shadow: 0 0 0 3px rgba(27, 122, 140, 0.15);
+}
+
+/* Textarea sizing */
+.cms-block--form textarea {
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Checkbox / radio rows — lay label beside the control instead of above.
+   Detected by the row containing a checkbox or radio. */
+.cms-block--form form > div:has(input[type="checkbox"]),
+.cms-block--form form > div:has(input[type="radio"]) {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.cms-block--form input[type="checkbox"],
+.cms-block--form input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #1b7a8c;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* In a checkbox/radio row the label should sit inline and not be bold,
+   reading more like descriptive text than a field label. */
+.cms-block--form form > div:has(input[type="checkbox"]) label,
+.cms-block--form form > div:has(input[type="radio"]) label {
+    font-weight: 400;
+    cursor: pointer;
+}
+
+/* Submit button */
+.cms-block--form button,
+.cms-block--form input[type="submit"] {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 13px 32px;
+    font-size: 1em;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #1b7a8c;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.cms-block--form button:hover,
+.cms-block--form input[type="submit"]:hover {
+    background: #15616f;
+}
+
+.cms-block--form button:active,
+.cms-block--form input[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+.cms-block--form button:focus-visible,
+.cms-block--form input[type="submit"]:focus-visible {
+    outline: 3px solid rgba(27, 122, 140, 0.4);
+    outline-offset: 2px;
+}
+
+/* Required-field asterisk helper — optional, if devs add <span class="req">*</span> */
+.cms-block--form .req {
+    color: #c0392b;
+    margin-left: 2px;
+}
+
+/* Mobile: full-width submit for easier tapping */
+@media (max-width: 600px) {
+    .cms-block--form button,
+    .cms-block--form input[type="submit"] {
+        width: 100%;
+        align-self: stretch;
+        text-align: center;
+    }
+}

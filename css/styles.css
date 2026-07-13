@@ -1,0 +1,471 @@
+/* /css/styles.css
+ *
+ * Frontend stylesheet for SonaCMS-V1.1 public-facing pages.
+ *
+ * DESIGN GOAL: mimic the Editor.js editing surface as closely as possible,
+ * so the published page is a faithful WYSIWYG match of what the author sees
+ * in the backend editor. That means adopting Editor.js's own baseline:
+ *   - system sans-serif font stack (not a serif override)
+ *   - 16px base, ~1.6 line-height on body text
+ *   - native heading scale
+ *   - tight, consistent block spacing
+ * ...while preserving the site's 1280px content width.
+ *
+ * Organised as:
+ *   1. Reset & base
+ *   2. Layout
+ *   3. Typography / Editor.js block rendering
+ *   4. Utility
+ */
+
+/* ─── 1. Reset & base ─────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Editor.js's default font stack — matching it here is what makes the
+   frontend text reflow identically to the editor. */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+    color: #1d202b;              /* Editor.js default text colour */
+    background: #ffffff;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+p {
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+/* ─── 2. Layout ───────────────────────────────────────────────────────────── */
+
+.site-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.site-header {
+    border-bottom: 1px solid #e8e8e8;
+    padding: 24px 0;
+}
+
+.site-main {
+    padding: 40px 0 80px;
+}
+
+.site-footer {
+    border-top: 1px solid #e8e8e8;
+    padding: 32px 0;
+    font-size: 0.875em;
+    color: #888;
+}
+
+/* ─── 3. Typography / Editor.js block rendering ──────────────────────────── */
+
+/*
+ * These classes mirror the block types saved by Editor.js. Each rendered
+ * block is wrapped in a .cms-block div by the PHP renderer, with a
+ * type-specific class alongside (e.g. .cms-block--paragraph).
+ *
+ * Values below intentionally track Editor.js's own rendered defaults so the
+ * published output matches the editing surface.
+ */
+
+.cms-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    font-size: 1em;           /* 16px, same as the editor */
+    line-height: 1.6;
+    color: #1d202b;
+}
+
+.cms-content.cms-content--full {
+    max-width: 100%;
+}
+
+/* Editor.js gives each block ~0.4em vertical rhythm. Match that rather than
+   the large 1.5em gaps a typical article layout would use. */
+.cms-block {
+    margin: 0 0 0.6em;
+}
+
+/* Paragraph — Editor.js renders plain <p> at base size / 1.6 line-height */
+.cms-block--paragraph p,
+.cms-content p {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #1d202b;
+}
+
+/* Headers — Editor.js uses the browser's native heading scale (bold),
+   not a custom serif scale. Reproduce the UA defaults explicitly so they
+   render identically regardless of the visitor's browser. */
+.cms-block--header h1,
+.cms-block--header h2,
+.cms-block--header h3,
+.cms-block--header h4,
+.cms-block--header h5,
+.cms-block--header h6,
+.cms-content h1,
+.cms-content h2,
+.cms-content h3,
+.cms-content h4,
+.cms-content h5,
+.cms-content h6 {
+    font-weight: 700;
+    line-height: 1.25;
+    color: #1d202b;
+    margin: 0.6em 0 0.3em;
+}
+
+.cms-block--header h1, .cms-content h1 { font-size: 2em; }       /* 32px */
+.cms-block--header h2, .cms-content h2 { font-size: 1.5em; }     /* 24px */
+.cms-block--header h3, .cms-content h3 { font-size: 1.17em; }    /* ~19px */
+.cms-block--header h4, .cms-content h4 { font-size: 1em; }       /* 16px */
+.cms-block--header h5, .cms-content h5 { font-size: 0.83em; }    /* ~13px */
+.cms-block--header h6, .cms-content h6 { font-size: 0.67em; }    /* ~11px */
+
+/* List — Editor.js indents lists ~1.6em and uses base body sizing */
+.cms-block--list ul,
+.cms-block--list ol,
+.cms-content ul,
+.cms-content ol {
+    padding-left: 1.6em;
+    font-size: 1em;
+    line-height: 1.6;
+    color: #1d202b;
+}
+
+.cms-block--list li,
+.cms-content li {
+    margin-bottom: 0.2em;
+}
+
+/* Quote — Editor.js quote block: subtle left rule, slightly muted */
+.cms-block--quote blockquote,
+.cms-content blockquote {
+    border-left: 3px solid #e0e0e0;
+    margin: 0;
+    padding: 6px 16px;
+    color: #3a3a3a;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.cms-block--quote cite,
+.cms-content blockquote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.85em;
+    font-style: normal;
+    color: #888;
+}
+
+/* Image — Editor.js image block: full width of the content column,
+   optional caption below in muted small text */
+.cms-block--image figure {
+    margin: 0;
+}
+
+.cms-block--image img {
+    width: 100%;
+    border-radius: 3px;
+}
+
+.cms-block--image figcaption {
+    margin-top: 6px;
+    font-size: 0.85em;
+    color: #888;
+    text-align: center;
+}
+
+/* Video embed (custom VideoEmbedTool) — 16:9 responsive */
+.cms-block--video .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    border-radius: 3px;
+}
+
+.cms-block--video .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Button (custom ButtonTool) */
+.cms-block--button {
+    margin: 1em 0;
+}
+
+.cms-block--button a {
+    display: inline-block;
+    padding: 12px 28px;
+    text-decoration: none;
+    font-size: 0.95em;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cms-block--button a.cms-button--primary {
+    background: #1d202b;
+    color: #ffffff;
+    border: 2px solid #1d202b;
+}
+
+.cms-block--button a.cms-button--primary:hover {
+    background: #383d4f;
+    border-color: #383d4f;
+}
+
+.cms-block--button a.cms-button--secondary {
+    background: transparent;
+    color: #1d202b;
+    border: 2px solid #1d202b;
+}
+
+.cms-block--button a.cms-button--secondary:hover {
+    background: #1d202b;
+    color: #ffffff;
+}
+
+/* Columns (editorjs-columns) */
+.cms-block--columns .cms-columns,
+.cms-columns {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.cms-block--columns .cms-column,
+.cms-column {
+    min-width: 0;
+}
+
+/* Inline formatting inside blocks — match Editor.js inline tools */
+.cms-content a {
+    color: #1b7a8c;
+    text-decoration: underline;
+}
+
+.cms-content b,
+.cms-content strong {
+    font-weight: 700;
+}
+
+.cms-content i,
+.cms-content em {
+    font-style: italic;
+}
+
+.cms-content u {
+    text-decoration: underline;
+}
+
+/* Editor.js inline-code tool renders <code> with a subtle chip style */
+.cms-content code {
+    background: #f2f4f7;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: Menlo, Monaco, Consolas, monospace;
+}
+
+/* ─── 4. Utility ──────────────────────────────────────────────────────────── */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .site-wrap {
+        padding: 0 24px;
+    }
+
+    .cms-block--columns .cms-columns,
+    .cms-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .site-wrap {
+        padding: 0 16px;
+    }
+}
+
+/* Frontend licensing footer line */
+.site-footer__license {
+    font-size: 0.85em;
+    color: #888;
+    text-align: center;
+    padding: 0;
+}
+
+.site-footer__license a {
+    color: #1b7a8c;
+    text-decoration: none;
+}
+
+.site-footer__license a:hover {
+    text-decoration: underline;
+}
+
+/* Author tile (custom AuthorTool) */
+.cms-block--author {
+    margin: 1.5em 0;
+}
+
+.cms-author-tile {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    background: #fafbfc;
+}
+
+.cms-author-tile__pic {
+    flex: 0 0 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.cms-author-tile__pic img {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.cms-author-tile__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.cms-author-tile__name {
+    display: block;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: #1d202b;
+    text-decoration: none;
+}
+
+a.cms-author-tile__name:hover {
+    color: #1b7a8c;
+    text-decoration: underline;
+}
+
+/* Reset the global p padding for tile text so lines sit tight together */
+.cms-author-tile__title,
+.cms-author-tile__desc {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.cms-author-tile__title {
+    margin: 2px 0 6px;
+    font-size: 0.9em;
+    color: #1b7a8c;
+    font-weight: 600;
+}
+
+.cms-author-tile__desc {
+    margin: 0;
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #555;
+}
+
+@media (max-width: 600px) {
+    .cms-author-tile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Keep the pic centred and correctly sized when stacked */
+    .cms-author-tile__pic {
+        margin: 0 auto;
+        flex: 0 0 100px;
+    }
+
+    /* Reassert padding reset — the global p padding can otherwise creep back
+       in and space the name/title/description apart on mobile */
+    .cms-author-tile__title,
+    .cms-author-tile__desc {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+/* Text alignment (from the editor's alignment tune) */
+.cms-align-left    { text-align: left; }
+.cms-align-center  { text-align: center; }
+.cms-align-right   { text-align: right; }
+.cms-align-justify { text-align: justify; }
+
+/* Code block (custom CodeTool) */
+.cms-block--code {
+    margin: 1.2em 0;
+}
+
+.cms-block--code pre {
+    margin: 0;
+    padding: 16px 18px;
+    background: #1d202b;
+    color: #e6edf3;
+    border-radius: 6px;
+    overflow-x: auto;
+    line-height: 1.55;
+}
+
+.cms-block--code code {
+    display: block;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-size: 0.875em;
+    color: inherit;
+    white-space: pre;
+    tab-size: 4;
+}

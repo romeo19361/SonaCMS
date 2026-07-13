@@ -1,0 +1,247 @@
+/* =========================================================================
+   SonaCMS-V1.1 Premium Responsive Navigation Stylesheet
+   ========================================================================= */
+
+:root {
+    --nav-bg: #ffffff;
+    --nav-text: #444444;
+    --nav-hover: #0073aa; /* Matches your --primary-colour */
+    --nav-dropdown-bg: #ffffff;
+    --nav-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1. Structural Navbar Core */
+nav.site-navigation {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Hide the responsive checkbox mechanism globally on desktop */
+.menu-toggle {
+    display: none;
+}
+
+/* Base Horizontal Menu Layout */
+nav.site-navigation ul {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav.site-navigation li {
+    position: relative;
+}
+
+nav.site-navigation a {
+    color: var(--nav-text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 0;
+    transition: var(--nav-transition);
+}
+
+/* Interactive States */
+nav.site-navigation a:hover,
+nav.site-navigation li.active > a {
+    color: var(--nav-hover);
+}
+
+/* 2. Premium CSS Dropdown Engine (Desktop) */
+nav.site-navigation li ul {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px); /* Centred and slightly dropped down */
+    background: var(--nav-dropdown-bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    padding: 8px 0;
+    min-width: 220px;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 0;
+
+    /* Smooth transition animation state initialization */
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--nav-transition);
+}
+
+/* Unpack dropdown cleanly on parent item hover */
+nav.site-navigation li:hover > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+nav.site-navigation li ul li {
+    width: 100%;
+}
+
+nav.site-navigation li ul a {
+    display: block;
+    padding: 10px 24px;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+nav.site-navigation li ul a:hover {
+    background-color: #f7f9fa;
+    color: var(--nav-hover);
+    padding-left: 28px; /* Subtle modern slide-right effect on item hover */
+}
+
+/* 3. Pure CSS Hamburger Element Graphics */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1100;
+}
+
+.hamburger-box {
+    width: 24px;
+    height: 18px;
+    display: inline-block;
+    position: relative;
+}
+
+/* Build out the central bar and context lines */
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+    width: 24px;
+    height: 2px;
+    background-color: var(--nav-text);
+    position: absolute;
+    border-radius: 2px;
+    transition: var(--nav-transition);
+}
+
+.hamburger-inner {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hamburger-inner::before { content: ""; top: -8px; }
+.hamburger-inner::after { content: ""; bottom: -8px; }
+
+
+/* 4. Responsive Media Queries (Mobile Width Viewports) */
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-align: left !important;
+    }
+
+    /* Free up position context constraints so the panel isn't trapped */
+    nav.site-navigation {
+        position: static;
+    }
+
+    /* Expose the hamburger control button on the right edge */
+    .hamburger {
+        display: block;
+        padding: 10px 0 10px 10px;
+    }
+
+    /* Modern Centred Floating Pop Menu Card */
+    nav.site-navigation ul {
+        position: fixed;
+        top: 95px; /* Safely clears the standard header line footprint */
+        left: 50%;
+        transform: translateX(-50%) translateY(15px); /* Centred and ready to slide up */
+        width: calc(100% - 40px); /* Keeps uniform safe margins on all phone widths */
+        max-width: 500px; /* Prevents stretching too wide on landscapes or tablets */
+        background: var(--nav-bg);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 12px 6px;
+        border: 1px solid #eaeaea;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 5px rgba(0, 0, 0, 0.04);
+        z-index: 9999;
+
+        /* Collapse and hide state initialization */
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--nav-transition);
+    }
+
+    /* Checkbox Hack Trigger: Slide, fade, and activate menu centered on screen */
+    .menu-toggle:checked ~ ul {
+        max-height: 75vh;
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+        overflow-y: auto; /* Handles inner navigation scrolling safely if menu items grow */
+    }
+
+    /* Checkbox Hack Morph: Transform hamburger lines into an elegant 'X' icon */
+    .menu-toggle:checked ~ .hamburger .hamburger-inner {
+        background-color: transparent;
+    }
+    .menu-toggle:checked ~ .hamburger .hamburger-inner::before {
+        transform: rotate(45deg);
+        top: 0;
+    }
+    .menu-toggle:checked ~ .hamburger .hamburger-inner::after {
+        transform: rotate(-45deg);
+        bottom: 0;
+    }
+
+    nav.site-navigation a {
+        padding: 14px 20px;
+        width: 100%;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    nav.site-navigation li:last-child > a {
+        border-bottom: none; /* Clean finish on the last list node */
+    }
+
+    /* Flat layout layout modifications for embedded sub-links inside mobile pop cards */
+    nav.site-navigation li ul {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        background: #fcfdfe;
+        padding: 0 0 0 15px;
+        margin: 0;
+        display: none;
+        max-height: none;
+    }
+
+    /* Expand mobile nested dropdown lists instantly on interact */
+    nav.site-navigation li:hover > ul,
+    nav.site-navigation li:focus-within > ul {
+        display: flex;
+    }
+
+    nav.site-navigation li ul a {
+        padding: 12px 20px;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    nav.site-navigation li ul a:hover {
+        padding-left: 25px;
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "nav_label": "Demo",
+    "show_in_nav": true,
+    "page_order": 4,
+    "title": "Demo",
+    "slug": "demo",
+    "page_parent": "",
+    "content": "{\"time\":1783540485404,\"blocks\":[{\"id\":\"G5EjRMMt7h\",\"type\":\"paragraph\",\"data\":{\"text\":\"redirects using .htaccess\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}}],\"version\":\"2.31.6\"}",
+    "meta_description": "Demo",
+    "meta_keywords": "demo",
+    "og_image": "",
+    "date": "2026-07-09",
+    "status": "published"
+}

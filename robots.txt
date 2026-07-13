@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Keep crawlers out of the admin and internal directories
+Disallow: /SonaCMS/
+Disallow: /inc/
+Disallow: /forms/
+
+Sitemap: https://www.sonacms.com/sitemap.xml

@@ -1,0 +1,14 @@
+{
+    "nav_label": "Thank You",
+    "show_in_nav": false,
+    "page_order": 99,
+    "title": "Thank you",
+    "slug": "thank-you",
+    "page_parent": "",
+    "content": "{\"time\":1783541517521,\"blocks\":[{\"id\":\"0moEIFsQzv\",\"type\":\"header\",\"data\":{\"text\":\"Thank You\",\"level\":2},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"iMiOT304II\",\"type\":\"paragraph\",\"data\":{\"text\":\"We have received your submission and will be in touch soon.\ud83d\ude05\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"cs8S5yJpiZ\",\"type\":\"paragraph\",\"data\":{\"text\":\"<i>-SonaCMS</i>\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}}],\"version\":\"2.31.6\"}",
+    "meta_description": "Thank you, we have received your submission",
+    "meta_keywords": "thanks",
+    "og_image": "",
+    "date": "2026-07-03",
+    "status": "published"
+}

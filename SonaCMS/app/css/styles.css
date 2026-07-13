@@ -1,0 +1,583 @@
+/* /SonaCMS-V1.1/app/css/styles.css
+ *
+ * IMPORTANT: every rule here is scoped to a specific class, never a bare
+ * element selector (input, button, select, etc). Editor.js renders its own
+ * toolbars, popovers and inline toolbars using plain <input>/<button>
+ * elements with no awareness of this stylesheet — a bare `button { ... }`
+ * rule would leak straight into Editor.js's UI and break it. Keeping
+ * everything class-scoped means this file can never collide with anything
+ * Editor.js renders, no matter where in the DOM it ends up.
+ */
+
+* {
+    box-sizing: border-box;
+}
+
+body.sona-admin {
+    font-family: Arial, sans-serif;
+    color: #2e3a3f;
+    background: #f7f8f9;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.sona-wrap {
+    max-width: 1280px;
+    margin: 4vh auto;
+    padding: 0 30px;
+}
+
+.sona-wrap--wide {
+    max-width: 1280px;
+}
+
+.sona-wrap--narrow {
+    max-width: 420px;
+    margin-top: 10vh;
+}
+
+/* Headings — serif, warm brown, like early Basecamp's page titles */
+.sona-admin h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    color: #0f5c66;
+    font-weight: normal;
+    font-size: 1.9em;
+    margin: 0 0 4px;
+}
+
+.sona-login-heading {
+    margin-top: 0;
+}
+
+/* Top bar (heading + nav links) used on admin.php and editor.php */
+.sona-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid #dfe5e7;
+}
+
+.sona-top-bar a:not(.sona-btn) {
+    color: #1b7a8c;
+    text-decoration: none;
+    font-size: 0.95em;
+}
+
+.sona-top-bar a:not(.sona-btn):hover {
+    text-decoration: underline;
+}
+
+/* Panel — the warm bordered "card" basecamp used for forms and tables */
+.sona-panel {
+    background: #ffffff;
+    border: 1px solid #dfe5e7;
+    border-radius: 6px;
+    padding: 24px 28px;
+    box-shadow: 0 1px 2px rgba(15, 92, 102, 0.06);
+}
+
+/* Form elements */
+.sona-label {
+    display: block;
+    margin-top: 18px;
+    font-weight: bold;
+    font-size: 0.95em;
+    color: #3d4e53;
+}
+
+.sona-input,
+.sona-select {
+    width: 100%;
+    max-width: 1280px;
+    padding: 9px 11px;
+    margin-top: 5px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 1em;
+    font-family: inherit;
+    background: #ffffff;
+    color: #2e3a3f;
+}
+
+.sona-input:focus,
+.sona-select:focus {
+    outline: none;
+    border-color: #1b7a8c;
+    box-shadow: 0 0 0 2px rgba(27, 122, 140, 0.15);
+}
+
+.sona-hint {
+    color: #7a8a8e;
+    font-size: 0.85em;
+    margin-top: 4px;
+}
+
+.sona-error {
+    color: #a23b2e;
+    font-weight: bold;
+    background: #fbeceb;
+    border: 1px solid #e3b8b0;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+}
+
+.sona-message {
+    background: #e7f3f4;
+    border: 1px solid #a9d4d9;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    color: #155b63;
+}
+
+/* Buttons — chunky, rounded, burnt-orange like classic Basecamp CTAs */
+.sona-btn {
+    display: inline-block;
+    cursor: pointer;
+    padding: 9px 20px;
+    background: #1b7a8c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.95em;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.sona-btn:hover {
+    background: #155f6c;
+}
+
+.sona-btn--danger {
+    background: #8a98a0;
+}
+
+.sona-btn--danger:hover {
+    background: #6d7a80;
+}
+
+.sona-btn--block {
+    width: 100%;
+    margin-top: 22px;
+    padding: 11px 20px;
+    font-size: 1.05em;
+}
+
+/* Editor.js container — the actual editing surface */
+.sona-editorjs {
+    width: 100%;
+    max-width: 1280px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-top: 5px;
+    background: #ffffff;
+    min-height: 250px;
+}
+
+/* admin.php page listing table */
+.sona-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    background: #ffffff;
+}
+
+.sona-table th,
+.sona-table td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid #e6eaeb;
+}
+
+.sona-table th {
+    background: #eef2f3;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #5d6d72;
+    border-bottom: 2px solid #dfe5e7;
+}
+
+.sona-table tr:hover td {
+    background: #f3f7f8;
+}
+
+.sona-status-draft {
+    color: #1b7a8c;
+    font-style: italic;
+}
+
+.sona-table .sona-actions {
+    white-space: nowrap;
+}
+
+.sona-table .sona-actions form {
+    display: inline;
+}
+
+/* Editor.js internally caps its content column at ~650px regardless of
+   container width. Override here so blocks actually use the full
+   1280px width of .sona-editorjs, matching the site's design width. */
+.sona-editorjs .codex-editor__redactor {
+    padding-bottom: 0 !important;
+}
+
+.sona-editorjs .ce-block__content,
+.sona-editorjs .ce-toolbar__content {
+    max-width: 100% !important;
+}
+
+/* Checkbox row (e.g. "Show in navigation") */
+.sona-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-weight: bold;
+    font-size: 0.95em;
+    color: #3d4e53;
+    cursor: pointer;
+}
+
+/* Two-column form layout for editor.php */
+.sona-form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+    align-items: start;
+}
+
+.sona-form-col {
+    min-width: 0;
+}
+
+@media (max-width: 800px) {
+    .sona-form-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Custom Button block tool (in the Editor.js editing surface) */
+.cms-button-tool {
+    padding: 4px 0;
+}
+
+.cms-button-tool__input {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: inherit;
+}
+
+.cms-button-tool__input:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-button-tool__styles {
+    display: flex;
+    gap: 8px;
+}
+
+.cms-button-tool__style-btn {
+    cursor: pointer;
+    padding: 6px 14px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.85em;
+    font-family: inherit;
+    color: #3d4e53;
+}
+
+.cms-button-tool__style-btn--active {
+    background: #1b7a8c;
+    color: #fff;
+    border-color: #1b7a8c;
+}
+
+/* Custom Form block tool (in the Editor.js editing surface) */
+.cms-form-tool {
+    padding: 4px 0;
+}
+
+.cms-form-tool__label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #3d4e53;
+    margin-bottom: 6px;
+}
+
+.cms-form-tool__select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: inherit;
+    background: #fff;
+}
+
+.cms-form-tool__select:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-form-tool__preview {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: #eef2f3;
+    border: 1px dashed #cfd8da;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #5d6d72;
+    min-height: 0;
+}
+
+.cms-form-tool__preview:empty {
+    display: none;
+}
+
+.cms-form-tool__notice {
+    padding: 10px 12px;
+    background: #fbeceb;
+    border: 1px solid #e3b8b0;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #a23b2e;
+}
+
+/* Admin licensing footer */
+.sona-footer {
+    margin-top: 40px;
+    padding: 20px 0 30px;
+    border-top: 1px solid #dfe5e7;
+}
+
+.sona-footer__license {
+    font-size: 0.85em;
+    color: #7a8a8e;
+    text-align: center;
+}
+
+.sona-footer__license a {
+    color: #1b7a8c;
+    text-decoration: none;
+}
+
+.sona-footer__license a:hover {
+    text-decoration: underline;
+}
+
+/* Social share (OG) image uploader in the editor */
+.sona-og-uploader {
+    margin-top: 5px;
+}
+
+.sona-og-preview {
+    margin-top: 10px;
+}
+
+.sona-og-preview img {
+    display: block;
+    max-width: 100%;
+    width: 300px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+}
+
+.sona-og-preview:empty {
+    display: none;
+}
+
+.sona-og-clear {
+    margin-top: 8px;
+    padding: 5px 12px;
+    font-size: 0.8em;
+    font-family: inherit;
+    background: none;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    color: #a23b2e;
+    cursor: pointer;
+}
+
+.sona-og-clear:hover {
+    background: #fbeceb;
+    border-color: #e3b8b0;
+}
+
+/* Custom emoji inline tool palette (appears when the toolbar emoji button is clicked) */
+.cms-emoji-palette {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 2px;
+    max-width: 320px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #dfe5e7;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(15, 92, 102, 0.12);
+}
+
+.cms-emoji-palette__cell {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.1s ease;
+}
+
+.cms-emoji-palette__cell:hover {
+    background: #eef2f3;
+}
+
+/* Cancel-edit button (secondary action next to a primary save) */
+.sona-btn--cancel {
+    background: none;
+    color: #5d6d72;
+    border: 1px solid #cfd8da;
+    margin-top: 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.sona-btn--cancel:hover {
+    background: #eef2f3;
+}
+
+/* Custom Author block tool (in the Editor.js editing surface) — mirrors form tool */
+.cms-author-tool {
+    padding: 4px 0;
+}
+
+.cms-author-tool__label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #3d4e53;
+    margin-bottom: 6px;
+}
+
+.cms-author-tool__select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: inherit;
+    background: #fff;
+}
+
+.cms-author-tool__select:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-author-tool__preview {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: #eef2f3;
+    border: 1px dashed #cfd8da;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #5d6d72;
+}
+
+.cms-author-tool__preview:empty {
+    display: none;
+}
+
+.cms-author-tool__notice {
+    padding: 10px 12px;
+    background: #fbeceb;
+    border: 1px solid #e3b8b0;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #a23b2e;
+}
+
+/* ─── Editor.js popover / toolbar font fix ────────────────────────────────
+   Force Editor.js's popover, toolbox and tune menus to use a normal system
+   font stack. Without this, if the font Editor.js expects fails to load, the
+   browser substitutes a font with mismapped glyphs and menu labels render as
+   garbled text (e.g. "Heading" appearing as "Roll Colls"). Pinning a reliable
+   system stack here keeps all menu text legible regardless. */
+.ce-popover,
+.ce-popover__items,
+.ce-popover-item,
+.ce-popover-item__title,
+.ce-popover-item__description,
+.ce-toolbar__content,
+.ce-toolbar,
+.ce-inline-toolbar,
+.ce-conversion-toolbar,
+.ce-conversion-tool__text,
+.cdx-search-field__input,
+.ce-block {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Arial, sans-serif !important;
+}
+
+/* Text alignment tune — applied to blocks while editing */
+.cms-align-left    { text-align: left; }
+.cms-align-center  { text-align: center; }
+.cms-align-right   { text-align: right; }
+.cms-align-justify { text-align: justify; }
+
+/* Custom Code block tool (in the Editor.js editing surface) */
+.cms-code-tool {
+    padding: 4px 0;
+}
+
+.cms-code-tool__lang {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.8em;
+    font-family: inherit;
+    background: #eef2f3;
+    color: #5d6d72;
+}
+
+.cms-code-tool__lang:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-code-tool__area {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8da;
+    border-radius: 0 0 4px 4px;
+    background: #1d202b;
+    color: #e6edf3;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    tab-size: 4;
+    resize: vertical;
+    overflow: hidden;
+}
+
+.cms-code-tool__area:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
