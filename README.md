@@ -48,7 +48,7 @@ SonaCMS is **source-available, not open source**. The code here is public for tr
 - **Single-Site Licence — $49** — one production domain
 - **Annual Developer Licence — $199/yr** — unlimited production instances, includes updates during the active subscription
 
-See [LICENCE.md](./LICENCE.md) for full terms, and [THIRD-PARTY-LICENCES.md](./THIRD-PARTY-LICENCES.md) for bundled open-source components.
+See [LICENSE.md](./LICENSE.md) for full terms, and [THIRD-PARTY-LICENCES.md](./THIRD-PARTY-LICENCES.md) for bundled open-source components.
 
 ## Support
 
