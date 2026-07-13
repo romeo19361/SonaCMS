@@ -1,0 +1,29 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Example redirect, feel free to remove this
+Redirect 301 /demo https://demo.sonacms.com/SonaCMS/
+
+# Block direct access to JSON content files
+<FilesMatch "\.json$">
+    Require all denied
+</FilesMatch>
+
+# Block direct access to config.php as a safeguard. If PHP ever fails to
+# execute (misconfiguration, disabled handler), this prevents the raw file —
+# containing the password hash and SMTP credentials — from being downloaded.
+<FilesMatch "config\.php$">
+    Require all denied
+</FilesMatch>
+
+# Serve the dynamically generated sitemap at /sitemap.xml
+# (sitemap.php builds it from the published pages — no manual upkeep needed)
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# Ensure we don't redirect actual physical files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route everything else straight to index.php without forcing a query parameter
+RewriteRule ^(.*)$ index.php [L,QSA]
