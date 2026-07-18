@@ -34,7 +34,10 @@ class ImageTool {
             file: (data && data.file) ? data.file : { url: '' },
             caption: (data && data.caption) ? data.caption : '',
             mode: (data && ['none', 'link', 'lightbox'].includes(data.mode)) ? data.mode : 'none',
-            linkUrl: (data && data.linkUrl) ? data.linkUrl : ''
+            linkUrl: (data && data.linkUrl) ? data.linkUrl : '',
+            // Whether a "link" mode image opens in a new tab. Defaults to true so
+            // images saved before this option existed keep their prior behaviour.
+            newTab: (data && typeof data.newTab === 'boolean') ? data.newTab : true
         };
         this.wrapper = null;
     }
@@ -154,6 +157,17 @@ class ImageTool {
         this.linkField.addEventListener('input', () => { this.data.linkUrl = this.linkField.value.trim(); });
         this.wrapper.appendChild(this.linkField);
 
+        // "Open in new tab" toggle — only relevant in link mode
+        this.newTabRow = document.createElement('label');
+        this.newTabRow.classList.add('cms-image-tool__newtab');
+        const newTabBox = document.createElement('input');
+        newTabBox.type = 'checkbox';
+        newTabBox.checked = this.data.newTab;
+        newTabBox.addEventListener('change', () => { this.data.newTab = newTabBox.checked; });
+        this.newTabRow.appendChild(newTabBox);
+        this.newTabRow.appendChild(document.createTextNode(' Open link in a new tab'));
+        this.wrapper.appendChild(this.newTabRow);
+
         // "Replace image" button
         const replace = document.createElement('button');
         replace.type = 'button';
@@ -169,9 +183,9 @@ class ImageTool {
     }
 
     _toggleLinkField() {
-        if (this.linkField) {
-            this.linkField.style.display = (this.data.mode === 'link') ? 'block' : 'none';
-        }
+        const show = (this.data.mode === 'link');
+        if (this.linkField) this.linkField.style.display = show ? 'block' : 'none';
+        if (this.newTabRow) this.newTabRow.style.display = show ? 'flex' : 'none';
     }
 
     save() {
@@ -179,7 +193,8 @@ class ImageTool {
             file: this.data.file,
             caption: this.data.caption.trim(),
             mode: this.data.mode,
-            linkUrl: this.data.linkUrl.trim()
+            linkUrl: this.data.linkUrl.trim(),
+            newTab: this.data.newTab
         };
     }
 
