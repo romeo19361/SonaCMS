@@ -668,3 +668,19 @@ body.sona-admin {
 .cms-image-tool__replace:hover {
     background: #eef2f3;
 }
+
+/* "Open in new tab" toggle in the image tool */
+.cms-image-tool__newtab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.85em;
+    color: #3d4e53;
+    cursor: pointer;
+}
+
+.cms-image-tool__newtab input {
+    width: auto;
+    margin: 0;
+}
