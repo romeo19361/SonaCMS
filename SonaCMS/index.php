@@ -1,5 +1,5 @@
 <?php
-// /public_html/SonaCMS-V1.1/index.php
+// /public_html/SonaCMS/index.php
 
 // Error handling as per constraints
 error_reporting(E_ALL);

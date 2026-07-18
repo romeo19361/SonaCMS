@@ -1,11 +1,11 @@
 <?php
 // /inc/footer.php
 //
-// Frontend footer for SonaCMS-V1.1 public pages. Included by index.php inside
+// Frontend footer for SonaCMS public pages. Included by index.php inside
 // the <footer class="site-footer"> region.
 //
 // Shows the licensing notice. Developers can add their own footer content
-// around this — but the licensing line should remain per the SonaCMS-V1.1 licence.
+// around this — but the licensing line should remain per the SonaCMS licence.
 //
 // Expects $config to be available (index.php loads it). Falls back to
 // loading it directly if not, so the include is safe to use anywhere.

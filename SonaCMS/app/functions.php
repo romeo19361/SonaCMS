@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/functions.php
+// /SonaCMS/app/functions.php
 //
 // Core helper functions for reading and writing page content.
 // Relies on constants defined in paths.php — require that first.
@@ -323,9 +323,24 @@ function renderContent(string $json): string
                 $url        = htmlspecialchars($d['file']['url'] ?? '');
                 $caption    = $d['caption'] ?? ''; // Editor.js-encoded; raw for figcaption
                 $captionAlt = htmlspecialchars(strip_tags($caption)); // safe for alt attribute
+                $mode       = $d['mode'] ?? 'none';
+                $linkUrl    = htmlspecialchars($d['linkUrl'] ?? '', ENT_QUOTES);
                 if ($url !== '') {
-                    $html .= '<figure>';
-                    $html .= '<img src="' . $url . '" alt="' . $captionAlt . '" style="max-width:100%;">';
+                    $imgTag = '<img src="' . $url . '" alt="' . $captionAlt . '" style="max-width:100%;">';
+
+                    // Wrap the image according to its mode:
+                    //  - link:     clickable anchor to the given URL (new tab)
+                    //  - lightbox: anchor flagged for the frontend lightbox script
+                    //  - none:     plain image
+                    if ($mode === 'link' && $linkUrl !== '') {
+                        $inner = '<a href="' . $linkUrl . '" rel="noopener" target="_blank">' . $imgTag . '</a>';
+                    } elseif ($mode === 'lightbox') {
+                        $inner = '<a href="' . $url . '" class="cms-lightbox" data-lightbox="1">' . $imgTag . '</a>';
+                    } else {
+                        $inner = $imgTag;
+                    }
+
+                    $html .= '<figure>' . $inner;
                     if ($caption !== '') {
                         $html .= '<figcaption>' . $caption . '</figcaption>';
                     }
@@ -485,12 +500,12 @@ function renderForm(string $formId): string
 }
 
 /**
- * Return the SonaCMS-V1.1 licensing footer text as an HTML string.
+ * Return the SonaCMS licensing footer text as an HTML string.
  *
  * Reads the CMS config: if 'licensed' is true, shows the registered
  * licensee's name; otherwise shows the evaluation/purchase notice.
  *
- * The returned string contains a link to www.SonaCMS-V1.1.com and is safe to
+ * The returned string contains a link to www.SonaCMS.com and is safe to
  * echo directly. The licensee name is escaped.
  *
  * @param array $config The config array (from config.php).
@@ -498,7 +513,7 @@ function renderForm(string $formId): string
  */
 function licenseFooterText(array $config): string
 {
-    $site = '<a href="https://www.SonaCMS-V1.1.com" rel="noopener">www.SonaCMS-V1.1.com</a>';
+    $site = '<a href="https://www.SonaCMS.com" rel="noopener">www.SonaCMS.com</a>';
 
     if (!empty($config['licensed'])) {
         $name = htmlspecialchars($config['licensee_name'] ?? '', ENT_QUOTES);
@@ -506,7 +521,7 @@ function licenseFooterText(array $config): string
             . ' registered to ' . $name . '.';
     }
 
-    return 'This version of SonaCMS-V1.1 is for evaluation, education or '
+    return 'This version of SonaCMS is for evaluation, education or '
         . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
 }
 
@@ -599,4 +614,92 @@ function deleteAuthor(string $filename): bool
     }
 
     return unlink($path);
+}
+
+/**
+ * Render the contents of the page <head> — title, meta description/keywords,
+ * canonical URL, and Open Graph / Twitter image tags.
+ *
+ * Kept as a function (rather than inline in index.php) because it's logic-heavy
+ * SEO markup that shouldn't need editing per-site — every SonaCMS install gets
+ * correct tags for free. Stylesheet/icon <link>s stay in the template, since
+ * those are things a developer may want to change.
+ *
+ * @param array  $page         The current page data.
+ * @param array  $config       The site config (for site_url).
+ * @param string $currentPath  The request path (e.g. "/about"), for canonical.
+ * @return string HTML for inside <head>.
+ */
+function renderPageHead(array $page, array $config, string $currentPath): string
+{
+    $out = '';
+
+    $title = htmlspecialchars($page['title'] ?? '');
+    $out .= '<title>' . $title . '</title>' . "\n";
+
+    if (!empty($page['meta_description'])) {
+        $out .= '    <meta name="description" content="'
+            . htmlspecialchars($page['meta_description']) . '">' . "\n";
+    }
+
+    if (!empty($page['meta_keywords'])) {
+        $out .= '    <meta name="keywords" content="'
+            . htmlspecialchars($page['meta_keywords']) . '">' . "\n";
+    }
+
+    // Canonical base — from configured site_url, NOT the request host, so the
+    // real domain gets attribution even if another domain points at this server.
+    $canonicalBase = !empty($config['site_url'])
+        ? rtrim($config['site_url'], '/')
+        : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
+            . '://' . ($_SERVER['HTTP_HOST'] ?? ''));
+
+    // OG / Twitter image — only when the page has one; absolute URL required.
+    if (!empty($page['og_image'])) {
+        $ogImageUrl = htmlspecialchars($canonicalBase . $page['og_image']);
+        $out .= '    <meta property="og:image" content="' . $ogImageUrl . '">' . "\n";
+        $out .= '    <meta property="og:image:width" content="1200">' . "\n";
+        $out .= '    <meta property="og:image:height" content="630">' . "\n";
+        $out .= '    <meta name="twitter:card" content="summary_large_image">' . "\n";
+        $out .= '    <meta name="twitter:image" content="' . $ogImageUrl . '">' . "\n";
+    }
+
+    $out .= '    <link rel="canonical" href="'
+        . htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES) . '">' . "\n";
+
+    return $out;
+}
+
+/**
+ * Render the hero banner for a page, or an empty string if no hero image is set.
+ * The title and subtitle overlay the image. Deliberately minimal markup so
+ * designers can restyle freely via .site-hero in the frontend CSS.
+ *
+ * @param array $page The current page data.
+ * @return string
+ */
+function renderHero(array $page): string
+{
+    if (empty($page['hero_image'])) {
+        return '';
+    }
+
+    $img = htmlspecialchars($page['hero_image'], ENT_QUOTES);
+
+    $out  = '<section class="site-hero" style="background-image: url(\'' . $img . '\');">' . "\n";
+    $out .= '    <div class="site-hero__overlay">' . "\n";
+
+    if (!empty($page['hero_title'])) {
+        $out .= '        <h1 class="site-hero__title">'
+            . htmlspecialchars($page['hero_title']) . '</h1>' . "\n";
+    }
+    if (!empty($page['hero_subtitle'])) {
+        $out .= '        <p class="site-hero__subtitle">'
+            . htmlspecialchars($page['hero_subtitle']) . '</p>' . "\n";
+    }
+
+    $out .= '    </div>' . "\n";
+    $out .= '</section>' . "\n";
+
+    return $out;
 }

@@ -1,7 +1,7 @@
 <?php
 // /inc/formHandler.php
 //
-// Generic form handler for SonaCMS-V1.1. Works with ANY form that posts here —
+// Generic form handler for SonaCMS. Works with ANY form that posts here —
 // it doesn't expect specific field names. It:
 //   1. Drops submissions where the honeypot field ("website") is filled.
 //   2. Emails all submitted fields to the configured recipient.
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Load CMS config. config.php lives in /SonaCMS-V1.1 (sibling of /inc).
+// Load CMS config. config.php lives in /SonaCMS (sibling of /inc).
 $config = require __DIR__ . '/../SonaCMS/config.php';
 
 // Recipient: prefer form_recipient, fall back to admin_email.

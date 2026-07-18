@@ -6,7 +6,7 @@
 // freely — it survives CMS upgrades.
 //
 // Expects: navigationA() and getPageTree() to be available (index.php has
-// already required nav.php and the SonaCMS-V1.1 core before including this).
+// already required nav.php and the SonaCMS core before including this).
 ?>
 <!DOCTYPE html>
 <html lang="en-GB">

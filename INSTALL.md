@@ -39,6 +39,8 @@ your-web-root/
 │   ├── styles.css         ← frontend base styles
 │   ├── navigationA.css    ← navigation + header layout
 │   └── forms.css          ← frontend form styles
+├── js/
+│   └── lightbox.js        ← frontend lightbox for enlargeable images
 ├── images/
 │   └── SonaCMS_logo.png
 ├── inc/                   ← developer-editable frontend files
@@ -108,6 +110,11 @@ need to change to get running.
 return [
     'licensed'            => false, // true once you hold a commercial licence
     'licensee_name'       => '',    // shown in the admin footer when licensed
+
+    // Your site's canonical address, no trailing slash. Used for canonical
+    // URLs, the sitemap, and social image tags so search engines always
+    // attribute content to the correct domain.
+    'site_url'            => 'https://www.yoursite.com',
 
     'admin_username'      => 'admin',
     'admin_email'         => 'you@example.com',
@@ -192,17 +199,28 @@ The page editor is block-based. Use the **+** button (or the toolbox icon) to
 add content blocks:
 
 - **Text, Heading, List, Quote** — standard formatting, with bold / italic /
-  underline / emoji on the inline toolbar (select text to reveal it)
-- **Image** — uploads to `assets/images/uploads/`
+  underline / emoji and text alignment on the inline toolbar and block menu
+- **Image** — uploads to `assets/images/uploads/`. Each image can optionally be
+  a clickable link, or a lightbox (click to enlarge on the frontend)
 - **Video** — paste a YouTube or Vimeo link
 - **Button** — a call-to-action with primary / secondary styling
 - **Columns** — multi-column layouts (other blocks can be nested inside)
 - **Form** — inserts any form file from `/forms/`
 - **Author** — inserts an author tile (managed under **Authors**)
+- **Code** — a monospace code block with an optional language label, for
+  documentation and tutorials
 
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended
 size 1200 × 630px).
+
+### Hero banners
+
+Each page has optional **Hero Image**, **Hero Title**, and **Hero Subtitle**
+fields (below the page settings, above the content editor). When a hero image
+is set, it displays as a full-width banner at the top of the page with the
+title and subtitle overlaid. Leave the image blank for no banner. The ideal
+image size depends on your frontend design — a wide landscape image works best.
 
 ### Authors
 
@@ -241,6 +259,7 @@ These files are yours to edit and **survive CMS upgrades**:
 - `forms/*.php` — form files; any `.php` here appears in the editor's Form
   block automatically
 - `css/*.css` — all frontend styling
+- `js/lightbox.js` — frontend lightbox behaviour
 - `SonaCMS/config.php` — configuration
 
 Everything inside `SonaCMS/app/` is core and may be overwritten when you

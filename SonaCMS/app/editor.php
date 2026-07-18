@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/editor.php
+// /SonaCMS/app/editor.php
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -25,6 +25,9 @@ $page = [
     'meta_description' => '',
     'meta_keywords' => '',
     'og_image' => '',
+    'hero_image' => '',
+    'hero_title' => '',
+    'hero_subtitle' => '',
     'date' => date('Y-m-d'),
     'status' => 'draft',
 ];
@@ -63,6 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page['meta_description'] = trim($_POST['meta_description'] ?? '');
         $page['meta_keywords'] = trim($_POST['meta_keywords'] ?? '');
         $page['og_image'] = trim($_POST['og_image'] ?? '');
+        $page['hero_image'] = trim($_POST['hero_image'] ?? '');
+        $page['hero_title'] = trim($_POST['hero_title'] ?? '');
+        $page['hero_subtitle'] = trim($_POST['hero_subtitle'] ?? '');
         $page['date'] = trim($_POST['date'] ?? date('Y-m-d'));
         $page['status'] = ($_POST['status'] ?? 'draft') === 'published' ? 'published' : 'draft';
         $page['filename'] = $filename;
@@ -183,6 +189,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         </div>
 
+        <label class="sona-label" for="hero_image_file">Hero Image</label>
+        <div class="sona-og-uploader">
+            <input class="sona-input" type="file" id="hero_image_file" accept="image/*">
+            <input type="hidden" id="hero_image" name="hero_image" value="<?php echo htmlspecialchars($page['hero_image']); ?>">
+            <div class="sona-og-preview" id="hero_image_preview">
+                <?php if (!empty($page['hero_image'])): ?>
+                    <img src="<?php echo htmlspecialchars($page['hero_image']); ?>" alt="Hero image preview">
+                <?php endif; ?>
+            </div>
+            <button type="button" class="sona-og-clear" id="hero_image_clear"<?php echo empty($page['hero_image']) ? ' style="display:none;"' : ''; ?>>Remove image</button>
+        </div>
+        <p class="sona-hint">Optional banner image shown at the top of the page, with the title and subtitle below overlaid on top. Recommended size depends on your frontend design — ask your developer. Leave blank for no hero banner.</p>
+
+        <label class="sona-label" for="hero_title">Hero Title</label>
+        <input class="sona-input" type="text" id="hero_title" name="hero_title" value="<?php echo htmlspecialchars($page['hero_title']); ?>">
+
+        <label class="sona-label" for="hero_subtitle">Hero Subtitle</label>
+        <input class="sona-input" type="text" id="hero_subtitle" name="hero_subtitle" value="<?php echo htmlspecialchars($page['hero_subtitle']); ?>">
+        <p class="sona-hint">The title and subtitle overlay the hero image. Both are optional.</p>
+
         <label class="sona-label" for="content">Content</label>
         <div id="editorjs" class="sona-editorjs"></div>
         <input type="hidden" id="content" name="content" value="">
@@ -211,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@2.11.7"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.7.6"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.10.3"></script>
+<script src="../vendor/image-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -270,10 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         paragraph: { class: Paragraph, inlineToolbar: true, tunes: ['alignment'] },
         quote: { class: Quote, inlineToolbar: true },
         underline: Underline,
-        image: {
-            class: ImageTool,
-            config: { endpoints: { byFile: 'upload.php' } }
-        },
+        image: { class: ImageTool },
         video: VideoEmbedTool,
         button: ButtonTool,
         form: FormTool,
@@ -292,14 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             paragraph: { class: Paragraph, inlineToolbar: true, tunes: ['alignment'] },
             quote: { class: Quote, inlineToolbar: true },
             underline: Underline,
-            image: {
-                class: ImageTool,
-                config: {
-                    endpoints: {
-                        byFile: 'upload.php'
-                    }
-                }
-            },
+            image: { class: ImageTool },
             columns: {
                 class: editorjsColumns,
                 config: {
@@ -321,11 +337,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Reuses the same upload.php endpoint as the Editor.js Image tool.
     // On file select, POST the file, store the returned URL in the hidden
     // og_image field, and show a preview.
-    (function () {
-        const fileInput = document.getElementById('og_image_file');
-        const hidden    = document.getElementById('og_image');
-        const preview   = document.getElementById('og_image_preview');
-        const clearBtn  = document.getElementById('og_image_clear');
+    //
+    // Reusable image uploader: wires a file input to upload.php, stores the
+    // returned URL in a hidden field, shows a preview, and supports removal.
+    // Used for both the Social Share image and the Hero image.
+    function wireImageUploader(fileId, hiddenId, previewId, clearId, previewAlt) {
+        const fileInput = document.getElementById(fileId);
+        const hidden    = document.getElementById(hiddenId);
+        const preview   = document.getElementById(previewId);
+        const clearBtn  = document.getElementById(clearId);
 
         if (!fileInput) return;
 
@@ -343,7 +363,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 .then((data) => {
                     if (data && data.success === 1 && data.file && data.file.url) {
                         hidden.value = data.file.url;
-                        preview.innerHTML = '<img src="' + data.file.url + '" alt="Social share preview">';
+                        preview.innerHTML = '<img src="' + data.file.url + '" alt="' + previewAlt + '">';
                         clearBtn.style.display = '';
                     } else {
                         alert('Image upload failed. Please try a different file.');
@@ -361,7 +381,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             preview.innerHTML = '';
             clearBtn.style.display = 'none';
         });
-    })();
+    }
+
+    wireImageUploader('og_image_file', 'og_image', 'og_image_preview', 'og_image_clear', 'Social share preview');
+    wireImageUploader('hero_image_file', 'hero_image', 'hero_image_preview', 'hero_image_clear', 'Hero image preview');
 
     // Serialize Editor.js blocks into the hidden 'content' field before the
     // form submits. editor.save() is async, so we intercept submit, stop it,

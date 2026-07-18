@@ -1,7 +1,7 @@
 <?php
-// /SonaCMS-V1.1/app/footer.php
+// /SonaCMS/app/footer.php
 //
-// Admin footer for SonaCMS-V1.1 backend pages (admin.php, editor.php).
+// Admin footer for SonaCMS backend pages (admin.php, editor.php).
 // Shows the licensing notice at the bottom of admin screens.
 //
 // Loads config directly (admin pages don't always have $config in scope).

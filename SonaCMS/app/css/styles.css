@@ -1,4 +1,4 @@
-/* /SonaCMS-V1.1/app/css/styles.css
+/* /SonaCMS/app/css/styles.css
  *
  * IMPORTANT: every rule here is scoped to a specific class, never a bare
  * element selector (input, button, select, etc). Editor.js renders its own
@@ -580,4 +580,91 @@ body.sona-admin {
 .cms-code-tool__area:focus {
     outline: none;
     border-color: #1b7a8c;
+}
+
+/* Custom Image block tool (in the Editor.js editing surface) */
+.cms-image-tool {
+    padding: 4px 0;
+}
+
+.cms-image-tool__upload {
+    display: block;
+    width: 100%;
+    padding: 24px;
+    border: 2px dashed #cfd8da;
+    border-radius: 6px;
+    background: #f7f9fa;
+    color: #5d6d72;
+    font-size: 0.95em;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.cms-image-tool__upload:hover {
+    border-color: #1b7a8c;
+    color: #1b7a8c;
+}
+
+.cms-image-tool__preview {
+    display: block;
+    max-width: 100%;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.cms-image-tool__caption,
+.cms-image-tool__link {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.cms-image-tool__caption:focus,
+.cms-image-tool__link:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-image-tool__modes {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.cms-image-tool__mode-btn {
+    padding: 6px 12px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.8em;
+    font-family: inherit;
+    color: #3d4e53;
+    cursor: pointer;
+}
+
+.cms-image-tool__mode-btn--active {
+    background: #1b7a8c;
+    color: #fff;
+    border-color: #1b7a8c;
+}
+
+.cms-image-tool__replace {
+    padding: 5px 12px;
+    font-size: 0.8em;
+    font-family: inherit;
+    background: none;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    color: #5d6d72;
+    cursor: pointer;
+}
+
+.cms-image-tool__replace:hover {
+    background: #eef2f3;
 }

@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/logout.php
+// /SonaCMS/app/logout.php
 
 session_start();
 

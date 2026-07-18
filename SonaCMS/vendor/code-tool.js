@@ -5,7 +5,7 @@
  * indentation, and saves the raw code as plain text. The frontend renderer
  * outputs it inside <pre><code>, so formatting is preserved exactly.
  *
- * Written in-house (no CDN dependency) to match the other SonaCMS-V1.1 tools.
+ * Written in-house (no CDN dependency) to match the other SonaCMS tools.
  * Includes an optional language label, useful for documentation pages.
  *
  * Register in your EditorJS config:

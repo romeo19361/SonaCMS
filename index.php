@@ -33,41 +33,7 @@ if (!$page) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo htmlspecialchars($page['title'] ?? ''); ?></title>
-
-    <?php if (!empty($page['meta_description'])): ?>
-        <meta name="description" content="<?php echo htmlspecialchars($page['meta_description']); ?>">
-    <?php endif; ?>
-
-    <?php if (!empty($page['meta_keywords'])): ?>
-        <meta name="keywords" content="<?php echo htmlspecialchars($page['meta_keywords']); ?>">
-    <?php endif; ?>
-
-    <?php
-    // Canonical base URL for this site. Built from the configured site_url —
-    // NOT the request host — so if the site is also reachable via another
-    // domain pointing at this server, search engines and social scrapers still
-    // attribute content to the real domain. Falls back to the request host only
-    // if site_url isn't configured.
-    $canonicalBase = !empty($config['site_url'])
-        ? rtrim($config['site_url'], '/')
-        : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
-            . '://' . ($_SERVER['HTTP_HOST'] ?? ''));
-    ?>
-
-    <?php if (!empty($page['og_image'])):
-        // Absolute URL required — social scrapers reject relative paths.
-        $ogImageUrl = $canonicalBase . $page['og_image'];
-        ?>
-        <meta property="og:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
-    <?php endif; ?>
-
-    <link rel="canonical" href="<?php echo htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES); ?>">
-
+    <?php echo renderPageHead($page, $config, $currentPath); ?>
     <link rel="icon" href="/images/favicon.ico" sizes="any">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/navigationA.css">
@@ -84,6 +50,8 @@ if (!$page) {
     </div>
 </header>
 
+<?php echo renderHero($page); ?>
+
 <main class="site-main">
     <div class="site-wrap">
 
@@ -99,6 +67,13 @@ if (!$page) {
         <?php require __DIR__ . '/inc/footer.php'; ?>
     </div>
 </footer>
+
+<!-- Lightbox overlay (used by image blocks set to "lightbox" mode). -->
+<div id="cms-lightbox" class="cms-lightbox-overlay" aria-hidden="true">
+    <span class="cms-lightbox-overlay__close" aria-label="Close">&times;</span>
+    <img class="cms-lightbox-overlay__img" src="" alt="">
+</div>
+<script src="/js/lightbox.js"></script>
 
 </body>
 </html>

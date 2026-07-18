@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/authors.php
+// /SonaCMS/app/authors.php
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

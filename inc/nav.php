@@ -2,10 +2,10 @@
 // /inc/nav.php
 //
 // Site navigation functions — this is the developer's space to customise
-// how menus are rendered. Edit freely; it lives outside /SonaCMS-V1.1 so it
+// how menus are rendered. Edit freely; it lives outside /SonaCMS so it
 // survives CMS upgrades.
 //
-// Requires SonaCMS-V1.1 core to already be loaded (paths.php + functions.php),
+// Requires SonaCMS core to already be loaded (paths.php + functions.php),
 // since it calls getPageTree() / getAllPages() from the CMS.
 
 /**

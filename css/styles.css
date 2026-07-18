@@ -1,6 +1,6 @@
 /* /css/styles.css
  *
- * Frontend stylesheet for SonaCMS-V1.1 public-facing pages.
+ * Frontend stylesheet for SonaCMS public-facing pages.
  *
  * DESIGN GOAL: mimic the Editor.js editing surface as closely as possible,
  * so the published page is a faithful WYSIWYG match of what the author sees
@@ -468,4 +468,133 @@ a.cms-author-tile__name:hover {
     color: inherit;
     white-space: pre;
     tab-size: 4;
+}
+
+/* Hero banner (from the page's Hero Image / Title / Subtitle fields) */
+.site-hero {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+/* Dark overlay so the title/subtitle stay legible over any image.
+   Designers can remove or restyle this freely. */
+.site-hero__overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 360px;
+    padding: 60px 24px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+}
+
+.site-hero__title {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    line-height: 1.15;
+    max-width: 900px;
+}
+
+.site-hero__subtitle {
+    margin: 12px 0 0;
+    font-size: 1.2em;
+    font-weight: 400;
+    line-height: 1.4;
+    max-width: 720px;
+    padding: 0;
+}
+
+/* Tablet — trim the hero height and scale text down a step */
+@media (max-width: 900px) {
+    .site-hero__overlay {
+        min-height: 300px;
+        padding: 50px 22px;
+    }
+    .site-hero__title { font-size: 2.1em; }
+    .site-hero__subtitle { font-size: 1.1em; }
+}
+
+/* Mobile — compact banner, comfortable text, keep the image focal point
+   toward the top so faces/subjects aren't cropped out of frame */
+@media (max-width: 600px) {
+    .site-hero {
+        background-position: center top;
+    }
+    .site-hero__overlay {
+        min-height: 220px;
+        padding: 36px 18px;
+        /* Slightly stronger scrim on mobile — text sits over a smaller area
+           so contrast matters more */
+        background: rgba(0, 0, 0, 0.45);
+    }
+    .site-hero__title {
+        font-size: 1.6em;
+        line-height: 1.2;
+    }
+    .site-hero__subtitle {
+        font-size: 0.98em;
+        margin-top: 10px;
+    }
+}
+
+/* Very small phones — tighten once more so nothing overflows */
+@media (max-width: 380px) {
+    .site-hero__overlay {
+        min-height: 190px;
+        padding: 28px 14px;
+    }
+    .site-hero__title { font-size: 1.4em; }
+    .site-hero__subtitle { font-size: 0.92em; }
+}
+
+/* Lightbox images — cue that they're clickable */
+.cms-block--image a.cms-lightbox,
+figure a.cms-lightbox {
+    display: block;
+    cursor: zoom-in;
+}
+
+/* Lightbox overlay */
+.cms-lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    cursor: zoom-out;
+    padding: 40px;
+}
+
+.cms-lightbox-overlay.is-open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cms-lightbox-overlay__img {
+    max-width: 92%;
+    max-height: 92%;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.cms-lightbox-overlay__close {
+    position: absolute;
+    top: 18px;
+    right: 26px;
+    font-size: 2.4em;
+    line-height: 1;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.cms-lightbox-overlay__close:hover {
+    opacity: 1;
 }

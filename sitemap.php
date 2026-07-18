@@ -1,7 +1,7 @@
 <?php
 // /sitemap.php
 //
-// Generates an XML sitemap dynamically from SonaCMS-V1.1's published pages.
+// Generates an XML sitemap dynamically from SonaCMS's published pages.
 // Served at /sitemap.xml via a rewrite rule in .htaccess.
 //
 // Only published pages are included — drafts are excluded automatically.

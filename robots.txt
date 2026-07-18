@@ -5,5 +5,6 @@ Allow: /
 Disallow: /SonaCMS/
 Disallow: /inc/
 Disallow: /forms/
+Disallow: /js/
 
-Sitemap: https://www.sonacms.com/sitemap.xml
+Sitemap: https://www.yourdomain.com/sitemap.xml

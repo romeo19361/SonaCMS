@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/upload.php
+// /SonaCMS/app/upload.php
 //
 // Handles image uploads from the Editor.js Image tool ("byFile" endpoint).
 // Expects a multipart/form-data POST with the file under the field name
@@ -76,7 +76,7 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) {
 }
 
 // Build the public URL back to the file, accounting for whatever
-// directory SonaCMS-V1.1 is installed into.
+// directory SonaCMS is installed into.
 $url = siteWebRoot() . '/assets/images/uploads/' . $safeName;
 
 echo json_encode([

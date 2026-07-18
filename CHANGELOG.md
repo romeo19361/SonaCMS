@@ -4,6 +4,47 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.2] — 19 July 2026
+
+### Added
+
+**Hero banners**
+Pages now have optional Hero Image, Hero Title, and Hero Subtitle fields. When a
+hero image is set, it renders as a full-width banner at the top of the page with
+the title and subtitle overlaid. Leave the image blank and the page displays as
+before, with no banner. The banner is fully responsive and, like everything on
+the frontend, styled with plain CSS you can restyle freely (`.site-hero`).
+
+**Clickable and lightbox images**
+The image block now offers a per-image choice: a plain image, a clickable link
+(opens a URL you specify), or a lightbox (clicking the image enlarges it in a
+full-screen overlay on the frontend). The lightbox is vanilla JavaScript with no
+external library.
+
+### Changed
+
+- The image block is now a self-hosted tool rather than a third-party CDN
+  package — one less external dependency. Existing images are unaffected and
+  continue to display normally.
+- The frontend lightbox script now lives in its own file at `/js/lightbox.js`.
+- `index.php` is tidier: the SEO `<head>` tags and hero banner are now generated
+  by helper functions (`renderPageHead()` and `renderHero()`), leaving the page
+  template cleaner and easier to customise.
+
+### Upgrade notes
+
+If you're upgrading from 1.1:
+
+1. Create a `/js/` folder in your web root and upload `js/lightbox.js`.
+2. Replace `index.php`, and the files in `SonaCMS/app/` and `SonaCMS/vendor/`
+   (the image tool is now `SonaCMS/vendor/image-tool.js`).
+3. Replace your frontend `css/styles.css` (adds hero and lightbox styles) and
+   the admin `SonaCMS/app/css/styles.css`.
+4. Your customisations in `/inc/`, `/css/`, `/forms/` and `config.php` are
+   untouched by upgrades — as always.
+
+---
+
 ## [1.1] — 11 July 2026
 
 ### Added

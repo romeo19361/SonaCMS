@@ -4,7 +4,7 @@
  * six-dot popover).
  *
  * Written in-house to avoid a third-party dependency, consistent with the
- * other SonaCMS-V1.1 editor tools. Registered as a *tune* (not a tool) and
+ * other SonaCMS editor tools. Registered as a *tune* (not a tool) and
  * attached to specific blocks via their `tunes` array.
  *
  * How it stores data: Block Tunes save into the block's `tunes` key, e.g.

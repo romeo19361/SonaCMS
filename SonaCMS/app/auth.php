@@ -1,5 +1,5 @@
 <?php
-// /SonaCMS-V1.1/app/auth.php
+// /SonaCMS/app/auth.php
 
 session_start();
 
