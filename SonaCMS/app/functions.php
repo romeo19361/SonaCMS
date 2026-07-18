@@ -333,7 +333,11 @@ function renderContent(string $json): string
                     //  - lightbox: anchor flagged for the frontend lightbox script
                     //  - none:     plain image
                     if ($mode === 'link' && $linkUrl !== '') {
-                        $inner = '<a href="' . $linkUrl . '" rel="noopener" target="_blank">' . $imgTag . '</a>';
+                        // Open in a new tab only if the author chose to. rel="noopener"
+                        // is a security must whenever target="_blank" is used.
+                        $newTab = !isset($d['newTab']) || $d['newTab'] === true;
+                        $attrs = $newTab ? ' target="_blank" rel="noopener"' : '';
+                        $inner = '<a href="' . $linkUrl . '"' . $attrs . '>' . $imgTag . '</a>';
                     } elseif ($mode === 'lightbox') {
                         $inner = '<a href="' . $url . '" class="cms-lightbox" data-lightbox="1">' . $imgTag . '</a>';
                     } else {
@@ -363,8 +367,8 @@ function renderContent(string $json): string
                 $style = (($d['style'] ?? 'primary') === 'secondary') ? 'secondary' : 'primary';
                 if ($text !== '') {
                     $html .= '<div class="cms-block cms-block--button">'
-                        . '<a href="' . $url . '" class="cms-button cms-button--' . $style . '">'
-                        . $text . '</a></div>';
+                           . '<a href="' . $url . '" class="cms-button cms-button--' . $style . '">'
+                           . $text . '</a></div>';
                 }
                 break;
 
@@ -389,9 +393,9 @@ function renderContent(string $json): string
                         ? ' class="language-' . htmlspecialchars($lang, ENT_QUOTES) . '"'
                         : '';
                     $html .= '<div class="cms-block cms-block--code">'
-                        . '<pre><code' . $langClass . '>'
-                        . htmlspecialchars($code, ENT_QUOTES)
-                        . '</code></pre></div>';
+                           . '<pre><code' . $langClass . '>'
+                           . htmlspecialchars($code, ENT_QUOTES)
+                           . '</code></pre></div>';
                 }
                 break;
 
@@ -518,11 +522,11 @@ function licenseFooterText(array $config): string
     if (!empty($config['licensed'])) {
         $name = htmlspecialchars($config['licensee_name'] ?? '', ENT_QUOTES);
         return 'This is a licensed version of ' . $site
-            . ' registered to ' . $name . '.';
+             . ' registered to ' . $name . '.';
     }
 
     return 'This version of SonaCMS is for evaluation, education or '
-        . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
+         . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
 }
 
 /**
@@ -639,12 +643,12 @@ function renderPageHead(array $page, array $config, string $currentPath): string
 
     if (!empty($page['meta_description'])) {
         $out .= '    <meta name="description" content="'
-            . htmlspecialchars($page['meta_description']) . '">' . "\n";
+              . htmlspecialchars($page['meta_description']) . '">' . "\n";
     }
 
     if (!empty($page['meta_keywords'])) {
         $out .= '    <meta name="keywords" content="'
-            . htmlspecialchars($page['meta_keywords']) . '">' . "\n";
+              . htmlspecialchars($page['meta_keywords']) . '">' . "\n";
     }
 
     // Canonical base — from configured site_url, NOT the request host, so the
@@ -665,7 +669,7 @@ function renderPageHead(array $page, array $config, string $currentPath): string
     }
 
     $out .= '    <link rel="canonical" href="'
-        . htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES) . '">' . "\n";
+          . htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES) . '">' . "\n";
 
     return $out;
 }
@@ -691,11 +695,11 @@ function renderHero(array $page): string
 
     if (!empty($page['hero_title'])) {
         $out .= '        <h1 class="site-hero__title">'
-            . htmlspecialchars($page['hero_title']) . '</h1>' . "\n";
+              . htmlspecialchars($page['hero_title']) . '</h1>' . "\n";
     }
     if (!empty($page['hero_subtitle'])) {
         $out .= '        <p class="site-hero__subtitle">'
-            . htmlspecialchars($page['hero_subtitle']) . '</p>' . "\n";
+              . htmlspecialchars($page['hero_subtitle']) . '</p>' . "\n";
     }
 
     $out .= '    </div>' . "\n";
