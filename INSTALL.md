@@ -202,6 +202,8 @@ add content blocks:
   underline / emoji and text alignment on the inline toolbar and block menu
 - **Image** — uploads to `assets/images/uploads/`. Each image can optionally be
   a clickable link, or a lightbox (click to enlarge on the frontend)
+- **Gallery** — multiple images shown as a responsive grid; clicking one opens a
+  lightbox with next/previous navigation through the set
 - **Video** — paste a YouTube or Vimeo link
 - **Button** — a call-to-action with primary / secondary styling
 - **Columns** — multi-column layouts (other blocks can be nested inside)
@@ -213,6 +215,10 @@ add content blocks:
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended
 size 1200 × 630px).
+
+Pages can also optionally display their **publish date** on the frontend — tick
+"Show publish date on the page" beneath the Date field. It shows in a readable
+long format and is ideal for blog posts and news. Off by default.
 
 ### Hero banners
 

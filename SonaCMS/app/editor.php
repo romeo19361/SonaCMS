@@ -29,6 +29,7 @@ $page = [
     'hero_title' => '',
     'hero_subtitle' => '',
     'date' => date('Y-m-d'),
+    'show_date' => false,
     'status' => 'draft',
 ];
 
@@ -70,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page['hero_title'] = trim($_POST['hero_title'] ?? '');
         $page['hero_subtitle'] = trim($_POST['hero_subtitle'] ?? '');
         $page['date'] = trim($_POST['date'] ?? date('Y-m-d'));
+        $page['show_date'] = isset($_POST['show_date']);
         $page['status'] = ($_POST['status'] ?? 'draft') === 'published' ? 'published' : 'draft';
         $page['filename'] = $filename;
 
@@ -217,6 +219,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="sona-label" for="date">Date</label>
         <input class="sona-input" type="date" id="date" name="date" value="<?php echo htmlspecialchars($page['date']); ?>">
 
+        <label class="sona-checkbox-row" for="show_date">
+            <input type="checkbox" id="show_date" name="show_date" value="1" <?php echo !empty($page['show_date']) ? 'checked' : ''; ?>>
+            Show publish date on the page
+        </label>
+        <p class="sona-hint">Displays the date above the content — useful for blog posts and news. Off by default.</p>
+
         <label class="sona-label" for="status">Status</label>
         <select class="sona-select" id="status" name="status">
             <option value="draft" <?php echo $page['status'] === 'draft' ? 'selected' : ''; ?>>Draft</option>
@@ -238,6 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.7.6"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
 <script src="../vendor/image-tool.js"></script>
+<script src="../vendor/gallery-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -297,6 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         quote: { class: Quote, inlineToolbar: true },
         underline: Underline,
         image: { class: ImageTool },
+        gallery: { class: GalleryTool },
         video: VideoEmbedTool,
         button: ButtonTool,
         form: FormTool,
@@ -316,6 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             quote: { class: Quote, inlineToolbar: true },
             underline: Underline,
             image: { class: ImageTool },
+            gallery: { class: GalleryTool },
             columns: {
                 class: editorjsColumns,
                 config: {

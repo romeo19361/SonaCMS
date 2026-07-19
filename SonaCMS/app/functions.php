@@ -339,7 +339,8 @@ function renderContent(string $json): string
                         $attrs = $newTab ? ' target="_blank" rel="noopener"' : '';
                         $inner = '<a href="' . $linkUrl . '"' . $attrs . '>' . $imgTag . '</a>';
                     } elseif ($mode === 'lightbox') {
-                        $inner = '<a href="' . $url . '" class="cms-lightbox" data-lightbox="1">' . $imgTag . '</a>';
+                        $capAttr = $captionAlt !== '' ? ' data-caption="' . $captionAlt . '"' : '';
+                        $inner = '<a href="' . $url . '" class="cms-lightbox" data-lightbox="1"' . $capAttr . '>' . $imgTag . '</a>';
                     } else {
                         $inner = $imgTag;
                     }
@@ -349,6 +350,34 @@ function renderContent(string $json): string
                         $html .= '<figcaption>' . $caption . '</figcaption>';
                     }
                     $html .= '</figure>';
+                }
+                break;
+
+            case 'gallery':
+                $images = (isset($d['images']) && is_array($d['images'])) ? $d['images'] : [];
+                if (!empty($images)) {
+                    // Unique ID groups this gallery's images so the lightbox knows
+                    // which images to navigate between. Static counter = one ID per
+                    // gallery block on the page.
+                    static $galleryCounter = 0;
+                    $galleryCounter++;
+                    $gid = 'g' . $galleryCounter;
+
+                    $html .= '<div class="cms-block cms-block--gallery"><div class="cms-gallery">';
+                    $i = 0;
+                    foreach ($images as $image) {
+                        $imgUrl = htmlspecialchars($image['url'] ?? '', ENT_QUOTES);
+                        if ($imgUrl === '') continue;
+                        $cap    = htmlspecialchars(strip_tags($image['caption'] ?? ''), ENT_QUOTES);
+                        $capAttr = $cap !== '' ? ' data-caption="' . $cap . '"' : '';
+
+                        $html .= '<a class="cms-gallery__item cms-lightbox" href="' . $imgUrl . '"'
+                            . ' data-gallery="' . $gid . '" data-index="' . $i . '"' . $capAttr . '>'
+                            . '<img src="' . $imgUrl . '" alt="' . $cap . '" loading="lazy">'
+                            . '</a>';
+                        $i++;
+                    }
+                    $html .= '</div></div>';
                 }
                 break;
 
@@ -367,8 +396,8 @@ function renderContent(string $json): string
                 $style = (($d['style'] ?? 'primary') === 'secondary') ? 'secondary' : 'primary';
                 if ($text !== '') {
                     $html .= '<div class="cms-block cms-block--button">'
-                           . '<a href="' . $url . '" class="cms-button cms-button--' . $style . '">'
-                           . $text . '</a></div>';
+                        . '<a href="' . $url . '" class="cms-button cms-button--' . $style . '">'
+                        . $text . '</a></div>';
                 }
                 break;
 
@@ -393,9 +422,9 @@ function renderContent(string $json): string
                         ? ' class="language-' . htmlspecialchars($lang, ENT_QUOTES) . '"'
                         : '';
                     $html .= '<div class="cms-block cms-block--code">'
-                           . '<pre><code' . $langClass . '>'
-                           . htmlspecialchars($code, ENT_QUOTES)
-                           . '</code></pre></div>';
+                        . '<pre><code' . $langClass . '>'
+                        . htmlspecialchars($code, ENT_QUOTES)
+                        . '</code></pre></div>';
                 }
                 break;
 
@@ -522,11 +551,11 @@ function licenseFooterText(array $config): string
     if (!empty($config['licensed'])) {
         $name = htmlspecialchars($config['licensee_name'] ?? '', ENT_QUOTES);
         return 'This is a licensed version of ' . $site
-             . ' registered to ' . $name . '.';
+            . ' registered to ' . $name . '.';
     }
 
     return 'This version of SonaCMS is for evaluation, education or '
-         . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
+        . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
 }
 
 /**
@@ -643,12 +672,12 @@ function renderPageHead(array $page, array $config, string $currentPath): string
 
     if (!empty($page['meta_description'])) {
         $out .= '    <meta name="description" content="'
-              . htmlspecialchars($page['meta_description']) . '">' . "\n";
+            . htmlspecialchars($page['meta_description']) . '">' . "\n";
     }
 
     if (!empty($page['meta_keywords'])) {
         $out .= '    <meta name="keywords" content="'
-              . htmlspecialchars($page['meta_keywords']) . '">' . "\n";
+            . htmlspecialchars($page['meta_keywords']) . '">' . "\n";
     }
 
     // Canonical base — from configured site_url, NOT the request host, so the
@@ -669,7 +698,7 @@ function renderPageHead(array $page, array $config, string $currentPath): string
     }
 
     $out .= '    <link rel="canonical" href="'
-          . htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES) . '">' . "\n";
+        . htmlspecialchars($canonicalBase . $currentPath, ENT_QUOTES) . '">' . "\n";
 
     return $out;
 }
@@ -695,15 +724,44 @@ function renderHero(array $page): string
 
     if (!empty($page['hero_title'])) {
         $out .= '        <h1 class="site-hero__title">'
-              . htmlspecialchars($page['hero_title']) . '</h1>' . "\n";
+            . htmlspecialchars($page['hero_title']) . '</h1>' . "\n";
     }
     if (!empty($page['hero_subtitle'])) {
         $out .= '        <p class="site-hero__subtitle">'
-              . htmlspecialchars($page['hero_subtitle']) . '</p>' . "\n";
+            . htmlspecialchars($page['hero_subtitle']) . '</p>' . "\n";
     }
 
     $out .= '    </div>' . "\n";
     $out .= '</section>' . "\n";
 
     return $out;
+}
+
+/**
+ * Render a page's publish date in long format (e.g. "19 July 2026"), wrapped in
+ * a <time> element with a machine-readable datetime attribute for SEO.
+ *
+ * Returns an empty string unless the page has "show_date" enabled and a valid
+ * date — so the developer can safely call this anywhere in their template and
+ * it simply outputs nothing when the author hasn't opted in.
+ *
+ * @param array $page The current page data.
+ * @return string
+ */
+function renderPublishDate(array $page): string
+{
+    if (empty($page['show_date']) || empty($page['date'])) {
+        return '';
+    }
+
+    $ts = strtotime($page['date']);
+    if ($ts === false) {
+        return '';
+    }
+
+    $iso  = date('Y-m-d', $ts);
+    $long = date('j F Y', $ts); // e.g. 19 July 2026
+
+    return '<p class="page-date"><time datetime="' . htmlspecialchars($iso, ENT_QUOTES) . '">'
+        . htmlspecialchars($long) . '</time></p>';
 }

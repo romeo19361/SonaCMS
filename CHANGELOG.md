@@ -4,6 +4,51 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.4] — 20 July 2026
+
+### Added
+
+**Photo galleries**
+A new Gallery block holds multiple images in one block, shown as a tidy,
+responsive grid on the frontend. In the editor you can add several images at
+once, give each an optional caption, reorder them, and remove them individually.
+
+**Gallery-aware lightbox**
+Clicking any gallery image opens a full-screen lightbox with previous/next
+navigation through that gallery — by clicking the arrows or using the keyboard
+(left/right to move, Escape to close). Captions display beneath each image.
+Standalone lightbox images (from the regular image block) continue to work as
+before, now with caption support too. The lightbox remains vanilla JavaScript
+with no external library.
+
+**Optional publish date**
+Pages now have a "Show publish date on the page" checkbox beneath the Date
+field. When enabled, the date displays in a readable long format (e.g.
+"20 July 2026") wrapped in a semantic `<time>` element for SEO — ideal for blog
+posts and news. Off by default, so ordinary pages stay clean.
+
+### Changed
+
+- The frontend lightbox script (`/js/lightbox.js`) has been upgraded to support
+  gallery navigation. If you're upgrading, replace this file.
+- `index.php` now calls a `renderPublishDate()` helper above the content. It
+  outputs nothing unless a page opts in, and developers can move the call
+  anywhere in the template.
+
+### Upgrade notes
+
+If you're upgrading from 1.3:
+
+1. Replace `js/lightbox.js` (now gallery-aware).
+2. Replace `index.php`, and the files in `SonaCMS/app/` and `SonaCMS/vendor/`
+   (the new gallery tool is `SonaCMS/vendor/gallery-tool.js`).
+3. Replace your frontend `css/styles.css` (adds gallery, upgraded lightbox, and
+   publish-date styles) and the admin `SonaCMS/app/css/styles.css`.
+4. Your customisations in `/inc/`, `/css/`, `/forms/` and `config.php` are
+   untouched by upgrades — as always.
+
+---
+
 ## [1.3] — 19 July 2026
 
 ### Added
@@ -18,8 +63,9 @@ the frontend, styled with plain CSS you can restyle freely (`.site-hero`).
 **Clickable and lightbox images**
 The image block now offers a per-image choice: a plain image, a clickable link
 (opens a URL you specify), or a lightbox (clicking the image enlarges it in a
-full-screen overlay on the frontend). The lightbox is vanilla JavaScript with no
-external library.
+full-screen overlay on the frontend). Link-mode images include an "Open in new
+tab" toggle, so you control whether the link opens in the same tab or a new one.
+The lightbox is vanilla JavaScript with no external library.
 
 ### Changed
 
