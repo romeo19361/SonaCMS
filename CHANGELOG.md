@@ -4,7 +4,7 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
-## [1.2] — 19 July 2026
+## [1.3] — 19 July 2026
 
 ### Added
 
