@@ -1,0 +1,3 @@
+This folder holds author profile JSON files created in SonaCMS.
+This placeholder only exists so the (otherwise empty) folder is included
+in the download — you can safely leave it or delete it.
