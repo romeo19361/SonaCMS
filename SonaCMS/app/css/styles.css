@@ -771,3 +771,131 @@ body.sona-admin {
     border-color: #1b7a8c;
     color: #1b7a8c;
 }
+
+/* Custom Download block tool (in the Editor.js editing surface) */
+.cms-download-tool {
+    padding: 4px 0;
+}
+
+.cms-download-tool__upload {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: 2px dashed #cfd8da;
+    border-radius: 6px;
+    background: #f7f9fa;
+    color: #5d6d72;
+    font-size: 0.9em;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.cms-download-tool__upload:hover:not(:disabled) {
+    border-color: #1b7a8c;
+    color: #1b7a8c;
+}
+
+.cms-download-tool__info {
+    padding: 10px 12px;
+    background: #eef2f3;
+    border: 1px solid #dfe5e7;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.9em;
+    color: #3d4e53;
+    font-weight: bold;
+}
+
+.cms-download-tool__label {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-top: none;
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.cms-download-tool__label:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-download-tool__replace {
+    margin-top: 8px;
+    padding: 5px 12px;
+    font-size: 0.8em;
+    font-family: inherit;
+    background: none;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    color: #5d6d72;
+    cursor: pointer;
+}
+
+.cms-download-tool__replace:hover {
+    background: #eef2f3;
+}
+
+/* Section marker blocks (Section Start / Section End) in the editor.
+   The colour shows on the published page; in the editor these are labelled
+   markers so it's clear where a coloured section opens and closes. */
+.cms-section-marker {
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 4px 0;
+    font-size: 0.85em;
+    background: repeating-linear-gradient(
+            45deg,
+            #eef2f3,
+            #eef2f3 8px,
+            #e7ecee 8px,
+            #e7ecee 16px
+    );
+    border: 1px solid #d4dcde;
+}
+
+.cms-section-marker--start {
+    border-left: 4px solid #1b7a8c;
+}
+
+.cms-section-marker--end {
+    border-left: 4px solid #8a98a0;
+    color: #5d6d72;
+    font-weight: bold;
+}
+
+.cms-section-marker__label {
+    font-weight: bold;
+    color: #155f6c;
+    margin-bottom: 8px;
+}
+
+.cms-section-marker__row {
+    display: flex;
+    gap: 8px;
+}
+
+.cms-section-marker__select,
+.cms-section-marker__hex {
+    padding: 6px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+    background: #fff;
+}
+
+.cms-section-marker__select { flex: 0 0 auto; }
+.cms-section-marker__hex { flex: 1; min-width: 0; }
+
+.cms-section-marker__select:focus,
+.cms-section-marker__hex:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-section-marker__hint {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #7a8a8e;
+}

@@ -247,6 +247,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
 <script src="../vendor/image-tool.js"></script>
 <script src="../vendor/gallery-tool.js"></script>
+<script src="../vendor/download-tool.js"></script>
+<script src="../vendor/section-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -307,6 +309,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         underline: Underline,
         image: { class: ImageTool },
         gallery: { class: GalleryTool },
+        download: { class: DownloadTool },
+        sectionStart: { class: SectionStartTool },
+        sectionEnd: { class: SectionEndTool },
         video: VideoEmbedTool,
         button: ButtonTool,
         form: FormTool,
@@ -327,6 +332,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             underline: Underline,
             image: { class: ImageTool },
             gallery: { class: GalleryTool },
+            download: { class: DownloadTool },
+            sectionStart: { class: SectionStartTool },
+            sectionEnd: { class: SectionEndTool },
             columns: {
                 class: editorjsColumns,
                 config: {

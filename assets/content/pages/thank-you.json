@@ -5,10 +5,14 @@
     "title": "Thank you",
     "slug": "thank-you",
     "page_parent": "",
-    "content": "{\"time\":1783541517521,\"blocks\":[{\"id\":\"0moEIFsQzv\",\"type\":\"header\",\"data\":{\"text\":\"Thank You\",\"level\":2},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"iMiOT304II\",\"type\":\"paragraph\",\"data\":{\"text\":\"We have received your submission and will be in touch soon.\ud83d\ude05\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"cs8S5yJpiZ\",\"type\":\"paragraph\",\"data\":{\"text\":\"<i>-SonaCMS</i>\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}}],\"version\":\"2.31.6\"}",
+    "content": "{\"time\":1784516354400,\"blocks\":[{\"id\":\"0moEIFsQzv\",\"type\":\"header\",\"data\":{\"text\":\"Thank You\",\"level\":2},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"p2QETpR-e1\",\"type\":\"sectionStart\",\"data\":{\"preset\":\"highlight\",\"hex\":\"\"}},{\"id\":\"iMiOT304II\",\"type\":\"paragraph\",\"data\":{\"text\":\"We have received your submission and will be in touch soon.\ud83d\ude05\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}},{\"id\":\"tND6Icy1Fn\",\"type\":\"sectionEnd\",\"data\":{}},{\"id\":\"cs8S5yJpiZ\",\"type\":\"paragraph\",\"data\":{\"text\":\"<i>-SonaCMS</i>\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}}],\"version\":\"2.31.6\"}",
     "meta_description": "Thank you, we have received your submission",
     "meta_keywords": "thanks",
     "og_image": "",
+    "hero_image": "",
+    "hero_title": "",
+    "hero_subtitle": "",
     "date": "2026-07-03",
+    "show_date": false,
     "status": "published"
 }

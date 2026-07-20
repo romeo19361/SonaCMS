@@ -33,8 +33,10 @@ your-web-root/
 │   ├── content/
 │   │   ├── pages/         ← page JSON files are stored here
 │   │   └── authors/       ← author JSON files are stored here
-│   └── images/
-│       └── uploads/       ← editor & social image uploads land here
+│   ├── images/
+│   │   └── uploads/       ← editor & social image uploads land here
+│   └── files/
+│       └── uploads/       ← document downloads (PDF, Word, etc.) land here
 ├── css/
 │   ├── styles.css         ← frontend base styles
 │   ├── navigationA.css    ← navigation + header layout
@@ -51,7 +53,7 @@ your-web-root/
 ├── forms/                 ← drop-in form files (appear in the editor)
 │   └── contact.php
 └── SonaCMS/               ← the CMS core (upgradeable)
-    ├── config.php         ← YOU edit this
+    ├── config-sample.php  ← rename to config.php, then edit
     ├── index.php          ← admin login
     ├── app/               ← core logic (overwritten on upgrade)
     │   ├── admin.php      ← page list / dashboard
@@ -82,13 +84,14 @@ pages, authors, and uploaded images:
 assets/content/pages/
 assets/content/authors/
 assets/images/uploads/
+assets/files/uploads/
 ```
 
 Set these so the web server user can write to them. On most Linux hosts:
 
 ```bash
-chown -R www-data:www-data assets/content assets/images
-chmod -R 755 assets/content assets/images
+chown -R www-data:www-data assets/content assets/images assets/files
+chmod -R 755 assets/content assets/images assets/files
 ```
 
 Replace `www-data` with your server's PHP user if different (common
@@ -103,8 +106,15 @@ tighter is always better.
 
 ## 3. Configure the CMS
 
-Open `SonaCMS/config.php` and edit the values. This is the **only** file you
-need to change to get running.
+SonaCMS ships with a file called `SonaCMS/config-sample.php`. **Rename (or copy)
+it to `SonaCMS/config.php`**, then edit the values. SonaCMS reads `config.php` —
+the sample is never used directly.
+
+> **Why a sample file?** Shipping `config-sample.php` rather than `config.php`
+> means that when you later upgrade SonaCMS, the update can never overwrite the
+> real `config.php` you created — your settings and credentials are safe.
+
+`config.php` is the **only** file you need to change to get running.
 
 ```php
 return [
@@ -211,6 +221,10 @@ add content blocks:
 - **Author** — inserts an author tile (managed under **Authors**)
 - **Code** — a monospace code block with an optional language label, for
   documentation and tutorials
+- **Download** — upload a document (PDF, Word, Excel, PowerPoint, ZIP) and
+  present it as a download button showing the file name and size
+- **Section Start / Section End** — wrap a group of blocks in a coloured
+  background band, using a preset colour or a specific hex value
 
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended

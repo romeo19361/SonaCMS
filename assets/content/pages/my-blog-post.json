@@ -1,0 +1,18 @@
+{
+    "nav_label": "My Blog Post",
+    "show_in_nav": false,
+    "page_order": 99,
+    "title": "My Blog Post",
+    "slug": "my-blog-post",
+    "page_parent": "news",
+    "content": "{\"time\":1784549690768,\"blocks\":[{\"id\":\"PXCR5oyjB7\",\"type\":\"paragraph\",\"data\":{\"text\":\"My Blog Post\"},\"tunes\":{\"alignment\":{\"alignment\":\"left\"}}}],\"version\":\"2.31.6\"}",
+    "meta_description": "My Blog Post",
+    "meta_keywords": "My Blog Post",
+    "og_image": "",
+    "hero_image": "",
+    "hero_title": "",
+    "hero_subtitle": "",
+    "date": "2026-07-20",
+    "show_date": true,
+    "status": "published"
+}

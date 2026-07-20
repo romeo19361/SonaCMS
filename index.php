@@ -56,8 +56,26 @@ if (!$page) {
     <div class="site-wrap">
 
         <div class="cms-content">
-            <?php echo renderPublishDate($page); ?>
-            <?php echo renderContent($page['content'] ?? ''); ?>
+            <?php
+            // ── Page content ──────────────────────────────────────────────
+            // Publish date shows only if the page opted in (renderPublishDate
+            // returns nothing otherwise). Then the page's own editor content.
+            echo renderPublishDate($page);
+            echo renderContent($page['content'] ?? '');
+
+            // ── Blog / news listings ──────────────────────────────────────
+            // These use a "news" parent page whose published children are the
+            // posts. Adjust the 'news' slug below if you filed your blog under
+            // a different parent (e.g. 'blog' or 'my-blog'), and remove either
+            // block if you don't need it.
+            if ($currentSlug === 'home') {
+                // Homepage: show the 3 latest posts (no pagination)
+                echo renderBlogList('news', 3, false);
+            } elseif ($currentSlug === 'news') {
+                // News index page: 10 posts per page, with pagination
+                echo renderBlogList('news', 10, true);
+            }
+            ?>
         </div>
 
     </div>
@@ -65,11 +83,6 @@ if (!$page) {
 
 <footer class="site-footer">
     <div class="site-wrap">
-        <?php if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/index.php'): ?>
-            <a style="display: block; width: 200px; margin: 0 auto;" href="https://tools.launchllama.co?utm_source=badge&utm_medium=referral" target="_blank" rel="nofollow noopener noreferrer">
-                <img src="https://speaktechenglish.com/wp-content/uploads/2026/04/Screenshot_2026-04-09_at_17.40.44-removebg-preview.png" alt="Featured on Launch Llama" width="200" height="50">
-            </a>
-        <?php endif; ?>
         <?php require __DIR__ . '/inc/footer.php'; ?>
     </div>
 </footer>
@@ -86,22 +99,5 @@ if (!$page) {
 </div>
 <script src="/js/lightbox.js"></script>
 
-<!-- Default Statcounter code for SonaCMS
-https://www.sonacms.com -->
-<script type="text/javascript">
-    var sc_project=13335240;
-    var sc_invisible=1;
-    var sc_security="d57d5ff3";
-</script>
-<script type="text/javascript"
-        src="https://www.statcounter.com/counter/counter.js"
-        async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-                                      href="https://statcounter.com/" target="_blank"><img
-                    class="statcounter"
-                    src="https://c.statcounter.com/13335240/0/d57d5ff3/1/"
-                    alt="Web Analytics"
-                    referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
 </body>
 </html>

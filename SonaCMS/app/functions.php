@@ -272,6 +272,10 @@ function renderContent(string $json): string
 
     $html = '';
 
+    // Tracks whether we're currently inside an open coloured section, so a
+    // "Section End" (or the end of the page) knows to close the wrapping <div>.
+    $sectionOpen = false;
+
     foreach ($data['blocks'] as $block) {
         $type = $block['type'] ?? '';
         $d    = $block['data'] ?? [];
@@ -284,6 +288,39 @@ function renderContent(string $json): string
             : '';
 
         switch ($type) {
+
+            case 'sectionStart':
+                // Close any already-open section first (author nested/forgot an end)
+                if ($sectionOpen) {
+                    $html .= '</div></div>';
+                    $sectionOpen = false;
+                }
+                $preset = $d['preset'] ?? '';
+                $hex    = $d['hex'] ?? '';
+
+                $classAttr = ' class="cms-section';
+                if ($preset !== '' && preg_match('/^[a-z]+$/', $preset)) {
+                    $classAttr .= ' cms-section--' . $preset;
+                }
+                $classAttr .= '"';
+
+                // Hex escape hatch — only accept a valid #rgb/#rrggbb value
+                $styleAttr = '';
+                if ($hex !== '' && preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $hex)) {
+                    $styleAttr = ' style="background-color: ' . htmlspecialchars($hex, ENT_QUOTES) . ';"';
+                }
+
+                // Outer full-width band; inner keeps content aligned to site width
+                $html .= '<div' . $classAttr . $styleAttr . '><div class="cms-section__inner">';
+                $sectionOpen = true;
+                break;
+
+            case 'sectionEnd':
+                if ($sectionOpen) {
+                    $html .= '</div></div>';
+                    $sectionOpen = false;
+                }
+                break;
 
             case 'paragraph':
                 $html .= '<p' . $alignClass . '>' . ($d['text'] ?? '') . '</p>';
@@ -378,6 +415,37 @@ function renderContent(string $json): string
                         $i++;
                     }
                     $html .= '</div></div>';
+                }
+                break;
+
+            case 'download':
+                $fileUrl = htmlspecialchars($d['url'] ?? '', ENT_QUOTES);
+                if ($fileUrl !== '') {
+                    $fileName = htmlspecialchars($d['name'] ?? 'Download');
+                    $label    = trim($d['label'] ?? '');
+                    $linkText = htmlspecialchars($label !== '' ? $label : ($d['name'] ?? 'Download'));
+
+                    // Human-readable size
+                    $size = (int)($d['size'] ?? 0);
+                    $sizeStr = '';
+                    if ($size > 0) {
+                        $kb = $size / 1024;
+                        $sizeStr = $kb < 1024
+                            ? round($kb) . ' KB'
+                            : round($kb / 1024, 1) . ' MB';
+                    }
+
+                    // File extension for a small type hint
+                    $ext = strtoupper(pathinfo($d['name'] ?? '', PATHINFO_EXTENSION));
+
+                    $meta = trim($ext . ($ext && $sizeStr ? ', ' : '') . $sizeStr);
+                    $metaHtml = $meta !== '' ? ' <span class="cms-download__meta">(' . htmlspecialchars($meta) . ')</span>' : '';
+
+                    $html .= '<div class="cms-block cms-block--download">'
+                        . '<a class="cms-download" href="' . $fileUrl . '" download>'
+                        . '<span class="cms-download__icon" aria-hidden="true">&#8681;</span>'
+                        . '<span class="cms-download__text">' . $linkText . $metaHtml . '</span>'
+                        . '</a></div>';
                 }
                 break;
 
@@ -480,6 +548,12 @@ function renderContent(string $json): string
                 // Unknown block type — skip silently
                 break;
         }
+    }
+
+    // If the author opened a section but never added a "Section End",
+    // close it here so the page HTML stays valid.
+    if ($sectionOpen) {
+        $html .= '</div></div>';
     }
 
     return $html;
@@ -764,4 +838,129 @@ function renderPublishDate(array $page): string
 
     return '<p class="page-date"><time datetime="' . htmlspecialchars($iso, ENT_QUOTES) . '">'
         . htmlspecialchars($long) . '</time></p>';
+}
+
+/**
+ * renderBlogList — outputs a chronological list of "blog" posts.
+ *
+ * A blog is simply a normal parent page (e.g. slug "blog", "news", "my-blog")
+ * whose published child pages are the posts. This lists those children,
+ * newest first by their `date` field, as linked cards showing the social
+ * image, title, date, and meta description (as an excerpt).
+ *
+ * Reuses fields the author already fills in (og_image, meta_description, date)
+ * so posts need no extra "blog-specific" data entry.
+ *
+ * Usage:
+ *   renderBlogList('news')            // all posts, no pagination
+ *   renderBlogList('news', 3)         // 3 latest, no pagination (e.g. homepage)
+ *   renderBlogList('news', 10, true)  // 10 per page, with ?page=N controls
+ *
+ * @param string   $parentSlug The slug of the blog/news parent page.
+ * @param int|null $limit      Max posts to show (per page if paginating). Null = all.
+ * @param bool     $paginate   Whether to show ?page=N pagination controls.
+ * @return string
+ */
+function renderBlogList(string $parentSlug, ?int $limit = null, bool $paginate = false): string
+{
+    $allPages = getAllPages();
+
+    // Find the parent page by slug
+    $parent = null;
+    foreach ($allPages as $p) {
+        if (($p['slug'] ?? '') === $parentSlug) {
+            $parent = $p;
+            break;
+        }
+    }
+    if (!$parent) {
+        return '<p class="cms-bloglist__empty">No posts found.</p>';
+    }
+
+    // Collect published children of that parent
+    $parentFilename = $parent['filename'] ?? '';
+    $posts = [];
+    foreach ($allPages as $p) {
+        if (($p['page_parent'] ?? '') === $parentFilename
+            && ($p['status'] ?? '') === 'published') {
+            $posts[] = $p;
+        }
+    }
+
+    if (empty($posts)) {
+        return '<p class="cms-bloglist__empty">No posts yet.</p>';
+    }
+
+    // Sort newest-first by date (fall back to 0 for missing/invalid dates)
+    usort($posts, function ($a, $b) {
+        $da = !empty($a['date']) ? strtotime($a['date']) : 0;
+        $db = !empty($b['date']) ? strtotime($b['date']) : 0;
+        return $db <=> $da;
+    });
+
+    $totalPosts = count($posts);
+    $totalPages = 1;
+    $currentPage = 1;
+
+    if ($paginate && $limit && $limit > 0) {
+        $totalPages = (int) ceil($totalPosts / $limit);
+        $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $currentPage = min($currentPage, $totalPages);
+        $offset = ($currentPage - 1) * $limit;
+        $posts = array_slice($posts, $offset, $limit);
+    } elseif ($limit && $limit > 0) {
+        // Non-paginated limit (e.g. homepage "latest 3")
+        $posts = array_slice($posts, 0, $limit);
+    }
+
+    // Build the cards
+    $html = '<div class="cms-bloglist">';
+    foreach ($posts as $post) {
+        $url   = htmlspecialchars(buildPageUrl($post, $allPages), ENT_QUOTES);
+        $title = htmlspecialchars($post['title'] ?? 'Untitled');
+        $image = $post['og_image'] ?? '';
+        $desc  = trim($post['meta_description'] ?? '');
+
+        $dateHtml = '';
+        if (!empty($post['date']) && strtotime($post['date']) !== false) {
+            $ts = strtotime($post['date']);
+            $dateHtml = '<time class="cms-bloglist__date" datetime="' . date('Y-m-d', $ts) . '">'
+                . date('j F Y', $ts) . '</time>';
+        }
+
+        $html .= '<a class="cms-bloglist__card" href="' . $url . '">';
+
+        if ($image !== '') {
+            $html .= '<div class="cms-bloglist__image">'
+                . '<img src="' . htmlspecialchars($image, ENT_QUOTES) . '" alt="' . $title . '" loading="lazy">'
+                . '</div>';
+        }
+
+        $html .= '<div class="cms-bloglist__body">';
+        $html .= '<h3 class="cms-bloglist__title">' . $title . '</h3>';
+        $html .= $dateHtml;
+        if ($desc !== '') {
+            $html .= '<p class="cms-bloglist__excerpt">' . htmlspecialchars($desc) . '</p>';
+        }
+        $html .= '</div>'; // body
+        $html .= '</a>';   // card
+    }
+    $html .= '</div>'; // bloglist
+
+    // Pagination controls
+    if ($paginate && $totalPages > 1) {
+        // Preserve the current path, vary only the page query
+        $path = strtok($_SERVER['REQUEST_URI'], '?');
+        $html .= '<nav class="cms-bloglist__pagination">';
+        if ($currentPage > 1) {
+            $html .= '<a class="cms-bloglist__pagelink" href="' . htmlspecialchars($path . '?page=' . ($currentPage - 1), ENT_QUOTES) . '">&larr; Newer</a>';
+        }
+        $html .= '<span class="cms-bloglist__pageinfo">Page ' . $currentPage . ' of ' . $totalPages . '</span>';
+        if ($currentPage < $totalPages) {
+            $html .= '<a class="cms-bloglist__pagelink" href="' . htmlspecialchars($path . '?page=' . ($currentPage + 1), ENT_QUOTES) . '">Older &rarr;</a>';
+        }
+        $html .= '</nav>';
+    }
+
+    return $html;
 }

@@ -3,7 +3,7 @@
 //
 // Generic form handler for SonaCMS. Works with ANY form that posts here —
 // it doesn't expect specific field names. It:
-//   1. Drops submissions where the honeypot field ("website") is filled.
+//   1. Drops submissions where the honeypot field ("contact_time") is filled.
 //   2. Emails all submitted fields to the configured recipient.
 //   3. Redirects to the form's "redirect" value (or "/" as a fallback).
 //
@@ -13,9 +13,16 @@
 //   - Otherwise fall back to PHP's mail().
 //
 // Reserved field names (not emailed as content):
-//   subject   — the email subject line
-//   redirect  — where to send the visitor after submitting
-//   website   — honeypot (must stay empty)
+//   subject       — the email subject line
+//   redirect      — where to send the visitor after submitting
+//   contact_time  — honeypot (a hidden checkbox; must stay unticked)
+//
+// NOTE ON THE HONEYPOT: the hidden anti-spam field is a CHECKBOX, not a text
+// input. Browser autofill and password managers fill hidden TEXT fields with
+// stray values (a town, an email) even with autocomplete="off" — which would
+// make genuine human submissions look like bots and be silently dropped. They
+// do NOT tick hidden checkboxes, so a checkbox honeypot avoids that false
+// positive while still catching bots that blindly tick every field.
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -43,8 +50,12 @@ if (!preg_match('#^/[^/]#', $redirect)) {
     $redirect = '/';
 }
 
-// Honeypot — silently redirect bots without sending
-if (!empty($_POST['website'])) {
+// Honeypot — silently redirect bots without sending.
+// This is a hidden CHECKBOX (see the form). Real users never tick it; browser
+// autofill won't tick it either (unlike hidden text fields, which autofill may
+// populate with stray values). An unticked box isn't sent in POST at all, so
+// genuine submissions pass; bots that tick everything are dropped here.
+if (!empty($_POST['contact_time'])) {
     header('Location: ' . $redirect);
     exit;
 }
@@ -57,7 +68,7 @@ if ($recipient === '') {
 
 // ─── Build the email content ─────────────────────────────────────────────
 
-$reserved = ['subject', 'redirect', 'website'];
+$reserved = ['subject', 'redirect', 'contact_time'];
 $subject  = str_replace(["\r", "\n"], '', $_POST['subject'] ?? 'Website Form Submission');
 
 $lines = [];

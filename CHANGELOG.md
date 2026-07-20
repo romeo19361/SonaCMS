@@ -4,6 +4,64 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.5] — 21 July 2026
+
+### Added
+
+**Coloured sections**
+New "Section Start" and "Section End" blocks let you wrap a group of blocks in
+a coloured background band — ideal for highlighting offers, announcements, or
+call-to-action areas. Choose from preset colours (Subtle, Muted, Highlight,
+Accent, Dark) that map to CSS classes you can restyle to your brand, or enter a
+specific hex colour. Dark sections automatically use light text.
+
+**File downloads**
+A new "Download" block lets you upload a document (PDF, Word, Excel,
+PowerPoint, or ZIP) and present it as a tidy download button showing the file
+name, type, and size. Uploaded documents are stored separately from images
+under `assets/files/uploads/`, and both upload areas are protected against
+executing scripts.
+
+**Blog / news listings**
+A new `renderBlogList()` function outputs a chronological list of posts — where
+a "blog" is simply any parent page whose published child pages are the posts.
+Each entry shows the social image, title, date, and meta description as an
+excerpt, all reusing fields you already fill in. Supports a post limit (e.g. a
+"latest 3" feed on the homepage) and optional `?page=N` pagination for a full
+index.
+
+**Sample config file**
+SonaCMS now ships with `config-sample.php` instead of a ready-made
+`config.php`. Rename it to `config.php` on first install. This means an upgrade
+can never overwrite your real configuration, and the distributable never
+carries anyone's live credentials.
+
+### Fixed
+
+**Contact form submissions silently dropped**
+The spam-protection honeypot was a hidden text field, which some browsers'
+autofill would populate with a stray value (e.g. a town or email) — causing
+genuine submissions to be mistaken for spam and silently discarded. The
+honeypot is now a hidden checkbox, which autofill leaves alone, so real
+submissions always get through while bots are still caught. If you use a custom
+form, update its honeypot field to a checkbox named `contact_time`.
+
+### Upgrade notes
+
+If you're upgrading from 1.4:
+
+1. Replace `index.php`, and the files in `SonaCMS/app/` and `SonaCMS/vendor/`
+   (new tools: `section-tool.js`, `download-tool.js`).
+2. Replace your frontend `css/styles.css` and the admin `SonaCMS/app/css/styles.css`.
+3. For file downloads: create `assets/files/uploads/` (writable by the web
+   server) and place the hardening `.htaccess` in `assets/files/`.
+4. Update your contact form and `inc/formHandler.php` for the checkbox honeypot
+   (see Fixed, above).
+5. Your `config.php` and customisations in `/inc/`, `/css/`, `/forms/` are
+   untouched by upgrades — as always.
+
+---
+
 ## [1.4] — 20 July 2026
 
 ### Added
