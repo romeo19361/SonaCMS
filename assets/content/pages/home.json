@@ -1,0 +1,69 @@
+{
+    "filename": "home",
+    "nav_label": "Home",
+    "show_in_nav": true,
+    "page_order": 1,
+    "title": "Welcome to SonaCMS",
+    "slug": "home",
+    "page_parent": "",
+    "meta_description": "A fresh SonaCMS installation. Log in to edit this page or create your own.",
+    "meta_keywords": "",
+    "og_image": "",
+    "hero_image": "",
+    "hero_title": "",
+    "hero_subtitle": "",
+    "date": "2026-07-21",
+    "show_date": false,
+    "status": "published",
+    "content": {
+        "time": 1753068000000,
+        "blocks": [
+            {
+                "type": "header",
+                "data": { "text": "Welcome to SonaCMS", "level": 2 }
+            },
+            {
+                "type": "paragraph",
+                "data": { "text": "This is your new website. It&#39;s running on SonaCMS &mdash; a fast, flat-file content management system with no database to set up." }
+            },
+            {
+                "type": "paragraph",
+                "data": { "text": "This page is just an example to get you started. To edit it, or to create pages of your own, log in to the admin area at <b>/SonaCMS/</b> using the details in your config file." }
+            },
+            {
+                "type": "sectionStart",
+                "data": { "preset": "subtle", "hex": "" }
+            },
+            {
+                "type": "header",
+                "data": { "text": "A few things you can do", "level": 3 }
+            },
+            {
+                "type": "list",
+                "data": {
+                    "style": "unordered",
+                    "items": [
+                        "Create hierarchical pages with clean URLs",
+                        "Add images, galleries, videos, buttons and file downloads",
+                        "Build coloured sections like this one",
+                        "Add a contact form that emails you submissions",
+                        "Publish blog posts and news"
+                    ]
+                }
+            },
+            {
+                "type": "sectionEnd",
+                "data": {}
+            },
+            {
+                "type": "paragraph",
+                "data": { "text": "When you&#39;re ready, delete this page or edit it to make it your own. Everything you see here was built with the same editor you&#39;ll use." }
+            },
+            {
+                "type": "button",
+                "data": { "text": "Read the documentation", "url": "https://www.sonacms.com", "style": "primary" }
+            }
+        ],
+        "version": "2.31.6"
+    }
+}
