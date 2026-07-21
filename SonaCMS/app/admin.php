@@ -79,6 +79,7 @@ function renderPageRows(array $pages, int $depth = 0): void
         <div>
             <a class="sona-btn" href="editor.php">+ New Page</a>
             <a href="authors.php">Authors</a>
+            <a href="files.php">Files</a>
             <a href="logout.php">Log out</a>
         </div>
     </div>

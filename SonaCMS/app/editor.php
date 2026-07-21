@@ -54,15 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $error = "Security check failed. Please try again.";
     } else {
-        $filename = trim($_POST['filename'] ?? '');
-        $originalFilename = trim($_POST['original_filename'] ?? '');
+        // Lowercase the filename (the on-disk identifier and URL parent ref).
+        // original_filename is lowercased the same way so rename-detection still
+        // compares like-for-like.
+        $filename = strtolower(trim($_POST['filename'] ?? ''));
+        $originalFilename = strtolower(trim($_POST['original_filename'] ?? ''));
 
         $page['nav_label'] = trim($_POST['nav_label'] ?? '');
         $page['show_in_nav'] = isset($_POST['show_in_nav']);
         $page['page_order'] = max(0, (int)($_POST['page_order'] ?? 99));
         $page['title'] = trim($_POST['title'] ?? '');
-        $page['slug'] = trim($_POST['slug'] ?? '');
-        $page['page_parent'] = trim($_POST['page_parent'] ?? '');
+        // Force slug to lowercase — URLs are case-sensitive on most (Linux)
+        // servers, so storing a consistent lowercase slug avoids /About vs
+        // /about resolving to different pages (or 404s on the "wrong" case).
+        $page['slug'] = strtolower(trim($_POST['slug'] ?? ''));
+        $page['page_parent'] = strtolower(trim($_POST['page_parent'] ?? ''));
         $page['content'] = $_POST['content'] ?? '';
         $page['meta_description'] = trim($_POST['meta_description'] ?? '');
         $page['meta_keywords'] = trim($_POST['meta_keywords'] ?? '');

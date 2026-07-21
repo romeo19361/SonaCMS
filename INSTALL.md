@@ -188,12 +188,20 @@ the bundled PHPMailer) — no code change needed.
 
 ## 5. Log in and create your first page
 
+SonaCMS ships with a single example **home page** so your site works
+immediately after install. Visit `https://your-site.com/` and you'll see it.
+It's just a starting point — edit it to make it your own, or delete it and
+create your own home page (give the replacement the **slug** `home`, which is
+the page shown at your domain root).
+
+To log in and start editing:
+
 1. Visit `https://your-site.com/SonaCMS/` — you'll see the login screen.
 2. Log in with the email and password you configured.
-3. Click **+ New Page**.
-4. Give it the **filename** `home` and the **slug** `home` — this is the page
-   shown at your domain root.
-5. Set **Status** to *Published*, add some content, and save.
+3. Click the example home page to edit it, or **+ New Page** to create your own.
+4. When creating the home page yourself, give it the **filename** `home` and
+   the **slug** `home`.
+5. Set **Status** to *Published*, add your content, and save.
 6. Visit `https://your-site.com/` — your home page is live.
 
 Additional pages work the same way. Use the **Parent Page** field to nest
@@ -255,6 +263,14 @@ Any `.php` file placed in `/forms/` automatically appears in the editor's
 Form block. Forms post to `/inc/formHandler.php`, which emails all submitted
 fields to your configured recipient, includes spam (honeypot) protection, and
 redirects to the form's `redirect` value. A `contact.php` example is included.
+
+### Files
+
+The **Files** link in the admin lists everything you've uploaded — images as
+a thumbnail grid, documents in a list — each with a delete button. Deleting is
+permanent and doesn't check whether a file is still used, so a warning is
+shown before you confirm. Uploads are automatically de-duplicated: uploading
+the same file twice reuses the existing copy rather than storing a duplicate.
 
 ---
 

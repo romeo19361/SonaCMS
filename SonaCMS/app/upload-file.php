@@ -83,19 +83,27 @@ if (!is_dir($docsDir)) {
     }
 }
 
-// Preserve a readable, slugged version of the original name for the stored file,
-// but prefix with random bytes so it can't collide or be guessed/overwritten.
+// Content-addressed filename: prefix with a hash of the file's contents so
+// identical uploads deduplicate (same bytes -> same hash -> reuse existing
+// file). A readable slug of the original name is appended for human-friendly
+// on-disk names. The download block stores the ORIGINAL name separately (see
+// the JSON response below), so the visitor always sees the friendly filename
+// regardless of what the stored file is called.
 $baseName = pathinfo($originalName, PATHINFO_FILENAME);
 $slug = preg_replace('/[^a-zA-Z0-9._-]+/', '-', $baseName);
 $slug = trim($slug, '-');
 if ($slug === '') {
     $slug = 'file';
 }
-$safeName = bin2hex(random_bytes(6)) . '-' . $slug . '.' . $extension;
+$hash = hash_file('sha256', $file['tmp_name']);
+$safeName = substr($hash, 0, 32) . '-' . $slug . '.' . $extension;
 $destination = $docsDir . '/' . $safeName;
 
-if (!move_uploaded_file($file['tmp_name'], $destination)) {
-    failFileUpload('Could not save the uploaded file.');
+// Only write if this exact file isn't already stored; otherwise reuse it.
+if (!file_exists($destination)) {
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        failFileUpload('Could not save the uploaded file.');
+    }
 }
 
 $url = siteWebRoot() . '/assets/files/uploads/' . $safeName;

@@ -4,6 +4,45 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.6] — 21 July 2026
+
+### Added
+
+**File manager**
+A new "Files" area in the admin lists everything you've uploaded — images
+shown as a thumbnail grid, documents in a list — each with a delete button.
+Deleting is permanent and does not check whether a file is still in use, so a
+clear warning is shown; this keeps the tool simple and lets you remove a file
+for any reason (including compliance), even if it's currently used somewhere.
+
+**Automatic image & file de-duplication**
+Uploads are now content-addressed: each file is stored under a name derived
+from a hash of its contents. Uploading the same image or document again reuses
+the existing file instead of saving a duplicate — so reusing a logo or hero
+image across many pages no longer fills your uploads folder with copies. No
+database or clean-up process needed; it simply never creates the duplicate.
+
+### Changed
+
+- Page **slugs and filenames are now saved in lowercase**, so URLs behave
+  consistently on case-sensitive (Linux) servers — no more `/About` and
+  `/about` resolving to different pages. Existing pages keep their current
+  values until re-saved.
+
+### Upgrade notes
+
+If you're upgrading from 1.5:
+
+1. Replace the files in `SonaCMS/app/` (adds `files.php`, `file-delete.php`;
+   updates `upload.php`, `upload-file.php`, `editor.php`, `paths.php`,
+   `admin.php`) and the admin `SonaCMS/app/css/styles.css`.
+2. No content or config changes are required. De-duplication applies to new
+   uploads only; existing files are left as they are.
+3. Your `config.php` and customisations in `/inc/`, `/css/`, `/forms/` are
+   untouched by upgrades — as always.
+
+---
+
 ## [1.5] — 21 July 2026
 
 ### Added

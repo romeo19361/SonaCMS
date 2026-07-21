@@ -899,3 +899,71 @@ body.sona-admin {
     font-size: 0.9em;
     color: #7a8a8e;
 }
+
+/* File manager (files.php) — image grid + delete */
+.sona-filegrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+}
+
+.sona-filecard {
+    border: 1px solid #dfe5e7;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.sona-filecard__thumb {
+    height: 120px;
+    background: #eef2f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.sona-filecard__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.sona-filecard__meta {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sona-filecard__name {
+    font-size: 0.78em;
+    color: #3d4e53;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sona-filecard__size {
+    font-size: 0.75em;
+    color: #8a98a0;
+}
+
+.sona-filecard__delete {
+    border: none;
+    border-top: 1px solid #eef2f3;
+    background: #fff;
+    color: #a23b2e;
+    padding: 8px;
+    font-size: 0.8em;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.sona-filecard__delete:hover {
+    background: #fbeceb;
+}

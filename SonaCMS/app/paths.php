@@ -22,6 +22,9 @@ define('AUTHORS_DIR', CONTENT_DIR . '/authors');
 // Uploads (images etc. added via upload.php)
 define('UPLOADS_DIR', SITE_ROOT . '/assets/images/uploads');
 
+// Document downloads (PDF, Word, etc.) uploaded via the Download block
+define('FILES_DIR', SITE_ROOT . '/assets/files/uploads');
+
 // Forms directory (site root /forms), holds contact.php etc.
 define('FORMS_DIR', SITE_ROOT . '/forms');
 

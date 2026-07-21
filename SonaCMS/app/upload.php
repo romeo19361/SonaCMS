@@ -67,12 +67,20 @@ if (!is_dir(UPLOADS_DIR)) {
     }
 }
 
-// Generate a collision-safe filename — never trust the original filename directly
-$safeName = bin2hex(random_bytes(8)) . '-' . time() . '.' . $extension;
+// Content-addressed filename: name the file after a hash of its contents.
+// This deduplicates automatically — uploading the same image twice produces
+// the same hash, so the second upload reuses the first file instead of writing
+// a duplicate. No database or index needed; the filename IS the dedup key.
+$hash = hash_file('sha256', $file['tmp_name']);
+$safeName = $hash . '.' . $extension;
 $destination = UPLOADS_DIR . '/' . $safeName;
 
-if (!move_uploaded_file($file['tmp_name'], $destination)) {
-    failUpload('Could not save the uploaded file.');
+// Only write if we don't already have this exact file. If it exists, we simply
+// reuse it (the move is skipped) and return its URL.
+if (!file_exists($destination)) {
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        failUpload('Could not save the uploaded file.');
+    }
 }
 
 // Build the public URL back to the file, accounting for whatever
