@@ -298,8 +298,20 @@ These files are yours to edit and **survive CMS upgrades**:
 - `js/lightbox.js` — frontend lightbox behaviour
 - `SonaCMS/config.php` — configuration
 
-Everything inside `SonaCMS/app/` is core and may be overwritten when you
-upgrade, so avoid editing files there.
+Everything inside `SonaCMS/app/` and `SonaCMS/vendor/` is core and may be
+overwritten when you upgrade, so avoid editing files there.
+
+### Upgrading SonaCMS
+
+To upgrade to a newer release, **replace the `SonaCMS/app/` and
+`SonaCMS/vendor/` folders together, as a pair.** Many features span both (PHP
+logic in `app/`, editor tools in `vendor/`), so replacing only one can leave
+them mismatched. Also copy across any updated stylesheets noted in the
+changelog (`css/styles.css` and `SonaCMS/app/css/styles.css`).
+
+Your `config.php` and your customisations in `/inc/`, `/css/`, and `/forms/`
+are never touched by an upgrade — only the core `app/` and `vendor/` folders
+change.
 
 ---
 

@@ -4,6 +4,55 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.7] — 23 July 2026
+
+### Added
+
+**Automatic image resizing on upload**
+Large images (from a phone or camera) are now resized down on upload so their
+longest edge is at most 1800px, and re-compressed for the web — dramatically
+reducing page weight, especially in galleries. Images already within that size
+are stored untouched, so previously-optimised images aren't re-compressed (no
+quality loss on re-uploads or imports). Requires PHP's GD extension; if GD
+isn't available, the original is stored unchanged.
+
+**Image sizing**
+Each image now has a Small / Medium / Full size control in the block, so you
+can display an image at 25%, 50%, or 100% width. Sizes scale sensibly on
+mobile.
+
+**Image alignment**
+Each image now has a Left / Centre / Right alignment control in the block.
+Combined with a Small or Medium size, you can position an image neatly within
+the content (a full-width image fills the column, so alignment applies once an
+image is smaller than full width). Both size and alignment preview live in the
+editor.
+
+### Changed
+
+- Image size and alignment are set in the image block itself (previously
+  alignment used the shared tune). Existing images default to full width,
+  left-aligned, so nothing changes until you adjust them.
+
+### Upgrade notes
+
+**From now on, always upgrade the `SonaCMS/app/` and `SonaCMS/vendor/` folders
+together as a pair.** Features increasingly span both (PHP in `app/`, editor
+tools in `vendor/`), and replacing only one can leave them mismatched. Your
+`config.php` and your customisations in `/inc/`, `/css/`, `/forms/` are never
+touched by an upgrade.
+
+If upgrading from 1.6:
+
+1. Replace **both** `SonaCMS/app/` and `SonaCMS/vendor/` (adds image resizing,
+   sizing and alignment).
+2. Replace your frontend `css/styles.css` and the admin
+   `SonaCMS/app/css/styles.css`.
+3. Confirm PHP's GD extension is enabled for image resizing (`php -m | grep -i
+   gd`). Without it, uploads still work — images just aren't resized.
+
+---
+
 ## [1.6] — 21 July 2026
 
 ### Added

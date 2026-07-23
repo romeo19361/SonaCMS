@@ -654,6 +654,70 @@ body.sona-admin {
     border-color: #1b7a8c;
 }
 
+/* Size selector (Small / Medium / Full) — mirrors the mode buttons */
+.cms-image-tool__sizes {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.cms-image-tool__sizes-label {
+    font-size: 0.8em;
+    color: #7a8a8e;
+    margin-right: 2px;
+}
+
+.cms-image-tool__size-btn {
+    padding: 6px 12px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.8em;
+    font-family: inherit;
+    color: #3d4e53;
+    cursor: pointer;
+}
+
+.cms-image-tool__size-btn--active {
+    background: #1b7a8c;
+    color: #fff;
+    border-color: #1b7a8c;
+}
+
+/* Alignment selector (Left / Centre / Right) — mirrors the size buttons */
+.cms-image-tool__aligns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.cms-image-tool__aligns-label {
+    font-size: 0.8em;
+    color: #7a8a8e;
+    margin-right: 2px;
+}
+
+.cms-image-tool__align-btn {
+    padding: 6px 12px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.8em;
+    font-family: inherit;
+    color: #3d4e53;
+    cursor: pointer;
+}
+
+.cms-image-tool__align-btn--active {
+    background: #1b7a8c;
+    color: #fff;
+    border-color: #1b7a8c;
+}
+
 .cms-image-tool__replace {
     padding: 5px 12px;
     font-size: 0.8em;

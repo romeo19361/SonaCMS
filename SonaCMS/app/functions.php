@@ -382,7 +382,19 @@ function renderContent(string $json): string
                         $inner = $imgTag;
                     }
 
-                    $html .= '<figure>' . $inner;
+                    // Alignment and size now live in the image block's own data
+                    // (not the shared tune), so the editor can preview them live.
+                    $figClasses = ['cms-figure'];
+                    $imgAlign = $d['align'] ?? 'left';
+                    if (in_array($imgAlign, ['left', 'center', 'right'], true)) {
+                        $figClasses[] = 'cms-align-' . $imgAlign;
+                    }
+                    $size = $d['size'] ?? 'full';
+                    if (in_array($size, ['small', 'medium', 'full'], true)) {
+                        $figClasses[] = 'cms-figure--' . $size;
+                    }
+                    $figClass = ' class="' . implode(' ', $figClasses) . '"';
+                    $html .= '<figure' . $figClass . '>' . $inner;
                     if ($caption !== '') {
                         $html .= '<figcaption>' . $caption . '</figcaption>';
                     }

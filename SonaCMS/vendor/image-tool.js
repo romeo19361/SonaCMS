@@ -37,7 +37,12 @@ class ImageTool {
             linkUrl: (data && data.linkUrl) ? data.linkUrl : '',
             // Whether a "link" mode image opens in a new tab. Defaults to true so
             // images saved before this option existed keep their prior behaviour.
-            newTab: (data && typeof data.newTab === 'boolean') ? data.newTab : true
+            newTab: (data && typeof data.newTab === 'boolean') ? data.newTab : true,
+            // Display size: small / medium / full. Defaults to 'full' so images
+            // saved before this option existed keep their prior full-width behaviour.
+            size: (data && ['small', 'medium', 'full'].includes(data.size)) ? data.size : 'full',
+            // Alignment: left / center / right. Defaults to 'left' (natural flow).
+            align: (data && ['left', 'center', 'right'].includes(data.align)) ? data.align : 'left'
         };
         this.wrapper = null;
     }
@@ -110,6 +115,8 @@ class ImageTool {
         const img = document.createElement('img');
         img.src = this.data.file.url;
         img.classList.add('cms-image-tool__preview');
+        this.previewImg = img;              // keep a reference for live size updates
+        this._applyPreviewSize();           // reflect the current size choice
         this.wrapper.appendChild(img);
 
         // Caption
@@ -120,6 +127,70 @@ class ImageTool {
         caption.classList.add('cms-image-tool__caption');
         caption.addEventListener('input', () => { this.data.caption = caption.value; });
         this.wrapper.appendChild(caption);
+
+        // Size selector: Small / Medium / Full
+        const sizeRow = document.createElement('div');
+        sizeRow.classList.add('cms-image-tool__sizes');
+
+        const sizeLabel = document.createElement('span');
+        sizeLabel.classList.add('cms-image-tool__sizes-label');
+        sizeLabel.textContent = 'Size:';
+        sizeRow.appendChild(sizeLabel);
+
+        const sizes = [
+            ['small', 'Small'],
+            ['medium', 'Medium'],
+            ['full', 'Full']
+        ];
+
+        sizes.forEach(([value, label]) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = label;
+            b.classList.add('cms-image-tool__size-btn');
+            if (this.data.size === value) b.classList.add('cms-image-tool__size-btn--active');
+            b.addEventListener('click', () => {
+                this.data.size = value;
+                sizeRow.querySelectorAll('.cms-image-tool__size-btn').forEach((el) =>
+                    el.classList.remove('cms-image-tool__size-btn--active'));
+                b.classList.add('cms-image-tool__size-btn--active');
+                this._applyPreviewSize();   // reflect the new size in the preview
+            });
+            sizeRow.appendChild(b);
+        });
+        this.wrapper.appendChild(sizeRow);
+
+        // Alignment selector: Left / Centre / Right
+        const alignRow = document.createElement('div');
+        alignRow.classList.add('cms-image-tool__aligns');
+
+        const alignLabel = document.createElement('span');
+        alignLabel.classList.add('cms-image-tool__aligns-label');
+        alignLabel.textContent = 'Align:';
+        alignRow.appendChild(alignLabel);
+
+        const aligns = [
+            ['left', 'Left'],
+            ['center', 'Centre'],
+            ['right', 'Right']
+        ];
+
+        aligns.forEach(([value, label]) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = label;
+            b.classList.add('cms-image-tool__align-btn');
+            if (this.data.align === value) b.classList.add('cms-image-tool__align-btn--active');
+            b.addEventListener('click', () => {
+                this.data.align = value;
+                alignRow.querySelectorAll('.cms-image-tool__align-btn').forEach((el) =>
+                    el.classList.remove('cms-image-tool__align-btn--active'));
+                b.classList.add('cms-image-tool__align-btn--active');
+                this._applyPreviewSize(); // updates size + alignment on the preview
+            });
+            alignRow.appendChild(b);
+        });
+        this.wrapper.appendChild(alignRow);
 
         // Mode selector: None / Link / Lightbox
         const modeRow = document.createElement('div');
@@ -188,13 +259,38 @@ class ImageTool {
         if (this.newTabRow) this.newTabRow.style.display = show ? 'flex' : 'none';
     }
 
+    _applyPreviewSize() {
+        if (!this.previewImg) return;
+        // Mirror the frontend size presets in the editor preview so editing is
+        // WYSIWYG. Percentages are of the editor's content width.
+        const widths = { small: '25%', medium: '50%', full: '100%' };
+        this.previewImg.style.width = widths[this.data.size] || '100%';
+        this.previewImg.style.height = 'auto';
+
+        // Alignment: the preview img is a block so auto margins position it.
+        // Only visibly shifts when the image is narrower than full width.
+        this.previewImg.style.display = 'block';
+        if (this.data.align === 'center') {
+            this.previewImg.style.marginLeft = 'auto';
+            this.previewImg.style.marginRight = 'auto';
+        } else if (this.data.align === 'right') {
+            this.previewImg.style.marginLeft = 'auto';
+            this.previewImg.style.marginRight = '0';
+        } else {
+            this.previewImg.style.marginLeft = '0';
+            this.previewImg.style.marginRight = 'auto';
+        }
+    }
+
     save() {
         return {
             file: this.data.file,
             caption: this.data.caption.trim(),
             mode: this.data.mode,
             linkUrl: this.data.linkUrl.trim(),
-            newTab: this.data.newTab
+            newTab: this.data.newTab,
+            size: this.data.size,
+            align: this.data.align
         };
     }
 

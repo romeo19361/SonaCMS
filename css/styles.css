@@ -876,3 +876,59 @@ figure a.cms-lightbox {
         height: 180px;
     }
 }
+
+/* Image figures + alignment. The image is inline-block so the figure's
+   text-align (set by the alignment tune's cms-align-* class) positions it
+   left / centre / right. Applies to the caption too, which sits under the
+   image and follows the same alignment. */
+.cms-figure {
+    display: block;
+    width: 100%;
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+}
+
+.cms-figure figcaption {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Image size presets. The FIGURE is constrained to the target width (a
+   percentage of the content column — reliable because the figure is a
+   block-level element), and the image simply fills its figure. Sizing the
+   figure rather than the <img> avoids the percentage-basis problems that occur
+   when the image is wrapped in an inline <a> (link/lightbox modes). */
+
+.cms-figure--full   { width: 100%; }
+.cms-figure--medium { width: 50%; }
+.cms-figure--small  { width: 25%; }
+
+.cms-figure img {
+    width: 100%;
+    height: auto;
+}
+
+/* Alignment of the (possibly smaller) figure within the content column, via
+   auto margins. Only has a visible effect when the figure is narrower than the
+   column (i.e. Small or Medium) — a Full-width figure fills the column and has
+   no room to shift. Uses margin-top/bottom to preserve vertical spacing without
+   the `margin` shorthand resetting the horizontal auto-margins. */
+.cms-figure.cms-align-center {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.cms-figure.cms-align-right {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+}
+.cms-figure.cms-align-left {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* On narrow screens, small/medium relax so they don't become postage stamps. */
+@media (max-width: 600px) {
+    .cms-figure--medium { width: 70%; }
+    .cms-figure--small  { width: 55%; }
+}
