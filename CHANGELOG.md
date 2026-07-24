@@ -4,6 +4,58 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.8] — 24 July 2026
+
+### Added
+
+**Feature tiles**
+A new Tile block: a card with a coloured icon circle, heading, text, and a
+coloured accent bar — chosen from a curated icon set with per-tile circle and
+accent colours. The whole tile can link to a URL. Drop several into a Columns
+block for a row of feature tiles.
+
+**Pricing cards**
+A new Pricing Card block for membership/pricing plans: a coloured header bar,
+an optional diagonal corner ribbon ("Popular" etc.), a prominent price, a
+checkmark feature list (add/remove), a call-to-action button, and a coloured
+accent bar. Place two per row in a Columns block; stack two rows for four
+plans. Header, ribbon, and accent colours are all configurable.
+
+**Google Map block**
+Embed a Google Map by pasting the "Embed a map" link (Share → Embed a map →
+Copy HTML). The editor validates the link and warns clearly if a plain share
+link is used instead (which Google blocks from embedding).
+
+**Facebook feed block**
+Embed a Facebook Page feed by pasting your page URL. (Note: the Facebook plugin
+loads Meta's SDK and may change over time — that's outside the site's control.)
+
+**Full-width coloured sections**
+Coloured sections now span the full width of the browser window, with their
+content still constrained to the site's content width — matching the "full
+bleed band" look common on modern sites.
+
+**Multi-column blog listings**
+`renderBlogList()` takes an optional fourth argument for the number of columns,
+e.g. `renderBlogList('news', 3, false, 3)` for a 3-across homepage feed or
+`renderBlogList('news', 10, true, 2)` for a 2-column paginated index. Cards
+become vertical (image on top) in multi-column layouts and stack on mobile.
+
+### Changed
+
+- The header block now offers **H1** as a heading level (H2 remains the
+  default). Use one H1 per page for good SEO — typically the page's main title.
+
+### Upgrade notes
+
+**Remember to upgrade `SonaCMS/app/` and `SonaCMS/vendor/` together as a pair.**
+New editor tools this release: `tile-tool.js`, `pricing-tool.js`, `map-tool.js`,
+`facebook-tool.js` (in `vendor/`). Also replace your frontend `css/styles.css`
+and the admin `SonaCMS/app/css/styles.css`. Your `config.php` and your
+customisations in `/inc/`, `/css/`, `/forms/` are never touched by an upgrade.
+
+---
+
 ## [1.7] — 23 July 2026
 
 ### Added

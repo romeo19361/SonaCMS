@@ -69,11 +69,11 @@ if (!$page) {
             // a different parent (e.g. 'blog' or 'my-blog'), and remove either
             // block if you don't need it.
             if ($currentSlug === 'home') {
-                // Homepage: show the 3 latest posts (no pagination)
-                echo renderBlogList('news', 3, false);
+                // Homepage: 3 latest posts, 3 across (no pagination)
+                echo renderBlogList('news', 3, false, 3);
             } elseif ($currentSlug === 'news') {
-                // News index page: 10 posts per page, with pagination
-                echo renderBlogList('news', 10, true);
+                // News index page: 10 posts per page, 2 across, with pagination
+                echo renderBlogList('news', 10, true, 2);
             }
             ?>
         </div>

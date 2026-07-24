@@ -231,8 +231,15 @@ add content blocks:
   documentation and tutorials
 - **Download** — upload a document (PDF, Word, Excel, PowerPoint, ZIP) and
   present it as a download button showing the file name and size
-- **Section Start / Section End** — wrap a group of blocks in a coloured
-  background band, using a preset colour or a specific hex value
+- **Section Start / Section End** — wrap a group of blocks in a full-width
+  coloured background band, using a preset colour or a specific hex value
+- **Tile** — a feature card with a coloured icon circle, heading, text, accent
+  bar, and optional link; place several in a Columns block for a row of tiles
+- **Pricing Card** — a membership/pricing plan card with a coloured header,
+  optional corner ribbon, price, checkmark feature list, and button; place two
+  per row in a Columns block (stack two rows for four plans)
+- **Google Map** — embed a map (Share → Embed a map → Copy HTML in Google Maps)
+- **Facebook Feed** — embed a Facebook page feed by pasting the page URL
 
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended

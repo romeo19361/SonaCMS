@@ -255,6 +255,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../vendor/gallery-tool.js"></script>
 <script src="../vendor/download-tool.js"></script>
 <script src="../vendor/section-tool.js"></script>
+<script src="../vendor/map-tool.js"></script>
+<script src="../vendor/facebook-tool.js"></script>
+<script src="../vendor/tile-tool.js"></script>
+<script src="../vendor/pricing-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -308,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // or you will create a circular reference and crash the editor.
     const column_tools = {
         alignment: { class: AlignmentTune },
-        header: { class: Header, inlineToolbar: true, config: { levels: [2, 3, 4], defaultLevel: 2 }, tunes: ['alignment'] },
+        header: { class: Header, inlineToolbar: true, config: { levels: [1, 2, 3, 4], defaultLevel: 2 }, tunes: ['alignment'] },
         list: { class: EditorjsList, inlineToolbar: true },
         paragraph: { class: Paragraph, inlineToolbar: true, tunes: ['alignment'] },
         quote: { class: Quote, inlineToolbar: true },
@@ -318,6 +322,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         download: { class: DownloadTool },
         sectionStart: { class: SectionStartTool },
         sectionEnd: { class: SectionEndTool },
+        map: { class: MapTool },
+        facebook: { class: FacebookTool },
+        tile: { class: TileTool },
+        pricing: { class: PricingCardTool },
         video: VideoEmbedTool,
         button: ButtonTool,
         form: FormTool,
@@ -331,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         data: initialData,
         tools: {
             alignment: { class: AlignmentTune },
-            header: { class: Header, inlineToolbar: true, config: { levels: [2, 3, 4], defaultLevel: 2 }, tunes: ['alignment'] },
+            header: { class: Header, inlineToolbar: true, config: { levels: [1, 2, 3, 4], defaultLevel: 2 }, tunes: ['alignment'] },
             list: { class: EditorjsList, inlineToolbar: true },
             paragraph: { class: Paragraph, inlineToolbar: true, tunes: ['alignment'] },
             quote: { class: Quote, inlineToolbar: true },
@@ -341,6 +349,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             download: { class: DownloadTool },
             sectionStart: { class: SectionStartTool },
             sectionEnd: { class: SectionEndTool },
+            map: { class: MapTool },
+            facebook: { class: FacebookTool },
+            tile: { class: TileTool },
+            pricing: { class: PricingCardTool },
             columns: {
                 class: editorjsColumns,
                 config: {

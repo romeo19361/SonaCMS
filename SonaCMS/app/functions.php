@@ -250,6 +250,38 @@ function getPageBySlug(string $slug, bool $publishedOnly = true): ?array
 }
 
 /**
+ * Returns an inline SVG for a curated tile icon (matches tile-tool.js).
+ * Unknown keys fall back to 'star'. Colour is inherited via currentColor.
+ */
+function sonaTileIcon(string $key): string
+{
+    static $icons = [
+        'flag'      => '<path d="M6 3v18M6 4h11l-2 4 2 4H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'ball'      => '<circle cx="12" cy="10" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 20h6M12 17v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+        'dining'    => '<path d="M6 3v8a2 2 0 004 0V3M8 11v10M16 3c-1.5 0-2 2-2 4s.5 3 2 3 2-1 2-3-.5-4-2-4zM16 14v7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'trophy'    => '<path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H5v2a3 3 0 003 3M16 6h3v2a3 3 0 01-3 3M10 15h4M9 20h6M12 15v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'card'      => '<rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="8" cy="11" r="1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M13 10h5M13 13h5M6 15h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+        'calendar'  => '<rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 9h16M9 3v4M15 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+        'clock'     => '<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+        'phone'     => '<path d="M5 4h4l2 5-3 2a11 11 0 005 5l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>',
+        'email'     => '<rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+        'location'  => '<path d="M12 21s-6-5.686-6-10a6 6 0 1112 0c0 4.314-6 10-6 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><circle cx="12" cy="11" r="2" stroke="currentColor" stroke-width="2" fill="none"/>',
+        'people'    => '<circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 20a6 6 0 0112 0M16 6a3 3 0 010 6M18 20a6 6 0 00-3-5.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>',
+        'handshake' => '<path d="M3 12l4-4 5 3 2-2 4 4M12 11l-2 2M20 8l-4 4-2-1M8 20l-4-4M4 8v8M20 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'star'      => '<path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.8-5.4 2.8 1-6L3.3 9.4l6-.9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>',
+        'info'      => '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+        'camera'    => '<path d="M3 8a2 2 0 012-2h2l1.5-2h7L18 6h1a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><circle cx="12" cy="12.5" r="3.5" stroke="currentColor" stroke-width="2" fill="none"/>',
+        'cart'      => '<path d="M3 4h2l2.5 12h10l2-8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/>',
+        'gift'      => '<rect x="4" y="9" width="16" height="11" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 13h16M12 9v11M12 9C10 9 8 8 8 6s2-2 4 3c2-5 4-4 4-2s-2 2-4 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>',
+        'music'     => '<path d="M9 18V5l10-2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="16" cy="16" r="3" stroke="currentColor" stroke-width="2" fill="none"/>',
+        'parking'   => '<rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 17V8h4a3 3 0 010 6H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'home'      => '<path d="M4 11l8-7 8 7M6 10v9h12v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+    ];
+    $inner = $icons[$key] ?? $icons['star'];
+    return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' . $inner . '</svg>';
+}
+
+/**
  * Render Editor.js block JSON as HTML for frontend output.
  * Handles all block types used in editor.php.
  * Returns a safe HTML string ready to echo directly into a page.
@@ -468,6 +500,191 @@ function renderContent(string $json): string
                     $html .= '<iframe src="' . $embedUrl . '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>';
                     $html .= '</div>';
                 }
+                break;
+
+            case 'map':
+                // Only TRUE Google Maps embed URLs (…/maps/embed?…) render —
+                // those are the only ones Google permits inside an iframe. A
+                // share/place link would just show "refused to connect", so we
+                // don't emit it at all. We build the iframe ourselves; the
+                // author only supplies a URL (the security boundary).
+                $rawMap = trim($d['url'] ?? '');
+                $mapSrc = '';
+                if ($rawMap !== '') {
+                    if (preg_match('/src=["\']([^"\']+)["\']/i', $rawMap, $mm)) {
+                        $rawMap = $mm[1]; // extract src from a pasted <iframe>
+                    }
+                    $parts = parse_url($rawMap);
+                    $mHost = strtolower($parts['host'] ?? '');
+                    $mPath = $parts['path'] ?? '';
+                    $schemeOk = isset($parts['scheme']) && in_array(strtolower($parts['scheme']), ['http', 'https'], true);
+                    $hostOk = in_array($mHost, ['www.google.com', 'google.com', 'maps.google.com'], true)
+                        || (substr($mHost, -11) === '.google.com');
+                    if ($schemeOk && $hostOk && strpos($mPath, '/maps/embed') !== false) {
+                        $mapSrc = $rawMap;
+                    }
+                }
+                if ($mapSrc !== '') {
+                    $safeSrc = htmlspecialchars($mapSrc, ENT_QUOTES);
+                    $html .= '<div class="cms-map">'
+                        . '<iframe src="' . $safeSrc . '" width="100%" height="400" '
+                        . 'style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" '
+                        . 'allowfullscreen></iframe></div>';
+                }
+                break;
+
+            case 'facebook':
+                // Validate it's a facebook.com page URL, then emit the official
+                // Page Plugin markup. The Facebook SDK loader is added once (see
+                // note below). We build the markup — the author only gave a URL.
+                $fbUrl = trim($d['url'] ?? '');
+                $fbHost = strtolower(parse_url($fbUrl, PHP_URL_HOST) ?? '');
+                $fbOk = in_array($fbHost, ['www.facebook.com', 'facebook.com', 'm.facebook.com', 'fb.com', 'fb.me'], true)
+                    || (substr($fbHost, -13) === '.facebook.com');
+                if ($fbUrl !== '' && $fbOk) {
+                    $fbHeight = (int)($d['height'] ?? 500);
+                    if ($fbHeight < 150 || $fbHeight > 1200) { $fbHeight = 500; }
+                    $safeUrl = htmlspecialchars($fbUrl, ENT_QUOTES);
+                    // The SDK root div is required once per page; the plugin div
+                    // renders the feed. A guard flag ensures the SDK loads once.
+                    if (!defined('SONA_FB_SDK_EMITTED')) {
+                        define('SONA_FB_SDK_EMITTED', true);
+                        $html .= '<div id="fb-root"></div>'
+                            . '<script async defer crossorigin="anonymous" '
+                            . 'src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0"></script>';
+                    }
+                    $html .= '<div class="cms-facebook">'
+                        . '<div class="fb-page" '
+                        . 'data-href="' . $safeUrl . '" '
+                        . 'data-tabs="timeline" '
+                        . 'data-height="' . $fbHeight . '" '
+                        . 'data-small-header="false" '
+                        . 'data-adapt-container-width="true" '
+                        . 'data-hide-cover="false" '
+                        . 'data-show-facepile="true">'
+                        . '</div></div>';
+                }
+                break;
+
+            case 'tile':
+                $tHeading = trim($d['heading'] ?? '');
+                $tText    = trim($d['text'] ?? '');
+                $tIcon    = $d['icon'] ?? 'flag';
+                // Validate colours — only accept #rgb / #rrggbb, else fall back
+                $circleColor = (preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $d['circleColor'] ?? ''))
+                    ? $d['circleColor'] : '#5a5f5c';
+                $accentColor = (preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $d['accentColor'] ?? ''))
+                    ? $d['accentColor'] : '#ffd200';
+
+                // Optional link — the whole tile becomes clickable. Only allow
+                // safe schemes / relative paths (blocks javascript: etc.).
+                $tUrl = trim($d['url'] ?? '');
+                $tUrlOk = false;
+                if ($tUrl !== '') {
+                    if (preg_match('#^/[^/]#', $tUrl) || $tUrl === '/') {
+                        $tUrlOk = true; // site-relative path
+                    } elseif (preg_match('#^https?://#i', $tUrl) || preg_match('#^mailto:#i', $tUrl) || preg_match('#^tel:#i', $tUrl)) {
+                        $tUrlOk = true; // explicit safe scheme
+                    }
+                }
+
+                $tag = $tUrlOk ? 'a' : 'div';
+                $attr = ' class="cms-tile' . ($tUrlOk ? ' cms-tile--link' : '') . '"';
+                if ($tUrlOk) {
+                    $attr .= ' href="' . htmlspecialchars($tUrl, ENT_QUOTES) . '"';
+                    if (!empty($d['newTab'])) {
+                        $attr .= ' target="_blank" rel="noopener"';
+                    }
+                }
+
+                $html .= '<' . $tag . $attr . '>';
+                $html .= '<div class="cms-tile__circle" style="background-color:' . htmlspecialchars($circleColor, ENT_QUOTES) . ';">'
+                    . sonaTileIcon($tIcon) . '</div>';
+                if ($tHeading !== '') {
+                    $html .= '<h3 class="cms-tile__heading">' . htmlspecialchars($tHeading) . '</h3>';
+                }
+                if ($tText !== '') {
+                    $html .= '<p class="cms-tile__text">' . htmlspecialchars($tText) . '</p>';
+                }
+                $html .= '<div class="cms-tile__accent" style="background-color:' . htmlspecialchars($accentColor, ENT_QUOTES) . ';"></div>';
+                $html .= '</' . $tag . '>';
+                break;
+
+            case 'pricing':
+                $pPlan   = trim($d['plan'] ?? '');
+                $pRibbon = trim($d['ribbon'] ?? '');
+                $pCur    = trim($d['currency'] ?? '');
+                $pAmt    = trim($d['amount'] ?? '');
+                $pPer    = trim($d['period'] ?? '');
+                $pFeatures = is_array($d['features'] ?? null) ? $d['features'] : [];
+                $pBtnText = trim($d['buttonText'] ?? '');
+                $pBtnUrl  = trim($d['buttonUrl'] ?? '');
+
+                // Validate colours
+                $hdrColor = preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $d['headerColor'] ?? '') ? $d['headerColor'] : '#1BA7DE';
+                $ribColor = preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $d['ribbonColor'] ?? '') ? $d['ribbonColor'] : '#1d232b';
+                $accColor = preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $d['accentColor'] ?? '') ? $d['accentColor'] : '#ffd200';
+
+                // Validate button URL (relative path or safe scheme)
+                $pBtnOk = false;
+                if ($pBtnUrl !== '') {
+                    if (preg_match('#^/[^/]#', $pBtnUrl) || $pBtnUrl === '/'
+                        || preg_match('#^https?://#i', $pBtnUrl) || preg_match('#^mailto:#i', $pBtnUrl) || preg_match('#^tel:#i', $pBtnUrl)) {
+                        $pBtnOk = true;
+                    }
+                }
+
+                $html .= '<div class="cms-pricing">';
+
+                // Corner ribbon
+                if ($pRibbon !== '') {
+                    $html .= '<div class="cms-pricing__ribbon" style="background-color:' . htmlspecialchars($ribColor, ENT_QUOTES) . ';">'
+                        . '<span>' . htmlspecialchars($pRibbon) . '</span></div>';
+                }
+
+                // Header bar
+                $html .= '<div class="cms-pricing__header" style="background-color:' . htmlspecialchars($hdrColor, ENT_QUOTES) . ';">'
+                    . htmlspecialchars($pPlan) . '</div>';
+
+                $html .= '<div class="cms-pricing__body">';
+
+                // Price
+                if ($pAmt !== '' || $pCur !== '') {
+                    $html .= '<div class="cms-pricing__price">'
+                        . '<span class="cms-pricing__cur">' . htmlspecialchars($pCur) . '</span>'
+                        . '<span class="cms-pricing__amt">' . htmlspecialchars($pAmt) . '</span>'
+                        . '</div>';
+                    if ($pPer !== '') {
+                        $html .= '<div class="cms-pricing__period">' . htmlspecialchars($pPer) . '</div>';
+                    }
+                }
+
+                // Features
+                if (!empty($pFeatures)) {
+                    $html .= '<ul class="cms-pricing__features">';
+                    foreach ($pFeatures as $feat) {
+                        $feat = trim((string) $feat);
+                        if ($feat === '') continue;
+                        $html .= '<li class="cms-pricing__feature">'
+                            . '<span class="cms-pricing__check" aria-hidden="true">'
+                            . '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                            . '</span>'
+                            . '<span class="cms-pricing__feature-text">' . htmlspecialchars($feat) . '</span>'
+                            . '</li>';
+                    }
+                    $html .= '</ul>';
+                }
+
+                // Button
+                if ($pBtnText !== '' && $pBtnOk) {
+                    $target = !empty($d['newTab']) ? ' target="_blank" rel="noopener"' : '';
+                    $html .= '<a class="cms-pricing__button" href="' . htmlspecialchars($pBtnUrl, ENT_QUOTES) . '"' . $target . '>'
+                        . htmlspecialchars($pBtnText) . '</a>';
+                }
+
+                $html .= '</div>'; // body
+                $html .= '<div class="cms-pricing__accent" style="background-color:' . htmlspecialchars($accColor, ENT_QUOTES) . ';"></div>';
+                $html .= '</div>'; // pricing
                 break;
 
             case 'button':
@@ -775,7 +992,17 @@ function renderPageHead(array $page, array $config, string $currentPath): string
 
     // OG / Twitter image — only when the page has one; absolute URL required.
     if (!empty($page['og_image'])) {
-        $ogImageUrl = htmlspecialchars($canonicalBase . $page['og_image']);
+        // og:image must be an absolute URL for social scrapers. Store paths
+        // relative and build the absolute URL from site_url at render time, so
+        // moving domains (staging -> live) needs only a config change.
+        // Defensive: if an og_image was stored with a full domain (legacy data),
+        // strip the scheme+host back to a site-relative path first, so it still
+        // resolves to the CURRENT domain rather than a stale one.
+        $ogPath = $page['og_image'];
+        if (preg_match('#^https?://[^/]+(/.*)$#i', $ogPath, $ogm)) {
+            $ogPath = $ogm[1]; // keep only the path portion
+        }
+        $ogImageUrl = htmlspecialchars($canonicalBase . $ogPath);
         $out .= '    <meta property="og:image" content="' . $ogImageUrl . '">' . "\n";
         $out .= '    <meta property="og:image:width" content="1200">' . "\n";
         $out .= '    <meta property="og:image:height" content="630">' . "\n";
@@ -873,7 +1100,7 @@ function renderPublishDate(array $page): string
  * @param bool     $paginate   Whether to show ?page=N pagination controls.
  * @return string
  */
-function renderBlogList(string $parentSlug, ?int $limit = null, bool $paginate = false): string
+function renderBlogList(string $parentSlug, ?int $limit = null, bool $paginate = false, int $columns = 1): string
 {
     $allPages = getAllPages();
 
@@ -926,11 +1153,20 @@ function renderBlogList(string $parentSlug, ?int $limit = null, bool $paginate =
     }
 
     // Build the cards
-    $html = '<div class="cms-bloglist">';
+    // Clamp columns to a sensible range and add a modifier class the CSS uses
+    // to lay the cards out in a responsive grid.
+    $cols = max(1, min(4, $columns));
+    $html = '<div class="cms-bloglist cms-bloglist--cols-' . $cols . '">';
     foreach ($posts as $post) {
         $url   = htmlspecialchars(buildPageUrl($post, $allPages), ENT_QUOTES);
         $title = htmlspecialchars($post['title'] ?? 'Untitled');
         $image = $post['og_image'] ?? '';
+        // Make domain-independent: strip any stored scheme+host to a relative
+        // path so the image resolves on the current domain (handles legacy data
+        // saved with a full staging URL).
+        if ($image !== '' && preg_match('#^https?://[^/]+(/.*)$#i', $image, $bim)) {
+            $image = $bim[1];
+        }
         $desc  = trim($post['meta_description'] ?? '');
 
         $dateHtml = '';

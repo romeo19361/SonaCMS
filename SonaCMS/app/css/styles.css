@@ -1031,3 +1031,281 @@ body.sona-admin {
 .sona-filecard__delete:hover {
     background: #fbeceb;
 }
+
+/* Map & Facebook embed tools (editor) */
+.cms-map-tool, .cms-fb-tool { padding: 4px 0; }
+
+.cms-map-tool__label, .cms-fb-tool__label {
+    font-weight: bold;
+    color: #155f6c;
+    margin-bottom: 6px;
+    font-size: 0.9em;
+}
+
+.cms-map-tool__input, .cms-fb-tool__input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.cms-map-tool__input:focus, .cms-fb-tool__input:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-map-tool__hint, .cms-fb-tool__hint {
+    font-size: 0.8em;
+    color: #7a8a8e;
+    margin-top: 6px;
+}
+
+.cms-map-tool__preview { margin-top: 10px; }
+
+.cms-map-tool__warn, .cms-fb-tool__warn {
+    color: #a23b2e;
+    font-size: 0.85em;
+    margin-top: 8px;
+}
+
+.cms-fb-tool__ok {
+    color: #1b7a8c;
+    font-size: 0.85em;
+    margin-top: 8px;
+}
+
+/* Tile tool (editor) */
+.cms-tile-tool {
+    padding: 6px 0;
+}
+
+.cms-tile-tool__circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin: 0 auto 12px;
+}
+
+.cms-tile-tool__label {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #7a8a8e;
+    margin: 8px 0 6px;
+}
+
+.cms-tile-tool__icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.cms-tile-tool__icon-btn {
+    aspect-ratio: 1 / 1;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    color: #3d4e53;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.cms-tile-tool__icon-btn:hover {
+    border-color: #1b7a8c;
+}
+
+.cms-tile-tool__icon-btn--active {
+    background: #1b7a8c;
+    color: #fff;
+    border-color: #1b7a8c;
+}
+
+.cms-tile-tool__heading,
+.cms-tile-tool__text {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+    margin-bottom: 8px;
+}
+
+.cms-tile-tool__heading:focus,
+.cms-tile-tool__text:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-tile-tool__colors {
+    display: flex;
+    gap: 18px;
+    margin-top: 4px;
+}
+
+.cms-tile-tool__color {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82em;
+    color: #3d4e53;
+}
+
+.cms-tile-tool__color input[type="color"] {
+    width: 40px;
+    height: 28px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    padding: 2px;
+    cursor: pointer;
+    background: #fff;
+}
+
+/* Tile tool — link URL field + new-tab toggle */
+.cms-tile-tool__url {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+    margin-top: 12px;
+}
+
+.cms-tile-tool__url:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-tile-tool__newtab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82em;
+    color: #3d4e53;
+    margin-top: 8px;
+}
+
+/* Pricing card tool (editor) */
+.cms-pricing-tool {
+    padding: 6px 0;
+}
+
+.cms-pricing-tool__label {
+    font-size: 0.78em;
+    font-weight: bold;
+    color: #7a8a8e;
+    margin: 12px 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.cms-pricing-tool__input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.cms-pricing-tool__input:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-pricing-tool__price-row {
+    display: flex;
+    gap: 8px;
+}
+
+.cms-pricing-tool__cur { flex: 0 0 50px; }
+.cms-pricing-tool__amt { flex: 1; }
+.cms-pricing-tool__per { flex: 1.5; }
+
+.cms-pricing-tool__features {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cms-pricing-tool__feature {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.cms-pricing-tool__del {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    background: #fff;
+    color: #a23b2e;
+    font-size: 1.1em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cms-pricing-tool__del:hover {
+    background: #fbeceb;
+}
+
+.cms-pricing-tool__add {
+    margin-top: 8px;
+    padding: 6px 14px;
+    font-size: 0.85em;
+    font-family: inherit;
+    background: none;
+    border: 1px solid #1b7a8c;
+    color: #1b7a8c;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cms-pricing-tool__add:hover {
+    background: #eef7f8;
+}
+
+.cms-pricing-tool__newtab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82em;
+    color: #3d4e53;
+    margin-top: 8px;
+}
+
+.cms-pricing-tool__colors {
+    display: flex;
+    gap: 18px;
+    margin-top: 4px;
+}
+
+.cms-pricing-tool__color {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82em;
+    color: #3d4e53;
+}
+
+.cms-pricing-tool__color input[type="color"] {
+    width: 40px;
+    height: 28px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    padding: 2px;
+    cursor: pointer;
+    background: #fff;
+}

@@ -29,6 +29,10 @@
 html {
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
+    /* Guard against a horizontal scrollbar from full-bleed coloured sections.
+       The full-width technique uses 100vw, which can be a hair wider than the
+       visible area (100vw includes the scrollbar width); this contains it. */
+    overflow-x: hidden;
 }
 
 /* Editor.js's default font stack — matching it here is what makes the
@@ -733,12 +737,27 @@ figure a.cms-lightbox {
    These are the preset backgrounds — redefine the colours to match your brand.
    A section spans every block between a "Section Start" and "Section End". */
 .cms-section {
-    border-radius: 6px;
-    margin: 1.5em 0;
+    /* Full-bleed: break out of the 1280px content column so the colour spans
+       the whole viewport width. The negative margins pull the element out to
+       each edge; width:100vw plus the margin trick centres it regardless of
+       the container it sits in. Content inside is re-constrained by __inner. */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .cms-section__inner {
-    padding: 24px 28px;
+    /* Re-constrain the content to the site width and centre it, so text stays
+       readable while the colour behind it runs full width. Match this max-width
+       to your site container (.site-wrap). */
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 28px;
 }
 
 /* Preset colours — override these freely for your brand */
@@ -768,7 +787,7 @@ figure a.cms-lightbox {
 
 @media (max-width: 600px) {
     .cms-section__inner {
-        padding: 18px 18px;
+        padding: 28px 18px;
     }
 }
 
@@ -931,4 +950,29 @@ figure a.cms-lightbox {
 @media (max-width: 600px) {
     .cms-figure--medium { width: 70%; }
     .cms-figure--small  { width: 55%; }
+}
+
+/* Map & Facebook embeds (frontend) */
+.cms-map {
+    margin: 1.2em 0;
+    line-height: 0;
+}
+
+.cms-map iframe {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.cms-facebook {
+    margin: 1.2em 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Facebook's plugin has its own fixed width; center it and let it be responsive */
+.cms-facebook .fb-page,
+.cms-facebook .fb-page span,
+.cms-facebook .fb-page iframe {
+    max-width: 100% !important;
 }
