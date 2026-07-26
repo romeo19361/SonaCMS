@@ -38,9 +38,11 @@ class ImageTool {
             // Whether a "link" mode image opens in a new tab. Defaults to true so
             // images saved before this option existed keep their prior behaviour.
             newTab: (data && typeof data.newTab === 'boolean') ? data.newTab : true,
-            // Display size: small / medium / full. Defaults to 'full' so images
-            // saved before this option existed keep their prior full-width behaviour.
-            size: (data && ['small', 'medium', 'full'].includes(data.size)) ? data.size : 'full',
+            // Display size: small / medium / large / xlarge. Defaults to
+            // 'xlarge' (full width) so images saved before this option existed
+            // keep their prior full-width behaviour. Legacy 'full' is treated
+            // as 'xlarge' (both 100%) so older saves still render correctly.
+            size: (data && ['small', 'medium', 'large', 'xlarge', 'full'].includes(data.size)) ? data.size : 'xlarge',
             // Alignment: left / center / right. Defaults to 'left' (natural flow).
             align: (data && ['left', 'center', 'right'].includes(data.align)) ? data.align : 'left'
         };
@@ -140,7 +142,8 @@ class ImageTool {
         const sizes = [
             ['small', 'Small'],
             ['medium', 'Medium'],
-            ['full', 'Full']
+            ['large', 'Large'],
+            ['xlarge', 'Very Large']
         ];
 
         sizes.forEach(([value, label]) => {
@@ -148,7 +151,9 @@ class ImageTool {
             b.type = 'button';
             b.textContent = label;
             b.classList.add('cms-image-tool__size-btn');
-            if (this.data.size === value) b.classList.add('cms-image-tool__size-btn--active');
+            // Treat legacy 'full' as 'xlarge' so old images highlight correctly.
+            const effectiveSize = (this.data.size === 'full') ? 'xlarge' : this.data.size;
+            if (effectiveSize === value) b.classList.add('cms-image-tool__size-btn--active');
             b.addEventListener('click', () => {
                 this.data.size = value;
                 sizeRow.querySelectorAll('.cms-image-tool__size-btn').forEach((el) =>
@@ -262,8 +267,9 @@ class ImageTool {
     _applyPreviewSize() {
         if (!this.previewImg) return;
         // Mirror the frontend size presets in the editor preview so editing is
-        // WYSIWYG. Percentages are of the editor's content width.
-        const widths = { small: '25%', medium: '50%', full: '100%' };
+        // WYSIWYG. Percentages are of the editor's content width. 'full' is a
+        // legacy alias for xlarge (both 100%).
+        const widths = { small: '30%', medium: '65%', large: '85%', xlarge: '100%', full: '100%' };
         this.previewImg.style.width = widths[this.data.size] || '100%';
         this.previewImg.style.height = 'auto';
 

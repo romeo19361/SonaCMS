@@ -116,7 +116,22 @@ function navigationA(array $pages, int $depth = 0, ?string $currentPath = null, 
         $href        = buildPageUrl($page, $allPages);
         // Only treat children as a submenu at the top level — deeper levels
         // are not rendered as further flyouts (spec: two levels max).
-        $hasChildren = ($depth === 0) && !empty($page['children']);
+        //
+        // Count only children actually shown in nav. Checking merely that
+        // children *exist* means a parent whose children are all hidden
+        // (show_in_nav === false) still renders an empty but styled <ul>
+        // submenu (a hover "sliver") and a .has-children caret. Filtering
+        // first fixes both, because .has-children is then only applied when
+        // there is genuinely something to drop down.
+        $visibleChildren = [];
+        if ($depth === 0 && !empty($page['children'])) {
+            foreach ($page['children'] as $child) {
+                if (!(isset($child['show_in_nav']) && $child['show_in_nav'] === false)) {
+                    $visibleChildren[] = $child;
+                }
+            }
+        }
+        $hasChildren = !empty($visibleChildren);
         $isActive    = ($href === $currentPath);
 
         $liClasses = ['nav-a__item'];
@@ -129,7 +144,7 @@ function navigationA(array $pages, int $depth = 0, ?string $currentPath = null, 
             . '</a>' . "\n";
 
         if ($hasChildren) {
-            $html .= navigationA($page['children'], $depth + 1, $currentPath, $allPages);
+            $html .= navigationA($visibleChildren, $depth + 1, $currentPath, $allPages);
         }
 
         $html .= '</li>' . "\n";

@@ -177,6 +177,35 @@ function deletePage(string $filename): bool
 }
 
 /**
+ * Normalise a string into a clean URL slug / filename.
+ *
+ * Rules:
+ *   - lowercased
+ *   - leading/trailing whitespace trimmed
+ *   - spaces (and runs of whitespace) become single hyphens
+ *   - anything that isn't a letter, number or hyphen is stripped
+ *   - runs of hyphens collapse to one; leading/trailing hyphens removed
+ *
+ * Examples: "About Us" -> "about-us", "My Page!!" -> "my-page",
+ *           "  Café  Menu  " -> "caf-menu" (non-ASCII stripped).
+ *
+ * @param string $str  The raw input (e.g. a slug or filename field).
+ * @return string      The normalised slug (may be '' if nothing usable).
+ */
+function slugify(string $str): string
+{
+    $str = strtolower(trim($str));
+    // Convert any run of whitespace to a single hyphen
+    $str = preg_replace('/\s+/', '-', $str);
+    // Strip anything that isn't a-z, 0-9 or hyphen
+    $str = preg_replace('/[^a-z0-9-]/', '', $str);
+    // Collapse multiple hyphens into one
+    $str = preg_replace('/-+/', '-', $str);
+    // Trim stray hyphens from the ends
+    return trim($str, '-');
+}
+
+/**
  * Return a page matching a full hierarchical URL path, e.g. "blog/my-post".
  * Walks all pages, builds each one's full URL via parent chain, and compares.
  *
@@ -421,8 +450,13 @@ function renderContent(string $json): string
                     if (in_array($imgAlign, ['left', 'center', 'right'], true)) {
                         $figClasses[] = 'cms-align-' . $imgAlign;
                     }
-                    $size = $d['size'] ?? 'full';
-                    if (in_array($size, ['small', 'medium', 'full'], true)) {
+                    // Size: small / medium / large / xlarge. Legacy 'full' maps
+                    // to 'xlarge' (both full width) so older saves still render.
+                    $size = $d['size'] ?? 'xlarge';
+                    if ($size === 'full') {
+                        $size = 'xlarge';
+                    }
+                    if (in_array($size, ['small', 'medium', 'large', 'xlarge'], true)) {
                         $figClasses[] = 'cms-figure--' . $size;
                     }
                     $figClass = ' class="' . implode(' ', $figClasses) . '"';

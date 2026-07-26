@@ -77,30 +77,35 @@ resolves its own paths, so no hard-coded URLs need changing.
 
 ## 2. Set folder permissions
 
-The web server needs to be able to **write** to these folders so it can save
-pages, authors, and uploaded images:
-
-```
-assets/content/pages/
-assets/content/authors/
-assets/images/uploads/
-assets/files/uploads/
-```
-
-Set these so the web server user can write to them. On most Linux hosts:
+The web server needs to be able to **write** inside the `assets` folder so it
+can save pages, authors, and uploaded images and files. Rather than setting
+each sub-folder individually, set the whole `assets` tree in one go —
+recursively (`-R`), so every folder underneath is covered:
 
 ```bash
-chown -R www-data:www-data assets/content assets/images assets/files
-chmod -R 755 assets/content assets/images assets/files
+chown -R youruser:www-data assets
+chmod -R 775 assets
 ```
 
-Replace `www-data` with your server's PHP user if different (common
-alternatives are `nginx`, `apache`, or a per-account user on shared hosting).
-If you can't change ownership, `775` on those folders will also work, though
-tighter is always better.
+Two things matter here, in order of importance:
+
+1. **Ownership/group is what usually matters most.** The folders must be owned
+   by (or share a group with) the user your web server / PHP runs as — commonly
+   `www-data`, but sometimes `nginx`, `apache`, or a per-account user on shared
+   hosting. Most "could not save" problems are an *ownership* mismatch, not a
+   permission-number problem. Replace `youruser` with your SSH/login user and
+   `www-data` with your PHP user.
+2. **`775` lets both you and the web server write** — useful when you edit files
+   over SSH/SFTP *and* PHP writes uploads. If you'd rather, `755` also works
+   when the folder is owned outright by the PHP user.
+
+Doing it once on `assets` (rather than four times on individual folders) means
+you can't accidentally miss one — a missed folder is a common cause of "some
+things save, others don't".
 
 > **Tip:** If saving a page or author later gives a "could not save /
-> permission denied" error, this step is almost always the cause.
+> permission denied" error, this step — almost always the *ownership* part — is
+> the cause.
 
 ---
 
@@ -217,9 +222,12 @@ The page editor is block-based. Use the **+** button (or the toolbox icon) to
 add content blocks:
 
 - **Text, Heading, List, Quote** — standard formatting, with bold / italic /
-  underline / emoji and text alignment on the inline toolbar and block menu
+  underline / emoji and text alignment on the inline toolbar and block menu.
+  The inline toolbar also includes **Link to file** — select text and link it
+  to an uploaded PDF or document (opens in the browser)
 - **Image** — uploads to `assets/images/uploads/`. Each image can optionally be
-  a clickable link, or a lightbox (click to enlarge on the frontend)
+  a clickable link, or a lightbox (click to enlarge on the frontend). Sizes:
+  Small, Medium, Large, Very Large
 - **Gallery** — multiple images shown as a responsive grid; clicking one opens a
   lightbox with next/previous navigation through the set
 - **Video** — paste a YouTube or Vimeo link

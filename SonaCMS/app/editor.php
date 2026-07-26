@@ -54,21 +54,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $error = "Security check failed. Please try again.";
     } else {
-        // Lowercase the filename (the on-disk identifier and URL parent ref).
-        // original_filename is lowercased the same way so rename-detection still
+        // Normalise the filename (on-disk identifier and URL parent ref) into a
+        // clean slug: lowercase, spaces->hyphens, non-alphanumerics stripped.
+        // original_filename is normalised the same way so rename-detection still
         // compares like-for-like.
-        $filename = strtolower(trim($_POST['filename'] ?? ''));
-        $originalFilename = strtolower(trim($_POST['original_filename'] ?? ''));
+        $filename = slugify($_POST['filename'] ?? '');
+        $originalFilename = slugify($_POST['original_filename'] ?? '');
 
         $page['nav_label'] = trim($_POST['nav_label'] ?? '');
         $page['show_in_nav'] = isset($_POST['show_in_nav']);
         $page['page_order'] = max(0, (int)($_POST['page_order'] ?? 99));
         $page['title'] = trim($_POST['title'] ?? '');
-        // Force slug to lowercase — URLs are case-sensitive on most (Linux)
-        // servers, so storing a consistent lowercase slug avoids /About vs
-        // /about resolving to different pages (or 404s on the "wrong" case).
-        $page['slug'] = strtolower(trim($_POST['slug'] ?? ''));
-        $page['page_parent'] = strtolower(trim($_POST['page_parent'] ?? ''));
+        // Normalise the slug the same way — URLs are case-sensitive on most
+        // (Linux) servers, so a consistent lowercase, hyphenated slug avoids
+        // /About vs /about resolving differently (or 404s on the "wrong" case).
+        $page['slug'] = slugify($_POST['slug'] ?? '');
+        $page['page_parent'] = slugify($_POST['page_parent'] ?? '');
         $page['content'] = $_POST['content'] ?? '';
         $page['meta_description'] = trim($_POST['meta_description'] ?? '');
         $page['meta_keywords'] = trim($_POST['meta_keywords'] ?? '');
@@ -82,11 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page['filename'] = $filename;
 
         if ($filename === '') {
-            $error = "Filename is required.";
-        } elseif (!preg_match('/^[a-zA-Z0-9_-]+$/', $filename)) {
-            $error = "Filename can only contain letters, numbers, hyphens and underscores.";
+            // Empty either because nothing was entered, or because everything
+            // the user typed was stripped by slugify (e.g. "!!!" or non-ASCII).
+            $rawFilename = trim($_POST['filename'] ?? '');
+            $error = ($rawFilename === '')
+                ? "Filename is required."
+                : "Filename must contain at least one letter or number.";
         } elseif ($page['slug'] === '') {
-            $error = "Slug is required.";
+            $rawSlug = trim($_POST['slug'] ?? '');
+            $error = ($rawSlug === '')
+                ? "Slug is required."
+                : "Slug must contain at least one letter or number.";
         } elseif ($page['page_parent'] === $filename) {
             $error = "A page cannot be its own parent.";
         } else {
@@ -259,6 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../vendor/facebook-tool.js"></script>
 <script src="../vendor/tile-tool.js"></script>
 <script src="../vendor/pricing-tool.js"></script>
+<script src="../vendor/filelink-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -326,6 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         facebook: { class: FacebookTool },
         tile: { class: TileTool },
         pricing: { class: PricingCardTool },
+        filelink: { class: FileLinkTool },
         video: VideoEmbedTool,
         button: ButtonTool,
         form: FormTool,
@@ -353,6 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             facebook: { class: FacebookTool },
             tile: { class: TileTool },
             pricing: { class: PricingCardTool },
+            filelink: { class: FileLinkTool },
             columns: {
                 class: editorjsColumns,
                 config: {

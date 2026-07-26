@@ -4,6 +4,43 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [1.9] — 26 July 2026
+
+### Added
+
+**Link text to a file (inline tool)**
+A new inline toolbar button lets you select text in a paragraph and link it to
+a PDF (or other document) — either uploading a new file or pasting a URL. The
+link opens the file in the browser (it doesn't force a download), which
+complements the Download block's "save the file" behaviour. Ideal for
+"see our [scorecard]" style links.
+
+**Four image sizes**
+The image block's size options are now Small, Medium, Large, and Very Large
+(replacing the previous three), giving finer control over how prominently an
+image sits in the content. Existing images are unaffected.
+
+### Fixed
+
+- **Navigation:** a parent page whose children are all hidden from the menu no
+  longer renders an empty dropdown (previously showed as a thin sliver on
+  hover, with a stray caret). The menu now counts only visible children.
+- **Slugs & filenames:** page slugs and filenames are now cleaned automatically
+  on save — lowercased, spaces converted to hyphens, and other characters
+  stripped — so "About Us" becomes "about-us" without an error. This keeps URLs
+  consistent and avoids case-sensitivity issues on Linux servers.
+
+### Upgrade notes
+
+Upgrade `SonaCMS/app/` and `SonaCMS/vendor/` together as a pair (new inline tool
+`filelink-tool.js` is in `vendor/`). Also replace your frontend `css/styles.css`
+and the admin `SonaCMS/app/css/styles.css`. If you've customised `inc/nav.php`,
+apply the navigation fix to your copy rather than overwriting it. Your
+`config.php` and customisations in `/inc/`, `/css/`, `/forms/` are never touched
+by an upgrade.
+
+---
+
 ## [1.8] — 24 July 2026
 
 ### Added

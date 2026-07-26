@@ -1309,3 +1309,66 @@ body.sona-admin {
     cursor: pointer;
     background: #fff;
 }
+
+/* File-link inline tool — the upload/URL panel that appears on selection */
+.cms-filelink-panel {
+    background: #fff;
+    border: 1px solid #cfd8da;
+    border-radius: 6px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16);
+    padding: 12px;
+    font-family: inherit;
+}
+
+.cms-filelink-panel__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cms-filelink-panel__upload {
+    padding: 7px 14px;
+    border: 1px solid #1b7a8c;
+    background: #1b7a8c;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.cms-filelink-panel__upload:hover {
+    background: #156171;
+}
+
+.cms-filelink-panel__or {
+    font-size: 0.8em;
+    color: #7a8a8e;
+}
+
+.cms-filelink-panel__url {
+    padding: 7px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: inherit;
+    min-width: 240px;
+}
+
+.cms-filelink-panel__url:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-filelink-panel__status {
+    font-size: 0.8em;
+    color: #6a7a7f;
+    margin-top: 8px;
+    min-height: 1em;
+}
+
+/* Active state on the inline toolbar button when selection is our link */
+.ce-inline-tool--active {
+    color: #1b7a8c;
+}

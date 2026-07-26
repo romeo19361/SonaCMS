@@ -72,7 +72,7 @@ p {
 }
 
 .site-main {
-    padding: 40px 0 80px;
+    padding: 0px 0 80px;
 }
 
 .site-footer {
@@ -747,8 +747,8 @@ figure a.cms-lightbox {
     margin-left: -50vw;
     margin-right: -50vw;
     width: 100vw;
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
+    margin-top: 0em;
+    margin-bottom: 0em;
 }
 
 .cms-section__inner {
@@ -796,6 +796,25 @@ figure a.cms-lightbox {
     display: grid;
     gap: 20px;
     margin: 1.5em 0;
+    grid-template-columns: 1fr;
+}
+
+/* Multi-column grids. Cards become VERTICAL (image on top, text below) — the
+   standard blog-grid look, which reads far better than horizontal cards
+   squeezed side by side. Columns collapse gracefully on smaller screens. */
+.cms-bloglist--cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cms-bloglist--cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cms-bloglist--cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 900px) {
+    .cms-bloglist--cols-3,
+    .cms-bloglist--cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .cms-bloglist--cols-2,
+    .cms-bloglist--cols-3,
+    .cms-bloglist--cols-4 { grid-template-columns: 1fr; }
 }
 
 .cms-bloglist__card {
@@ -825,6 +844,24 @@ figure a.cms-lightbox {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+/* In multi-column grids, cards stack vertically: image on top (fixed height),
+   text below. Applies whenever the list is 2+ columns. */
+.cms-bloglist--cols-2 .cms-bloglist__card,
+.cms-bloglist--cols-3 .cms-bloglist__card,
+.cms-bloglist--cols-4 .cms-bloglist__card {
+    flex-direction: column;
+    gap: 0;
+}
+
+.cms-bloglist--cols-2 .cms-bloglist__image,
+.cms-bloglist--cols-3 .cms-bloglist__image,
+.cms-bloglist--cols-4 .cms-bloglist__image {
+    flex: 0 0 auto;
+    max-width: none;
+    width: 100%;
+    height: 180px;
 }
 
 .cms-bloglist__body {
@@ -919,9 +956,11 @@ figure a.cms-lightbox {
    figure rather than the <img> avoids the percentage-basis problems that occur
    when the image is wrapped in an inline <a> (link/lightbox modes). */
 
-.cms-figure--full   { width: 100%; }
-.cms-figure--medium { width: 50%; }
-.cms-figure--small  { width: 25%; }
+.cms-figure--small  { width: 30%; }
+.cms-figure--medium { width: 65%; }
+.cms-figure--large  { width: 85%; }
+.cms-figure--xlarge { width: 100%; }
+.cms-figure--full   { width: 100%; }  /* legacy alias for xlarge */
 
 .cms-figure img {
     width: 100%;
@@ -946,10 +985,12 @@ figure a.cms-lightbox {
     margin-right: auto !important;
 }
 
-/* On narrow screens, small/medium relax so they don't become postage stamps. */
+/* On narrow screens the smaller sizes relax upward so they don't become
+   postage stamps; large/xlarge are already near-full so they stay. */
 @media (max-width: 600px) {
-    .cms-figure--medium { width: 70%; }
     .cms-figure--small  { width: 55%; }
+    .cms-figure--medium { width: 80%; }
+    .cms-figure--large  { width: 100%; }
 }
 
 /* Map & Facebook embeds (frontend) */
@@ -975,4 +1016,261 @@ figure a.cms-lightbox {
 .cms-facebook .fb-page span,
 .cms-facebook .fb-page iframe {
     max-width: 100% !important;
+}
+
+/* Feature tiles (custom TileTool). Designed to sit inside a Columns block for
+   a row of tiles; a single tile works standalone too. The card, icon circle
+   and accent bar styling are automatic; colours come from the block. */
+.cms-tile {
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    text-align: center;
+    padding: 36px 28px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.cms-tile__circle {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;              /* icon colour (SVGs use currentColor) */
+    margin-bottom: 22px;
+    flex: 0 0 auto;
+}
+
+.cms-tile__heading {
+    margin: 0 0 12px;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #1d202b;
+    line-height: 1.2;
+}
+
+.cms-tile__text {
+    margin: 0 0 28px;
+    padding: 0;
+    color: #444;
+    font-size: 1em;
+    line-height: 1.5;
+    flex: 1 1 auto;
+}
+
+.cms-tile__accent {
+    width: 100%;
+    height: 6px;
+    margin-top: auto;
+    /* pull out to the card edges (cancel the card's horizontal padding) */
+    margin-left: -28px;
+    margin-right: -28px;
+    width: calc(100% + 56px);
+}
+
+/* Linked tiles — whole card is clickable. Remove link underline/colour from
+   the tile's text, and add a hover lift to signal it's interactive. */
+a.cms-tile,
+a.cms-tile:hover,
+a.cms-tile:visited {
+    text-decoration: none;
+    color: inherit;
+    display: flex;   /* keep the same flex-column layout as a div tile */
+}
+
+a.cms-tile.cms-tile--link {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+a.cms-tile.cms-tile--link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+}
+
+/* Pricing card (custom PricingCardTool). Sits inside a Columns block, two per
+   row; stack two Columns blocks for four plans. Card, ribbon, header bar and
+   accent bar styling are automatic; colours come from the block. */
+.cms-pricing {
+    position: relative;
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+}
+
+.cms-pricing__header {
+    color: #ffffff;
+    font-size: 1.4em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 20px 24px;
+}
+
+.cms-pricing__body {
+    padding: 28px 24px 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    align-items: center;
+}
+
+/* Price — small currency superscript, large amount */
+.cms-pricing__price {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.cms-pricing__cur {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-top: 0.35em;
+    margin-right: 2px;
+    color: #1d202b;
+}
+
+.cms-pricing__amt {
+    font-size: 3.4em;
+    font-weight: 800;
+    color: #1d202b;
+}
+
+.cms-pricing__period {
+    font-size: 0.95em;
+    color: #6a7a7f;
+    margin-bottom: 22px;
+}
+
+/* Feature list — checkmark + text, divider lines between */
+.cms-pricing__features {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    /* Centre the whole list as a block within the card, but let the rows
+       inside align to a common left edge — so every checkmark lines up in a
+       vertical column (which reads as "properly aligned"), while the group as
+       a whole stays centred in the card. */
+    display: inline-block;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* The features list sits in a flex-column card body (centred via align-items
+   on .cms-pricing__body above), which centres the inline-block list. */
+
+.cms-pricing__feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 4px;
+    border-bottom: 1px solid #eef2f3;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cms-pricing__feature:last-child {
+    border-bottom: none;
+}
+
+.cms-pricing__check {
+    color: #1d202b;
+    flex: 0 0 auto;
+    line-height: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.cms-pricing__feature-text {
+    color: #333;
+    font-size: 1em;
+    line-height: 1.3;
+}
+
+/* Button */
+.cms-pricing__button,
+.cms-content a.cms-pricing__button {
+    display: inline-block;
+    margin: 0 auto 28px;
+    padding: 12px 30px;
+    background: #1BA7DE;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 0.03em;
+    transition: opacity 0.15s ease;
+}
+
+.cms-pricing__button:hover,
+.cms-content a.cms-pricing__button:hover {
+    opacity: 0.9;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Bottom accent bar */
+.cms-pricing__accent {
+    height: 6px;
+    margin-top: auto;
+}
+
+/* Diagonal corner ribbon (top-right). Rotated banner clipped to the corner. */
+.cms-pricing__ribbon {
+    position: absolute;
+    top: 18px;
+    right: -34px;
+    transform: rotate(45deg);
+    width: 140px;
+    padding: 6px 0;
+    color: #ffffff;
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cms-pricing__ribbon span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 30px;
+}
+
+/* Inline file links (from the "Link to file" inline tool). Inherits the normal
+   content-link colour/underline; a small document icon after the text signals
+   it opens a file. Remove the ::after rule if you don't want the icon. */
+.cms-content a.cms-filelink::after {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.8em;
+    margin-left: 0.3em;
+    vertical-align: -0.05em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    /* inline SVG document glyph, uses the link colour via currentColor is not
+       possible on background-image, so a neutral tint is used */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b7a8c' stroke-width='2'%3E%3Cpath d='M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z'/%3E%3Cpath d='M14 3v5h5'/%3E%3C/svg%3E");
+    opacity: 0.7;
 }
