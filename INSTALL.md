@@ -287,6 +287,28 @@ permanent and doesn't check whether a file is still used, so a warning is
 shown before you confirm. Uploads are automatically de-duplicated: uploading
 the same file twice reuses the existing copy rather than storing a duplicate.
 
+### Users, roles, and the activity log
+
+SonaCMS supports multiple people with two roles:
+
+- The **manager** is the account in your `config.php` (`admin_email` /
+  `admin_password_hash`). It's the super-user, set at install and only
+  changeable by editing `config.php` — so it can never be locked out through
+  the app. There is one manager per site.
+- **Editors** are added by the manager via the **Users** screen (name, email,
+  password). They can log in and edit pages, authors, and files, but can't
+  manage users or view the activity log. Remove an editor and their access ends
+  immediately.
+
+The manager-only **Activity** screen shows who created, updated, or deleted
+which page and when. If two people open the same page close together, the
+editor shows a gentle warning so edits don't quietly overwrite each other (it
+never blocks anyone).
+
+User accounts, the activity log, and edit markers are stored as flat files
+under `assets/content/` and are created automatically — no setup needed beyond
+that folder being writable (which it already is if pages save).
+
 ---
 
 ## 7. Verify clean URLs

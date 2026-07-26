@@ -7,6 +7,8 @@ ini_set('display_errors', 1);
 require __DIR__ . '/auth.php';   // enforces login, starts session, provides csrf_token
 require __DIR__ . '/paths.php';
 require __DIR__ . '/functions.php';
+require __DIR__ . '/activity.php';
+require __DIR__ . '/edit-markers.php';
 
 $isNew = !isset($_GET['file']) && !isset($_POST['original_filename']);
 $message = null;
@@ -34,11 +36,23 @@ $page = [
 ];
 
 // Load existing page on GET
+$editWarning = null;
 if (isset($_GET['file'])) {
     $existing = getPage($_GET['file']);
     if ($existing) {
         $page = array_merge($page, $existing);
         $isNew = false;
+
+        // Tier-2 concurrent-edit warning: if someone ELSE opened this page
+        // recently, advise (but don't block). Then record our own marker so
+        // the next person to arrive is warned about us.
+        $other = otherEditorOn($page['filename']);
+        if ($other !== null) {
+            $editWarning = htmlspecialchars($other['user'])
+                . ' opened this page ' . htmlspecialchars($other['ago'])
+                . ' and may be editing it. If you both save, the last save wins.';
+        }
+        touchEditMarker($page['filename']);
     } else {
         $error = "Page not found.";
         $isNew = true;
@@ -103,6 +117,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($originalFilename !== '' && $originalFilename !== $filename) {
                     deletePage($originalFilename);
                 }
+                // Activity log: record who saved which page, and whether it was
+                // a new page or an edit of an existing one.
+                if (function_exists('logActivity')) {
+                    $wasNew = ($originalFilename === '');
+                    logActivity(
+                        $wasNew ? 'created' : 'updated',
+                        $page['title'] !== '' ? $page['title'] : $filename,
+                        ['type' => 'page', 'slug' => $page['slug'] ?? '']
+                    );
+                }
+                // Free the page for others: clear our edit marker (and any under
+                // the old name if this was a rename).
+                if (function_exists('clearEditMarker')) {
+                    clearEditMarker($filename);
+                    if ($originalFilename !== '' && $originalFilename !== $filename) {
+                        clearEditMarker($originalFilename);
+                    }
+                }
                 header('Location: admin.php');
                 exit;
             } else {
@@ -129,6 +161,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <?php if ($error): ?>
         <p class="sona-error"><?php echo htmlspecialchars($error); ?></p>
+    <?php endif; ?>
+
+    <?php if (!empty($editWarning)): ?>
+        <p class="sona-warning">⚠️ <?php echo $editWarning; ?></p>
     <?php endif; ?>
 
     <form method="POST">

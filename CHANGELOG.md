@@ -4,6 +4,57 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.0] — 27 July 2026
+
+The big one: SonaCMS goes multi-user. Until now a site had a single shared
+login. 2.0 makes SonaCMS something you can hand to a team — with per-user
+accountability — while keeping the flat-file, no-database simplicity that's the
+whole point.
+
+### Added
+
+**Multi-user accounts**
+- The **site manager** is the account in `config.php` (your `admin_email` /
+  `admin_password_hash`). It's the super-user and a "break-glass" account — it
+  always works and can't be locked out or deleted through the app. One manager
+  per site.
+- **Editors** are added through a new manager-only **Users** screen (name,
+  email, password). They can log in and edit pages, authors and files, but
+  can't manage users or view the activity log. Passwords are hashed
+  (`password_hash`), stored in `assets/content/users.json`.
+- Remove an editor and their access is gone immediately — no shared password to
+  change for everyone else.
+
+**Activity log**
+A manager-only **Activity** screen records who created, updated, or deleted
+which page, and when. Flat-file (`assets/content/activity.log`), newest-first.
+
+**Concurrent-edit warning**
+If you open a page a colleague opened in the last few minutes, the editor shows
+a gentle advisory ("⚠️ Jane opened this page 3 minutes ago…"). It never blocks
+you — it just helps avoid two people unknowingly overwriting each other.
+
+### Changed
+
+- The admin login is unchanged for existing sites: your `config.php` manager
+  account keeps working exactly as before, now as the "manager" role.
+- `paths.php` is now self-guarding (safe to include more than once per request).
+
+### Upgrade notes
+
+This is a drop-in upgrade — **no config changes required**. Your existing
+`admin_email` / `admin_password_hash` becomes the manager account automatically.
+
+Replace `SonaCMS/app/` and `SonaCMS/vendor/` together, the SonaCMS `index.php`
+(login), and both stylesheets (`css/styles.css` and `SonaCMS/app/css/styles.css`).
+New core files this release: `users.php`, `activity.php`, `edit-markers.php`,
+`users-admin.php`, `activity-log.php` (all in `app/`). The `users.json`,
+`activity.log`, and `edit-markers/` are created automatically under
+`assets/content/` on first use — make sure that folder is writable (it already
+is if pages save).
+
+---
+
 ## [1.9] — 26 July 2026
 
 ### Added

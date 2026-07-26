@@ -7,6 +7,7 @@ ini_set('display_errors', 1);
 require __DIR__ . '/auth.php';   // enforces login, starts session, provides csrf_token
 require __DIR__ . '/paths.php';
 require __DIR__ . '/functions.php';
+require __DIR__ . '/activity.php';
 
 $message = null;
 
@@ -18,6 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } else {
         $filename = $_POST['filename'] ?? '';
         if ($filename !== '' && deletePage($filename)) {
+            if (function_exists('logActivity')) {
+                logActivity('deleted', $filename, ['type' => 'page']);
+            }
             $message = "Page deleted.";
         } else {
             $message = "Could not delete that page.";
@@ -80,6 +84,11 @@ function renderPageRows(array $pages, int $depth = 0): void
             <a class="sona-btn" href="editor.php">+ New Page</a>
             <a href="authors.php">Authors</a>
             <a href="files.php">Files</a>
+            <?php if (isManager()): ?>
+                <a href="users-admin.php">Users</a>
+                <a href="activity-log.php">Activity</a>
+            <?php endif; ?>
+            <span class="sona-whoami"><?php echo htmlspecialchars(currentUserName()); ?><?php echo isManager() ? ' (manager)' : ' (editor)'; ?></span>
             <a href="logout.php">Log out</a>
         </div>
     </div>

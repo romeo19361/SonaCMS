@@ -1372,3 +1372,102 @@ body.sona-admin {
 .ce-inline-tool--active {
     color: #1b7a8c;
 }
+
+/* Multi-user (2.0): logged-in identity label + users screen bits */
+.sona-whoami {
+    font-size: 0.85em;
+    color: #7a8a8e;
+    margin: 0 4px;
+    align-self: center;
+}
+
+.sona-help {
+    font-size: 0.9em;
+    color: #5a6a6f;
+    background: #f4f8f9;
+    border: 1px solid #e0e8ea;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 12px 0 20px;
+}
+
+.sona-form-inline {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sona-form-inline .sona-input {
+    flex: 1;
+    min-width: 160px;
+}
+
+.sona-inline-reset {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    margin-right: 6px;
+}
+
+/* The Users screen actions cell holds a reset form (password + button) AND a
+   remove button — more than the default nowrap actions cell allows. Let it
+   wrap so it never overflows the 1280px container. Scoped so the simpler
+   Pages/Authors action cells keep their tidy single-line layout. */
+.sona-users-actions {
+    white-space: normal !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.sona-users-actions form {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+
+.sona-input--sm {
+    padding: 6px 8px;
+    font-size: 0.85em;
+    min-width: 120px;
+}
+
+/* Activity log — action tags and role tag */
+.sona-act {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.sona-act--new { background: #e2f4e6; color: #1d7a3a; }
+.sona-act--upd { background: #e4eef7; color: #1b5f8c; }
+.sona-act--del { background: #fbe9e7; color: #a23b2e; }
+
+.sona-role-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    background: #eef2f3;
+    color: #7a8a8e;
+    border-radius: 3px;
+    font-size: 0.75em;
+    text-transform: capitalize;
+}
+
+/* Concurrent-edit advisory warning (Tier 2) — amber, non-alarming */
+.sona-warning {
+    background: #fff7e6;
+    border: 1px solid #f0d68c;
+    color: #8a6d1a;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 12px 0 20px;
+    font-size: 0.95em;
+    line-height: 1.5;
+}

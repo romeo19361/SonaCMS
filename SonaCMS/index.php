@@ -8,6 +8,11 @@ ini_set('display_errors', 1);
 // Absolute pathing for configuration
 $config = require __DIR__ . '/config.php';
 
+// User helpers (two-tier login: config manager + JSON editors). users.php
+// requires paths.php itself (via require_once), so we don't include it
+// separately here — doing so would redeclare its functions.
+require __DIR__ . '/app/users.php';
+
 session_start();
 
 // If already logged in, redirect to admin
@@ -22,11 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
 
-    // Verify credentials
-    if ($email === $config['admin_email'] && password_verify($password, $config['admin_password_hash'])) {
+    // Verify against BOTH tiers: config manager first, then JSON editors.
+    $identity = verifyLogin((string) $email, (string) $password);
+
+    if ($identity !== null) {
         session_regenerate_id(true);
         $_SESSION['logged_in'] = true;
-        $_SESSION['user_email'] = $email;
+        $_SESSION['user_email'] = $identity['email'];
+        $_SESSION['user_name']  = $identity['name'];
+        $_SESSION['role']       = $identity['role'];   // 'manager' | 'editor'
         header('Location: app/admin.php');
         exit;
     } else {

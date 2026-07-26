@@ -98,6 +98,5 @@ if (!$page) {
     <button class="cms-lightbox-overlay__nav cms-lightbox-overlay__next" aria-label="Next">&#8250;</button>
 </div>
 <script src="/js/lightbox.js"></script>
-
 </body>
 </html>
