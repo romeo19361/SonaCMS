@@ -107,6 +107,32 @@ things save, others don't".
 > permission denied" error, this step — almost always the *ownership* part — is
 > the cause.
 
+### Protect the data folder (important)
+
+`assets/content/` holds SonaCMS's data — page/author JSON, the editor accounts
+file (`users.json`, which contains password hashes), and the activity log.
+These are read and written by PHP only; a browser must **never** be able to
+request them directly.
+
+SonaCMS ships a `.htaccess` inside `assets/content/` that denies all web access
+to that folder (Apache). **Confirm it's there after uploading.** To verify,
+visit `https://your-site.com/assets/content/users.json` in a browser — you
+should get a **403 Forbidden**, not the file. (Images and downloads live in
+`assets/images` and `assets/files`, which stay public — this only locks the
+data folder.)
+
+**On nginx**, `.htaccess` is ignored. Add this to your server block instead:
+
+```nginx
+location ^~ /assets/content/ {
+    deny all;
+    return 403;
+}
+```
+
+Whatever your server, the check is the same: requesting a file under
+`/assets/content/` from a browser must return 403, not the file's contents.
+
 ---
 
 ## 3. Configure the CMS
@@ -248,6 +274,9 @@ add content blocks:
   per row in a Columns block (stack two rows for four plans)
 - **Google Map** — embed a map (Share → Embed a map → Copy HTML in Google Maps)
 - **Facebook Feed** — embed a Facebook page feed by pasting the page URL
+- **Embed code** (manager only) — paste a third-party widget snippet (e.g. a
+  Booking.com property widget). Restricted to the manager; editors can't add or
+  change it.
 
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended

@@ -53,7 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="sona-admin">
 <div class="sona-wrap sona-wrap--narrow">
 
-    <h2 class="sona-login-heading">Admin Access</h2>
+    <div class="sona-login-brand">
+        <img src="app/images/SonaCMS.svg" alt="SonaCMS" class="sona-login-logo">
+    </div>
 
     <?php if ($error): ?>
         <p class="sona-error"><?php echo htmlspecialchars($error); ?></p>

@@ -4,6 +4,52 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.1] — 28 July 2026
+
+### Added
+
+**Embed code block (manager only)**
+A new block lets the site manager paste a third-party widget snippet — a
+Booking.com property widget, a reservation or signup widget, and so on — which
+then renders on the page. Because it outputs raw code, it's restricted to the
+manager: editors can't add or change it, enforced on the server (not just
+hidden in the interface). This is the general way to embed any provider without
+a bespoke block for each.
+
+**Branded admin**
+The SonaCMS logo now appears on the login screen and top-left of every admin
+screen (and links back to the dashboard).
+
+**Site timezone**
+A new `timezone` config value sets the timezone used for all dates (activity
+log, publish dates, etc.), so times show in the site's local zone rather than
+the server's. Defaults to `UTC` if not set.
+
+### Security
+
+- **The data folder is now locked down.** SonaCMS ships a `.htaccess` in
+  `assets/content/` denying all direct web access, so the accounts file
+  (`users.json`, which holds password hashes), the activity log, and page data
+  can't be requested from a browser. After upgrading, confirm a request to
+  `/assets/content/users.json` returns 403. On nginx, add the equivalent
+  location block (see INSTALL). Images and downloads in `assets/images` and
+  `assets/files` stay public.
+
+### Changed
+
+- `functions.php` is now self-guarding (like `paths.php`), so both are safe to
+  include more than once per request.
+
+### Upgrade notes
+
+Replace `SonaCMS/app/` and `SonaCMS/vendor/` together, plus the SonaCMS
+`index.php` (login) and both stylesheets. Add the new `.htaccess` to
+`assets/content/`, and add `'timezone' => 'Your/Zone'` to your `config.php`
+(e.g. `Australia/Sydney`). The logo lives at `SonaCMS/app/images/SonaCMS.svg` —
+include it in your deploy.
+
+---
+
 ## [2.0] — 27 July 2026
 
 The big one: SonaCMS goes multi-user. Until now a site had a single shared

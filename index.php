@@ -50,7 +50,7 @@ if (!$page) {
 <header class="site-header">
     <div class="site-wrap site-header__inner">
         <a class="site-logo" href="/">
-            <img src="/images/SonaCMS_logo.png" alt="SonaCMS">
+            <img src="/images/SonaCMS.svg" alt="SonaCMS">
         </a>
         <?php echo navigationA(getPageTree(), 0, $currentPath); ?>
     </div>
@@ -89,7 +89,6 @@ if (!$page) {
 
 <footer class="site-footer">
     <div class="site-wrap">
-        <?php if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/index.php'): ?>
         <?php require __DIR__ . '/inc/footer.php'; ?>
     </div>
 </footer>

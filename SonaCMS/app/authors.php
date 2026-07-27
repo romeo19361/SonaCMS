@@ -85,14 +85,18 @@ $authors = getAllAuthors();
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <title>Authors | CMS</title>
+    <title>Authors | SonaCMS</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
 </head>
 <body class="sona-admin">
 <div class="sona-wrap">
 
     <div class="sona-top-bar">
-        <h2><?php echo $isEditing ? 'Edit Author' : 'Authors'; ?></h2>
+        <div class="sona-top-bar__brand">
+            <a href="admin.php" class="sona-brand-link"><img src="images/SonaCMS.svg" alt="SonaCMS" class="sona-brand-logo"></a>
+            <h2><?php echo $isEditing ? 'Edit Author' : 'Authors'; ?></h2>
+        </div>
         <div>
             <a href="admin.php">&larr; Back to pages</a>
             <a href="logout.php">Log out</a>

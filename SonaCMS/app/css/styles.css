@@ -50,6 +50,19 @@ body.sona-admin {
     margin-top: 0;
 }
 
+/* Login screen branding — SonaCMS logo in place of a text heading */
+.sona-login-brand {
+    text-align: center;
+    margin: 8px 0 28px;
+}
+
+.sona-login-logo {
+    display: inline-block;
+    width: 200px;
+    max-width: 80%;
+    height: auto;
+}
+
 /* Top bar (heading + nav links) used on admin.php and editor.php */
 .sona-top-bar {
     display: flex;
@@ -1470,4 +1483,87 @@ body.sona-admin {
     margin: 12px 0 20px;
     font-size: 0.95em;
     line-height: 1.5;
+}
+
+/* Embed code tool (manager-only raw HTML block) */
+.cms-embed-tool {
+    padding: 6px 0;
+}
+
+.cms-embed-tool__label {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #7a8a8e;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.cms-embed-tool__warn {
+    background: #fff7e6;
+    border: 1px solid #f0d68c;
+    color: #8a6d1a;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.cms-embed-tool__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    font-family: Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.cms-embed-tool__input:focus {
+    outline: none;
+    border-color: #1b7a8c;
+}
+
+.cms-embed-tool__readonly {
+    background: #f4f6f7;
+    border: 1px dashed #cfd8da;
+    color: #6a7a7f;
+    padding: 12px 14px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* Admin brand block — logo + page title, top-left of the top bar */
+.sona-top-bar__brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sona-brand-link {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.sona-brand-logo {
+    height: 68px;
+    width: auto;
+    display: block;
+}
+
+/* The page title sits next to the logo; keep it from adding extra top margin */
+.sona-top-bar__brand h2 {
+    margin: 0;
+    font-size: 1.25em;
+    color: #3d4e53;
+}
+
+@media (max-width: 600px) {
+    .sona-brand-logo { height: 56px; }
+    .sona-top-bar__brand { gap: 10px; }
+    .sona-top-bar__brand h2 { font-size: 1.1em; }
 }

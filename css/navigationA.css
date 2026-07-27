@@ -219,8 +219,9 @@
 
 .site-logo img {
     display: block;
-    max-height: 48px;
+    max-height: 200px;
     width: auto;
+    width: 120px;
 }
 
 /* Mobile: logo centred above the nav */
@@ -233,6 +234,7 @@
 
     .site-logo {
         margin: 0 auto;
+        width: 110px;
     }
 
     /* Hamburger sits top-right while the logo is centred */

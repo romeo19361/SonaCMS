@@ -1274,3 +1274,8 @@ a.cms-tile.cms-tile--link:hover {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b7a8c' stroke-width='2'%3E%3Cpath d='M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z'/%3E%3Cpath d='M14 3v5h5'/%3E%3C/svg%3E");
     opacity: 0.7;
 }
+
+/* Manager-authored embed widgets (Booking.com etc.) */
+.cms-embed {
+    margin: 1.2em 0;
+}

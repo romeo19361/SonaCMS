@@ -85,6 +85,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page['slug'] = slugify($_POST['slug'] ?? '');
         $page['page_parent'] = slugify($_POST['page_parent'] ?? '');
         $page['content'] = $_POST['content'] ?? '';
+
+        // ── SECURITY: manager-only embed blocks ──────────────────────────────
+        // The 'embed' block outputs raw HTML/JS and is restricted to the manager.
+        // If the current user is NOT the manager, they must not be able to add,
+        // change, or remove embed blocks — enforced HERE on the server, not just
+        // by hiding the tool in the UI. We take the embed blocks from the
+        // on-disk version of the page (the manager's saved state) and splice
+        // them back over whatever the editor submitted, so their embeds are
+        // preserved exactly and any editor-introduced embed is discarded.
+        if (!isManager()) {
+            $submitted = json_decode($page['content'], true);
+            if (is_array($submitted) && isset($submitted['blocks']) && is_array($submitted['blocks'])) {
+                // Drop any embed blocks the editor may have introduced/edited.
+                $submitted['blocks'] = array_values(array_filter(
+                    $submitted['blocks'],
+                    static function ($b) {
+                        return !(is_array($b) && ($b['type'] ?? '') === 'embed');
+                    }
+                ));
+                // Re-insert the manager's original embed blocks from disk (if the
+                // page already existed), preserving their position by index.
+                if ($originalFilename !== '') {
+                    $onDisk = getPage($originalFilename);
+                    $diskContent = is_array($onDisk) ? json_decode($onDisk['content'] ?? '', true) : null;
+                    if (is_array($diskContent) && !empty($diskContent['blocks']) && is_array($diskContent['blocks'])) {
+                        foreach ($diskContent['blocks'] as $i => $b) {
+                            if (is_array($b) && ($b['type'] ?? '') === 'embed') {
+                                // Insert at the same index it held on disk (clamped).
+                                $pos = min($i, count($submitted['blocks']));
+                                array_splice($submitted['blocks'], $pos, 0, [$b]);
+                            }
+                        }
+                    }
+                }
+                $page['content'] = json_encode($submitted, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────────
         $page['meta_description'] = trim($_POST['meta_description'] ?? '');
         $page['meta_keywords'] = trim($_POST['meta_keywords'] ?? '');
         $page['og_image'] = trim($_POST['og_image'] ?? '');
@@ -148,14 +186,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $isNew ? 'New Page' : 'Edit Page'; ?> | CMS</title>
+    <title><?php echo $isNew ? 'New Page' : 'Edit Page'; ?> | SonaCMS</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
 </head>
 <body class="sona-admin">
 <div class="sona-wrap">
 
     <div class="sona-top-bar">
-        <h2><?php echo $isNew ? 'New Page' : 'Edit Page'; ?></h2>
+        <div class="sona-top-bar__brand">
+            <a href="admin.php" class="sona-brand-link"><img src="images/SonaCMS.svg" alt="SonaCMS" class="sona-brand-logo"></a>
+            <h2><?php echo $isNew ? 'New Page' : 'Edit Page'; ?></h2>
+        </div>
         <a href="admin.php">&larr; Back to list</a>
     </div>
 
@@ -303,6 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../vendor/tile-tool.js"></script>
 <script src="../vendor/pricing-tool.js"></script>
 <script src="../vendor/filelink-tool.js"></script>
+<script src="../vendor/embed-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -327,6 +370,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 <script>
+    // Whether the current user is the site MANAGER. Drives manager-only tools
+    // (the Embed code block). Editors get false, so the block isn't registered
+    // for them — and the server independently rejects embed changes from them.
+    const IS_MANAGER = <?php echo isManager() ? 'true' : 'false'; ?>;
+
     // Existing content from PHP. Older pages may have plain text/HTML saved
     // as a string (from before Editor.js was added) rather than block JSON —
     // detect and convert that case so nothing breaks on existing content.
@@ -379,6 +427,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         emoji: { class: EmojiInlineTool },
     };
 
+    // Manager-only: the raw Embed code block. Registered ONLY when the current
+    // user is the manager, so editors never see it in the toolbar. (The server
+    // also rejects embed changes from editors — UI hiding isn't the security.)
+    if (IS_MANAGER) {
+        column_tools.embed = { class: EmbedCodeTool, config: { canEdit: true } };
+    }
+
     const editor = new EditorJS({
         holder: 'editorjs',
         data: initialData,
@@ -411,7 +466,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             form: FormTool,
             author: AuthorTool,
             code: CodeTool,
-            emoji: { class: EmojiInlineTool }
+            emoji: { class: EmojiInlineTool },
+            // Registered for everyone so an editor can RENDER a page that already
+            // contains a manager's embed — but canEdit is false for editors, so
+            // they get a read-only view and cannot alter it. The server also
+            // rejects any embed change from a non-manager on save.
+            embed: { class: EmbedCodeTool, config: { canEdit: IS_MANAGER } }
         },
         placeholder: 'Start writing your page content here...'
     });

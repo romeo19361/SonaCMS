@@ -72,14 +72,18 @@ function renderPageRows(array $pages, int $depth = 0): void
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | CMS</title>
+    <title>Admin | SonaCMS</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
 </head>
 <body class="sona-admin">
 <div class="sona-wrap sona-wrap--wide">
 
     <div class="sona-top-bar">
-        <h2>Pages</h2>
+        <div class="sona-top-bar__brand">
+            <a href="admin.php" class="sona-brand-link"><img src="images/SonaCMS.svg" alt="SonaCMS" class="sona-brand-logo"></a>
+            <h2>Pages</h2>
+        </div>
         <div>
             <a class="sona-btn" href="editor.php">+ New Page</a>
             <a href="authors.php">Authors</a>

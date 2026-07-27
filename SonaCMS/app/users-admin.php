@@ -65,14 +65,18 @@ $csrf = htmlspecialchars($_SESSION['csrf_token']);
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <title>Users | CMS</title>
+    <title>Users | SonaCMS</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/favicon.ico" sizes="any">
 </head>
 <body class="sona-admin">
 <div class="sona-wrap sona-wrap--wide">
 
     <div class="sona-top-bar">
-        <h2>Users</h2>
+        <div class="sona-top-bar__brand">
+            <a href="admin.php" class="sona-brand-link"><img src="images/SonaCMS.svg" alt="SonaCMS" class="sona-brand-logo"></a>
+            <h2>Users</h2>
+        </div>
         <div>
             <a href="admin.php">Pages</a>
             <a href="authors.php">Authors</a>

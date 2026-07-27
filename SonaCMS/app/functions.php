@@ -727,6 +727,17 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
                     $html .= '</div>'; // pricing
                     break;
 
+                case 'embed':
+                    // Raw third-party embed code. This block can ONLY be created or
+                    // changed by the manager (enforced in editor.php on save), who is
+                    // the trusted site owner/host — so the HTML is output as-is, which
+                    // is the whole purpose (widgets need their own markup/script).
+                    $embedHtml = $d['html'] ?? '';
+                    if (is_string($embedHtml) && $embedHtml !== '') {
+                        $html .= '<div class="cms-embed">' . $embedHtml . '</div>';
+                    }
+                    break;
+
                 case 'button':
                     $text  = htmlspecialchars($d['text'] ?? '');
                     $url   = htmlspecialchars($d['url'] ?? '#');
