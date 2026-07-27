@@ -13,6 +13,12 @@ require __DIR__ . '/inc/nav.php';
 
 $config = require __DIR__ . '/SonaCMS/config.php';
 
+// Apply the site's configured timezone so frontend dates (publish dates, blog
+// listings) use the site's local time, not the server default.
+if (function_exists('applyTimezone')) {
+    applyTimezone($config);
+}
+
 // Determine the current slug from the URL path.
 // A request to the domain root (/) maps to "home".
 $urlPath = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -83,6 +89,7 @@ if (!$page) {
 
 <footer class="site-footer">
     <div class="site-wrap">
+        <?php if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/index.php'): ?>
         <?php require __DIR__ . '/inc/footer.php'; ?>
     </div>
 </footer>
@@ -98,5 +105,6 @@ if (!$page) {
     <button class="cms-lightbox-overlay__nav cms-lightbox-overlay__next" aria-label="Next">&#8250;</button>
 </div>
 <script src="/js/lightbox.js"></script>
+
 </body>
 </html>

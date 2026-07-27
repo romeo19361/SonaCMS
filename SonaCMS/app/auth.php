@@ -8,6 +8,17 @@ session_start();
 require_once __DIR__ . '/paths.php';
 require_once __DIR__ . '/users.php';
 
+// Apply the site's configured timezone so all admin-side dates (activity log,
+// edit markers, publish dates) use local time, not the server default. Done
+// inline (not via functions.php) so auth.php stays lightweight and doesn't
+// double-include functions.php, which admin pages require themselves.
+$__cfg = sonaConfig();
+$__tz  = $__cfg['timezone'] ?? 'UTC';
+if (!is_string($__tz) || !in_array($__tz, timezone_identifiers_list(), true)) {
+    $__tz = 'UTC';
+}
+date_default_timezone_set($__tz);
+
 // Generate a CSRF token if it doesn't exist
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
