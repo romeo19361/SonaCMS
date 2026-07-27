@@ -1,0 +1,4 @@
+This folder holds files uploaded through the SonaCMS editor.
+It needs to be writable by the web server (see INSTALL.md).
+This placeholder file only exists so the (otherwise empty) folder is
+included in the download — you can safely leave it or delete it.
