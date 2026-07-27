@@ -1,0 +1,33 @@
+# /assets/content/.htaccess
+#
+# SECURITY: deny ALL direct web access to this directory.
+#
+# This folder holds SonaCMS data that is read/written by PHP only and must
+# NEVER be served to a browser:
+#   - users.json      (editor accounts + password hashes)
+#   - activity.log    (who edited what, and when)
+#   - edit-markers/   (transient concurrent-edit markers)
+#   - pages/, authors/ (raw page/author JSON)
+#
+# Without this, a request like /assets/content/users.json would hand the
+# password-hash file straight to anyone who asked. PHP reads these files from
+# the server's filesystem, so blocking HTTP access here changes nothing about
+# how the CMS works — it only stops the outside world reading them directly.
+#
+# NOTE: images and downloadable documents live in /assets/images and
+# /assets/files, which are SIBLINGS of this folder and remain fully public.
+# This file only affects /assets/content.
+#
+# Apache only. On nginx, add an equivalent location block (see INSTALL.md).
+
+# Apache 2.4+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# Apache 2.2 and earlier (fallback)
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
+</IfModule>
