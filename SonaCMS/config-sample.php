@@ -25,6 +25,14 @@ return [
     // always attribute your content to the correct domain.
     'site_url'            => 'https://www.example.com',
 
+    // ── Timezone ─────────────────────────────────────────────────────────
+    // Your site's local timezone, used for all dates (activity log, publish
+    // dates, etc.). Use a PHP timezone identifier — e.g. 'Australia/Sydney',
+    // 'Europe/London', 'America/New_York'. Full list:
+    // https://www.php.net/manual/en/timezones.php
+    // Defaults to 'UTC' if omitted or invalid.
+    'timezone'            => 'Australia/Sydney',
+
     // ── Admin login ──────────────────────────────────────────────────────
     // The username and password you'll use to log in at /SonaCMS/.
     'admin_username'      => 'admin',
