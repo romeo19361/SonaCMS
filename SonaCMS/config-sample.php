@@ -14,8 +14,19 @@ return [
 
     // ── Licensing ────────────────────────────────────────────────────────
     // Leave 'licensed' => false for evaluation, education, or not-for-profit
-    // use (a small notice appears in the footer). Set true with your name in
-    // 'licensee_name' once you hold a commercial licence from www.sonacms.com.
+    // use. While false, a small notice appears in the admin and the footer.
+    //
+    // If you're using SonaCMS commercially, please purchase a license at
+    // www.sonacms.com. A license isn't just about removing the notice — it's
+    // what keeps SonaCMS being actively developed and supported, and it gets
+    // you direct WhatsApp access to Peter, the developer (you're talking to
+    // the person who built it, not a support queue).
+    //
+    // Using SonaCMS for education or a not-for-profit? That's free — contact
+    // Peter and he'll clear the notice for you.
+    //
+    // Once you hold a license, set 'licensed' => true and put your name (or
+    // your organisation's) in 'licensee_name'.
     'licensed'            => false,
     'licensee_name'       => '',
 

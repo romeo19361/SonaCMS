@@ -16,7 +16,7 @@ if (!isset($config) || !is_array($config)) {
 
 // Frontend licensing notice only appears on UNLICENSED installs.
 // Licensed sites get a completely clean frontend footer — removing the
-// public notice is part of what a commercial licence buys. The licensing
+// public notice is part of what a commercial license buys. The licensing
 // record still shows in the admin footer either way.
 if (empty($config['licensed'])):
     ?>

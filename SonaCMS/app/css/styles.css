@@ -1567,3 +1567,47 @@ body.sona-admin {
     .sona-top-bar__brand { gap: 10px; }
     .sona-top-bar__brand h2 { font-size: 1.1em; }
 }
+
+/* Licence notice — shown in the admin when running unlicensed (eval/edu/NFP).
+   Pastel yellow with red text; non-blocking, sits above the page list. */
+.sona-license-notice {
+    background: #fdf6d8;                /* soft pastel yellow */
+    border: 1px solid #f0e2a0;
+    border-left: 4px solid #d9534f;     /* red accent bar */
+    color: #b02a26;                     /* red text */
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-size: 0.92em;
+    line-height: 1.55;
+}
+
+.sona-license-notice strong {
+    color: #8f211d;
+}
+
+.sona-license-notice a {
+    color: #b02a26;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.sona-license-notice a:hover {
+    color: #8f211d;
+}
+
+/* The edu/NFP line sits slightly softer, on its own line */
+.sona-license-notice__edu {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.95em;
+    color: #9a6b16;                     /* muted amber, distinct from the red */
+}
+
+.sona-license-notice__edu a {
+    color: #9a6b16;
+}
+
+.sona-license-notice__edu a:hover {
+    color: #7a530f;
+}

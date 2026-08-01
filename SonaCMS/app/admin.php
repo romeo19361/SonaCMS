@@ -9,6 +9,9 @@ require __DIR__ . '/paths.php';
 require __DIR__ . '/functions.php';
 require __DIR__ . '/activity.php';
 
+// Config, for the license banner (shown when running unlicensed).
+$config = require __DIR__ . '/../config.php';
+
 $message = null;
 
 // Handle delete action
@@ -96,6 +99,21 @@ function renderPageRows(array $pages, int $depth = 0): void
             <a href="logout.php">Log out</a>
         </div>
     </div>
+
+    <?php if (empty($config['licensed'])): ?>
+        <div class="sona-license-notice">
+            <strong>You&rsquo;re running SonaCMS under the free evaluation license.</strong>
+            If you&rsquo;re using it commercially, please purchase a license &mdash; it&rsquo;s
+            what keeps SonaCMS being built and supported, and it gets you direct
+            WhatsApp access to me, the developer.
+            <a href="https://www.sonacms.com" target="_blank" rel="noopener">Get a license</a>.
+            <span class="sona-license-notice__edu">
+                Using SonaCMS for education or a not-for-profit? That&rsquo;s free &mdash;
+                <a href="https://www.sonacms.com" target="_blank" rel="noopener">contact me</a>
+                and I&rsquo;ll clear this notice for you.
+            </span>
+        </div>
+    <?php endif; ?>
 
     <?php if ($message): ?>
         <p class="sona-message"><?php echo htmlspecialchars($message); ?></p>

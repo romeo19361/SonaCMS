@@ -4,6 +4,31 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.2] — 29 July 2026
+
+### Added
+
+- **A gentle licensing note in the admin.** When SonaCMS is running unlicensed
+  (`'licensed' => false`), a soft notice now appears at the top of the admin
+  dashboard, explaining the free evaluation/education/not-for-profit terms and
+  how to license it for commercial use. It's non-blocking — just a reminder —
+  and disappears entirely once `'licensed' => true`. Education and not-for-profit
+  users can get in touch to have it cleared.
+
+### Changed
+
+- Licensing wording is now consistent across the admin, footer, and
+  `config-sample.php`, and explains that a license supports ongoing development
+  and includes direct developer support.
+
+### Upgrade notes
+
+Replace `SonaCMS/app/admin.php` and `SonaCMS/app/css/styles.css`, and update
+`config-sample.php`. No config changes required — the notice keys off your
+existing `'licensed'` setting.
+
+---
+
 ## [2.1] — 28 July 2026
 
 ### Added

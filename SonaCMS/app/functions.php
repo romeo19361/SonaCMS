@@ -932,7 +932,7 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
         }
 
         return 'This version of SonaCMS is for evaluation, education or '
-            . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
+            . 'not-for-profit use. Purchase a commercial license at ' . $site . '. Or contact us to remove this footer notice.';
     }
 
     /**

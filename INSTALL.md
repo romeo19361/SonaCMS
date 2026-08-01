@@ -149,7 +149,7 @@ the sample is never used directly.
 
 ```php
 return [
-    'licensed'            => false, // true once you hold a commercial licence
+    'licensed'            => false, // true once you hold a commercial license
     'licensee_name'       => '',    // shown in the admin footer when licensed
 
     // Your site's canonical address, no trailing slash. Used for canonical
@@ -194,8 +194,8 @@ server.
 - `licensed => false` (the default) shows an evaluation notice in the site
   footer and admin. Use this for evaluation, education, or not-for-profit use.
 - `licensed => true` with a `licensee_name` removes the public footer notice
-  and shows your licence record in the admin only. Requires a commercial
-  licence from www.SonaCMS.com.
+  and shows your license record in the admin only. Requires a commercial
+  license from www.SonaCMS.com.
 
 ---
 
@@ -281,6 +281,36 @@ add content blocks:
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended
 size 1200 × 630px).
+
+### File uploads and size limits
+
+SonaCMS caps document uploads (via the **Download** block and the inline
+**Link to file** tool) at **20MB**, and shows a clear "File is too large"
+message above that.
+
+Your server's **PHP settings must allow at least that much**, and this is a
+common source of "uploads fail" confusion — because PHP rejects an oversized
+upload *before* SonaCMS can show its own message, so you may see a blank or
+generic error instead. Two settings matter, and **both** must be large enough:
+
+- `upload_max_filesize` — the max size of a single uploaded file.
+- `post_max_size` — the max size of the *whole* request (the file plus form
+  data). This one is the usual culprit: it's often defaulted low (e.g. `8M`),
+  and because it must be **larger** than `upload_max_filesize`, a file that
+  looks like it should fit can still be rejected. For example, an 8.5MB PDF
+  fails if `post_max_size` is `8M`, even if `upload_max_filesize` is `50M`.
+
+Set both comfortably above SonaCMS's 20MB cap in your `php.ini` — for example:
+
+```ini
+upload_max_filesize = 20M
+post_max_size = 24M
+```
+
+(`post_max_size` slightly higher, to leave room for the rest of the form.)
+On shared hosting where you can't edit `php.ini`, a `.user.ini` or `.htaccess`
+override often works, or ask your host. **Reload PHP / restart the web server
+after changing these** — the settings don't take effect until you do.
 
 Pages can also optionally display their **publish date** on the frontend — tick
 "Show publish date on the page" beneath the Date field. It shows in a readable
