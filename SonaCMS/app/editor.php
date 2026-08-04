@@ -186,9 +186,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $isNew ? 'New Page' : 'Edit Page'; ?> | SonaCMS</title>
+    <title><?php echo $isNew ? 'New Page' : 'Edit Page'; ?> | CMS</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="images/favicon.ico" sizes="any">
 </head>
 <body class="sona-admin">
 <div class="sona-wrap">
@@ -346,6 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../vendor/pricing-tool.js"></script>
 <script src="../vendor/filelink-tool.js"></script>
 <script src="../vendor/embed-tool.js"></script>
+<script src="../vendor/pdf-tool.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-columns@0.3.2"></script>
 <script src="../vendor/button-tool.js"></script>
 <script src="../vendor/form-tool.js"></script>
@@ -434,6 +434,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         column_tools.embed = { class: EmbedCodeTool, config: { canEdit: true } };
     }
 
+    // Inline PDF viewer — available to everyone (it just displays an uploaded
+    // file via the browser's native viewer; no raw-code security concern).
+    column_tools.pdf = { class: PdfTool };
+
     const editor = new EditorJS({
         holder: 'editorjs',
         data: initialData,
@@ -471,7 +475,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // contains a manager's embed — but canEdit is false for editors, so
             // they get a read-only view and cannot alter it. The server also
             // rejects any embed change from a non-manager on save.
-            embed: { class: EmbedCodeTool, config: { canEdit: IS_MANAGER } }
+            embed: { class: EmbedCodeTool, config: { canEdit: IS_MANAGER } },
+            pdf: { class: PdfTool }
         },
         placeholder: 'Start writing your page content here...'
     });

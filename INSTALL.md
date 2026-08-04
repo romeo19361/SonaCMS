@@ -277,6 +277,9 @@ add content blocks:
 - **Embed code** (manager only) — paste a third-party widget snippet (e.g. a
   Booking.com property widget). Restricted to the manager; editors can't add or
   change it.
+- **PDF** — display a PDF inline in the page using the browser's built-in
+  viewer. Falls back to an "open the PDF" link on devices that don't support
+  inline PDFs.
 
 Each page also has SEO fields (meta description, keywords) and a **Social
 Share Image** for link previews on X, Facebook, LinkedIn, etc. (recommended
@@ -408,6 +411,32 @@ changelog (`css/styles.css` and `SonaCMS/app/css/styles.css`).
 Your `config.php` and your customisations in `/inc/`, `/css/`, and `/forms/`
 are never touched by an upgrade — only the core `app/` and `vendor/` folders
 change.
+
+### Backing up your site
+
+Because SonaCMS has **no database**, backups are refreshingly simple — there's
+no dump to run, no special tooling. Your entire site is just files on disk, so
+**a backup is a copy of the folder.**
+
+At minimum, back up the things that can't be recovered elsewhere:
+
+- `assets/content/` — your pages, authors, user accounts, and activity log (the
+  irreplaceable data)
+- `assets/images/uploads/` and `assets/files/uploads/` — uploaded media
+- `SonaCMS/config.php` — your configuration
+
+The core code (`SonaCMS/app/` and `SonaCMS/vendor/`) can always be re-downloaded
+from the release, so you don't strictly need to back it up — though copying the
+**whole site** is the simplest approach and makes restoring a drag-and-drop job.
+
+Any standard method works: your host's snapshot/backup service, a scheduled
+`tar`/`rsync` job, or simply downloading a copy periodically. A daily automated
+backup that keeps the last week or two, stored somewhere **off the server** (so
+it survives a server failure), is a sensible baseline.
+
+> **Backups are the site operator's responsibility.** SonaCMS runs on your own
+> server, so backing it up — and securing and maintaining that server — is up to
+> you or your host, just as with any self-hosted software.
 
 ---
 

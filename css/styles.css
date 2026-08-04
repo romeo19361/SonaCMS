@@ -1279,3 +1279,25 @@ a.cms-tile.cms-tile--link:hover {
 .cms-embed {
     margin: 1.2em 0;
 }
+
+/* Inline PDF viewer */
+.cms-pdf {
+    margin: 1.4em 0;
+}
+.cms-pdf__object {
+    display: block;
+    border: 1px solid #dce2e4;
+    border-radius: 4px;
+}
+.cms-pdf__fallback {
+    padding: 24px;
+    text-align: center;
+    background: #f4f6f7;
+    border: 1px solid #dce2e4;
+    border-radius: 4px;
+}
+.cms-pdf__link {
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 600;
+}

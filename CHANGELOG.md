@@ -4,7 +4,26 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
-## [2.2] — 29 July 2026
+## [2.3] — 4 August 2026
+
+### Added
+
+- **Inline PDF block.** A new block displays a PDF directly in the page, using
+  the browser's built-in viewer (page thumbnails, zoom, download, print — all
+  supplied by the browser). Upload a PDF or paste a link, set an optional
+  height, and it renders in place. On devices that don't support inline PDFs
+  (many mobile browsers), it falls back gracefully to a tidy "open the PDF"
+  link rather than a blank frame. Available to all editors.
+
+### Upgrade notes
+
+Add `SonaCMS/vendor/pdf-tool.js`, and replace `SonaCMS/app/editor.php`,
+`SonaCMS/app/functions.php`, and both stylesheets (`css/styles.css` and
+`SonaCMS/app/css/styles.css`). No config changes required.
+
+---
+
+## [2.2] — 4 August 2026
 
 ### Added
 

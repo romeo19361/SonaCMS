@@ -1611,3 +1611,66 @@ body.sona-admin {
 .sona-license-notice__edu a:hover {
     color: #7a530f;
 }
+
+/* Inline PDF tool (editor) */
+.cms-pdf-tool {
+    padding: 8px 0;
+}
+.cms-pdf-tool__label {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #7a8a8e;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.cms-pdf-tool__help,
+.cms-pdf-tool__info {
+    font-size: 0.9em;
+    color: #5a6a6f;
+    margin-bottom: 8px;
+}
+.cms-pdf-tool__info {
+    font-weight: 600;
+    color: #3d4e53;
+}
+.cms-pdf-tool__preview {
+    width: 100%;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.cms-pdf-tool__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.cms-pdf-tool__btn {
+    padding: 7px 14px;
+    background: #1b7a8c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.cms-pdf-tool__btn:hover { background: #14606e; }
+.cms-pdf-tool__height {
+    width: 90px;
+    padding: 6px 8px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+}
+.cms-pdf-tool__url {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 10px;
+    border: 1px solid #cfd8da;
+    border-radius: 4px;
+}
+.cms-pdf-tool__status {
+    font-size: 0.85em;
+    color: #b02a26;
+}

@@ -727,6 +727,38 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
                     $html .= '</div>'; // pricing
                     break;
 
+                case 'pdf':
+                    // Inline PDF viewer. We output the browser's native PDF embed via
+                    // <object>; the browser supplies the viewer chrome (zoom, pages,
+                    // download). The inner content is the FALLBACK shown when inline
+                    // embedding isn't supported — notably on many mobile browsers — so
+                    // it degrades to a clean "open the PDF" link, not a blank frame.
+                    $pdfUrl = trim($d['url'] ?? '');
+                    // Domain-independent: strip any stored scheme+host to a relative
+                    // path (handles legacy/staging URLs), same as og_image/blog images.
+                    if ($pdfUrl !== '' && preg_match('#^https?://[^/]+(/.*)$#i', $pdfUrl, $pm)) {
+                        $pdfUrl = $pm[1];
+                    }
+                    // Allow only relative paths or http(s) — never javascript: etc.
+                    $pdfOk = $pdfUrl !== '' && (preg_match('#^/#', $pdfUrl) || preg_match('#^https?://#i', $pdfUrl));
+                    if ($pdfOk) {
+                        $pdfSafe = htmlspecialchars($pdfUrl, ENT_QUOTES);
+                        $pdfName = htmlspecialchars($d['name'] ?? 'PDF');
+                        $pdfH    = (int)($d['height'] ?? 600);
+                        if ($pdfH < 200)  { $pdfH = 200; }
+                        if ($pdfH > 2000) { $pdfH = 2000; }
+                        $html .= '<div class="cms-pdf">'
+                            . '<object class="cms-pdf__object" data="' . $pdfSafe . '" '
+                            . 'type="application/pdf" style="width:100%;height:' . $pdfH . 'px;">'
+                            . '<div class="cms-pdf__fallback">'
+                            . '<p>This PDF can&rsquo;t be shown inline on your device.</p>'
+                            . '<a class="cms-pdf__link" href="' . $pdfSafe . '" target="_blank" rel="noopener">'
+                            . 'Open ' . $pdfName . ' &rarr;</a>'
+                            . '</div>'
+                            . '</object></div>';
+                    }
+                    break;
+
                 case 'embed':
                     // Raw third-party embed code. This block can ONLY be created or
                     // changed by the manager (enforced in editor.php on save), who is
@@ -828,6 +860,12 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
                     // Unknown block type — skip silently
                     break;
             }
+
+            // One newline between top-level blocks, so the rendered page source is
+            // readable (one block per line) rather than a single long line. This is
+            // between blocks only — never inside a block's content, so whitespace-
+            // sensitive elements like <pre>/<code> are unaffected.
+            $html .= "\n";
         }
 
         // If the author opened a section but never added a "Section End",
@@ -932,7 +970,7 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
         }
 
         return 'This version of SonaCMS is for evaluation, education or '
-            . 'not-for-profit use. Purchase a commercial license at ' . $site . '. Or contact us to remove this footer notice.';
+            . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
     }
 
     /**
