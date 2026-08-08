@@ -1282,12 +1282,22 @@ a.cms-tile.cms-tile--link:hover {
 
 /* Inline PDF viewer */
 .cms-pdf {
-    margin: 1.4em 0;
+    margin: 1.4em auto;
+    width: 75%;
+    max-width: 900px;
 }
 .cms-pdf__object {
     display: block;
+    width: 100%;
     border: 1px solid #dce2e4;
     border-radius: 4px;
+}
+
+/* On narrow screens, let it use the full width — 75% is too cramped on mobile */
+@media (max-width: 700px) {
+    .cms-pdf {
+        width: 100%;
+    }
 }
 .cms-pdf__fallback {
     padding: 24px;

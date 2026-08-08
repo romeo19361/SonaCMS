@@ -4,6 +4,31 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.4] — 8 August 2026
+
+### Added
+
+- **One-click site backup.** A new manager-only Backup screen downloads a
+  complete copy of the entire site as a single zip — pages, uploads, settings,
+  and the CMS itself. Because SonaCMS has no database, that download is
+  everything needed to restore: unzip it onto any PHP host and the site is back.
+  A plain-English `HANDOVER.txt` is included in the zip so any developer can
+  restore it, with or without you — no lock-in.
+
+  The backup is built to a temporary file and streamed, so it works reliably on
+  large sites (galleries, PDFs) rather than timing out. It's restricted to the
+  manager and requires a valid session — the archive contains configuration and
+  account data, so it's never reachable without logging in.
+
+### Upgrade notes
+
+Add `SonaCMS/app/backup.php`, and replace `SonaCMS/app/admin.php` (adds the
+Backup link) and `SonaCMS/app/css/styles.css`. Requires PHP's Zip extension
+(`ZipArchive`) — standard on almost all hosts; if it's missing, the backup
+screen says so clearly. No config changes required.
+
+---
+
 ## [2.3] — 4 August 2026
 
 ### Added

@@ -94,6 +94,7 @@ function renderPageRows(array $pages, int $depth = 0): void
             <?php if (isManager()): ?>
                 <a href="users-admin.php">Users</a>
                 <a href="activity-log.php">Activity</a>
+                <a href="backup.php">Backup</a>
             <?php endif; ?>
             <span class="sona-whoami"><?php echo htmlspecialchars(currentUserName()); ?><?php echo isManager() ? ' (manager)' : ' (editor)'; ?></span>
             <a href="logout.php">Log out</a>

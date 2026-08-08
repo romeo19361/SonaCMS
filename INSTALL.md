@@ -418,7 +418,13 @@ Because SonaCMS has **no database**, backups are refreshingly simple — there's
 no dump to run, no special tooling. Your entire site is just files on disk, so
 **a backup is a copy of the folder.**
 
-At minimum, back up the things that can't be recovered elsewhere:
+**The easy way — one-click backup.** Log in as the manager and open **Backup**
+in the admin. It downloads a complete zip of the whole site — pages, uploads,
+settings, and the CMS itself — with a plain-English restore guide included. Keep
+that zip somewhere safe (ideally off the server), and you have a full backup any
+developer can restore by unzipping onto any PHP host.
+
+If you'd rather back up manually or on a schedule, the folders that matter are:
 
 - `assets/content/` — your pages, authors, user accounts, and activity log (the
   irreplaceable data)
@@ -429,10 +435,10 @@ The core code (`SonaCMS/app/` and `SonaCMS/vendor/`) can always be re-downloaded
 from the release, so you don't strictly need to back it up — though copying the
 **whole site** is the simplest approach and makes restoring a drag-and-drop job.
 
-Any standard method works: your host's snapshot/backup service, a scheduled
-`tar`/`rsync` job, or simply downloading a copy periodically. A daily automated
-backup that keeps the last week or two, stored somewhere **off the server** (so
-it survives a server failure), is a sensible baseline.
+Any standard method works: the one-click backup above, your host's
+snapshot/backup service, a scheduled `tar`/`rsync` job, or simply downloading a
+copy periodically. A backup that keeps the last week or two, stored somewhere
+**off the server** (so it survives a server failure), is a sensible baseline.
 
 > **Backups are the site operator's responsibility.** SonaCMS runs on your own
 > server, so backing it up — and securing and maintaining that server — is up to

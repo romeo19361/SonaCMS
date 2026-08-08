@@ -1635,10 +1635,12 @@ body.sona-admin {
     color: #3d4e53;
 }
 .cms-pdf-tool__preview {
-    width: 100%;
+    display: block;
+    width: 75%;
+    max-width: 900px;
+    margin: 0 auto 8px;
     border: 1px solid #cfd8da;
     border-radius: 4px;
-    margin-bottom: 8px;
 }
 .cms-pdf-tool__row {
     display: flex;
@@ -1673,4 +1675,35 @@ body.sona-admin {
 .cms-pdf-tool__status {
     font-size: 0.85em;
     color: #b02a26;
+}
+
+/* Site backup page */
+.sona-backup {
+    max-width: 640px;
+    margin: 8px 0;
+    padding: 24px 26px;
+    background: #f4f8f9;
+    border: 1px solid #e0e8ea;
+    border-radius: 8px;
+}
+.sona-backup__lead {
+    font-size: 1.05em;
+    font-weight: 600;
+    color: #2d3a3f;
+    margin: 0 0 10px;
+}
+.sona-backup__note {
+    color: #5a6a6f;
+    line-height: 1.55;
+    margin: 0 0 20px;
+}
+.sona-backup__btn {
+    display: inline-block;
+    font-size: 1em;
+    padding: 12px 20px;
+}
+.sona-backup__hint {
+    font-size: 0.85em;
+    color: #7a8a8e;
+    margin: 16px 0 0;
 }
