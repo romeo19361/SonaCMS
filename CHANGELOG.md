@@ -4,6 +4,41 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.5] — 26 August 2026
+
+### Changed
+
+- **Backups no longer include `config.php`.** The one-click backup now
+  deliberately excludes `config.php` from the zip. That file holds the only
+  plaintext secrets in a SonaCMS site — the admin hash, SMTP credentials, and
+  any payment/API keys — so keeping it out means a backup can be stored offsite,
+  emailed, or handed to a developer without carrying live access to anything.
+  The bundled `config-sample.php` and the in-zip `HANDOVER.txt` now walk through
+  rebuilding `config.php` on restore: rename the sample, fill in site URL,
+  timezone, a fresh admin password hash, and the credentials from your own
+  records. A restored site can't be logged into until that one-time step is
+  done — which is the intended behaviour.
+
+### Added
+
+- **Dev-site password guide.** A new standalone `DEV-SITE-PASSWORD.md` ships in
+  the package — a plain-English, client-ready walkthrough for putting an entire
+  development site behind a single password via HTTP Basic Auth in the root
+  `.htaccess`. Covers backing up the existing `.htaccess`, creating the
+  `.htpasswd` file with or without shell access, finding the correct absolute
+  path, and testing. Separate from the SonaCMS admin login; Apache-focused with
+  an nginx note.
+
+### Upgrade notes
+
+Replace `SonaCMS/app/backup.php`. No config changes required. Note the changed
+restore flow: keep your SMTP and payment/API credentials somewhere safe outside
+the backup (a password manager or your disaster-recovery records), because they
+are intentionally no longer in the archive. `DEV-SITE-PASSWORD.md` is a new
+documentation file — add it to the package root; no code depends on it.
+
+---
+
 ## [2.4] — 8 August 2026
 
 ### Added
