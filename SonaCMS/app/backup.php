@@ -5,10 +5,13 @@
 // to restore on any PHP host) and streams it to the browser as a download.
 //
 // SECURITY: this route is gated behind the normal admin auth AND restricted to
-// the manager. A full-site zip contains config.php (manager hash, SMTP creds)
-// and users.json (editor hashes) — so an unauthenticated or lower-privilege
-// route here would hand the entire site, credentials included, to whoever hits
-// the URL. The auth gate is the security-critical part of this feature.
+// the manager. config.php is deliberately EXCLUDED from the zip (see the
+// exclusion list below) so live secrets — the manager hash, SMTP credentials
+// and payment/API keys — never travel inside a backup that gets stored offsite,
+// emailed, or handed to a developer. But the zip still contains users.json
+// (editor password hashes) and all site content, so an unauthenticated or
+// lower-privilege route here would still hand the whole site to whoever hits
+// the URL. The auth gate remains the security-critical part of this feature.
 //
 // DESIGN: the zip is generated to a TEMP FILE (not stream-zipped inline), then
 // streamed and deleted. Inline stream-zipping hits max_execution_time / memory
@@ -91,7 +94,23 @@ if (($_GET['action'] ?? '') === 'download') {
     $excludeExt = ['lock'];               // *.lock
     $excludeNames = ['.DS_Store', 'Thumbs.db'];
 
-    $isExcluded = static function (string $absPath) use ($excludeDirs, $excludeExt, $excludeNames): bool {
+    // config.php is deliberately kept OUT of the backup. It is the only file
+    // holding plaintext secrets (manager hash, SMTP credentials, payment/API
+    // keys), so excluding it means the zip carries no passwords or keys and is
+    // safe to store or hand off. The bundled config-sample.php + HANDOVER.txt
+    // cover rebuilding it on restore. Matched by CANONICAL path (not basename)
+    // so an unrelated config.php elsewhere in the site is never caught, and a
+    // separator/symlink quirk can never cause a silent miss that leaks the key.
+    $configReal = realpath(SONACMS_DIR . '/config.php');
+
+    $isExcluded = static function (string $absPath) use ($excludeDirs, $excludeExt, $excludeNames, $configReal): bool {
+        // Exact config.php match. Cheap basename pre-check keeps realpath() off
+        // the hot path for the thousands of other files in a large site.
+        if (basename($absPath) === 'config.php'
+            && $configReal !== false
+            && realpath($absPath) === $configReal) {
+            return true;
+        }
         foreach ($excludeDirs as $dir) {
             if ($absPath === $dir || strpos($absPath, $dir . DIRECTORY_SEPARATOR) === 0) {
                 return true;
@@ -190,6 +209,11 @@ if (($_GET['action'] ?? '') === 'download') {
 /**
  * The plain-English restore note bundled at the zip root. Deliberately simple:
  * it's the no-lock-in promise — any developer can restore from this.
+ *
+ * NOTE: this backup intentionally EXCLUDES config.php. That file holds the only
+ * plaintext secrets in the site (admin hash, SMTP credentials, payment/API
+ * keys), so keeping it out means the zip is safe to store and transfer. The
+ * restore steps below cover rebuilding it from config-sample.php.
  */
 function backupHandoverText(string $siteName): string
 {
@@ -202,7 +226,19 @@ WHAT THIS IS
 ------------
 A complete copy of a SonaCMS website. SonaCMS is a flat-file CMS: there is NO
 database. Everything the site needs is in these files — pages and content,
-uploaded images and documents, configuration, and the CMS itself.
+uploaded images and documents, and the CMS itself.
+
+ONE THING IS DELIBERATELY LEFT OUT: config.php
+----------------------------------------------
+This backup does NOT contain config.php. That is on purpose, not a mistake.
+
+config.php is the only file holding plaintext secrets — the admin login, the
+SMTP (email) credentials, and any payment/API keys. Leaving it out means this
+zip carries no passwords or keys, so it's safe to store offsite, email, or hand
+to a developer without leaking access to anything.
+
+You rebuild config.php during the restore, from the included config-sample.php.
+It's a short, one-time step (below).
 
 HOW TO RESTORE (any developer, any standard PHP host)
 -----------------------------------------------------
@@ -211,10 +247,21 @@ HOW TO RESTORE (any developer, any standard PHP host)
 2. Point the web root at the folder's index.php.
 3. Make the 'assets' folder writable by the web server (see INSTALL.md inside
    SonaCMS, and check the note about ownership vs permissions).
-4. The site's settings live in SonaCMS/config.php — including the admin login,
-   site URL and timezone. Update the site URL if you're restoring to a new
-   domain.
-5. That's it. There is no database to import, no services to configure.
+4. Rebuild the config file:
+     a. In the SonaCMS/ folder, rename  config-sample.php  to  config.php
+     b. Open it and fill in the values (it's commented throughout):
+          - site_url        — the domain you're restoring to (no trailing slash)
+          - timezone        — e.g. Australia/Sydney
+          - admin login     — username, email, and a fresh password hash
+                              (the sample shows the one-line command to make one)
+          - SMTP + keys     — email credentials and any payment/API keys
+     The site's owner holds these secret values in their own secure records —
+     they are NOT in this backup, by design. site_url and timezone you can set
+     yourself; the credentials come from the owner.
+5. That's it. There is no database to import.
+
+Until config.php exists and has a valid admin password hash, you won't be able
+to log in at /SonaCMS/ — that's expected. Completing step 4 unlocks it.
 
 NOTES
 -----
