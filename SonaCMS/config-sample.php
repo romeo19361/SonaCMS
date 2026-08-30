@@ -79,4 +79,19 @@ return [
     'smtp_pass'           => 'your-smtp-password',
     'smtp_from'           => 'noreply@example.com',   // From address for SMTP sends
     'smtp_from_name'      => 'Your Website',           // From name shown to recipients
+
+    // ─── Form spam protection (2.6) ──────────────────────────────────────
+    // When true, form submissions must carry a valid, freshly minted token.
+    // This is what stops bots that POST straight to the handler without ever
+    // loading the form (the spam the honeypot can't catch).
+    //
+    // IMPORTANT: only set this true once your forms actually inject the token
+    // — otherwise genuine submissions will be dropped too. See below.
+    'form_protection' => false,
+
+    // Optional: a dedicated signing key. If omitted, a stable key is derived
+    // automatically from existing config (zero-touch) — most sites can leave
+    // this out. Set it only to rotate the form key independently; use a long
+    // random string.
+    // 'form_secret' => 'change-me-to-a-long-random-string',
 ];

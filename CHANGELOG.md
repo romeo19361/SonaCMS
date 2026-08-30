@@ -4,6 +4,52 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [2.6] — 30 August 2026
+
+### Added
+
+- **Form Guard — portable form spam protection.** SonaCMS forms now defend
+  against bots that POST directly to the handler without ever loading the page —
+  the pattern the honeypot alone can't catch (it shows up as spam that never
+  appears in client-side analytics). The defence is a signed HMAC token with a
+  built-in time-trap: no page load means no valid token, so the submission is
+  dropped before any mail is sent. Entirely self-contained PHP — no external
+  service, no account, no CAPTCHA in the visitor's way — so it works on any PHP
+  host. New files: `inc/form-guard.php` (shared library), plus `inc/form-token.php`
+  and `inc/form-guard.js` for sites whose forms are served as static HTML. The
+  signing key uses an optional `form_secret` in `config.php`, or self-derives
+  from existing config when absent, so existing sites gain protection with no
+  config edits.
+- **Per-IP rate limiting** on form submissions — a self-pruning flat-file store
+  (no database) that blunts sustained, high-volume attacks. Always on; the limit
+  is generous enough that a genuine visitor never trips it.
+- **Optional CAPTCHA hook**, config-gated and off by default, for sites that
+  want an extra layer. Portability is preserved — with no keys set, the built-in
+  defences carry the site.
+
+### Fixed
+
+- **Garbled characters in form emails sent over SMTP.** The SMTP path did not
+  set a character set, so PHPMailer defaulted to ISO-8859-1 and mangled any
+  non-ASCII input (accents, macrons, the Hawaiian ʻokina, and so on) into
+  mojibake. Form emails now send as UTF-8.
+
+### Upgrade notes
+
+Replace `inc/formHandler.php` and add `inc/form-guard.php`. Token verification
+is gated behind a new `form_protection` flag in `config.php` (default off), so
+updating the handler alone changes nothing for existing forms — the rate limit,
+honeypot, and UTF-8 fix are active immediately. To turn on token protection:
+wire the token into your forms (server-side with `sona_form_token_field($config)`,
+or add `inc/form-token.php` + `inc/form-guard.js` and one `<script>` tag for
+static-HTML forms), submit a test, then set `'form_protection' => true`. Confirm
+the hidden `form_token` field renders in the form before enabling the flag,
+otherwise genuine submissions will be dropped too. The rate-limit store writes
+to `assets/formguard/` (auto-created, web-denied); on hosts where that isn't
+writable it falls back to the system temp directory.
+
+---
+
 ## [2.5] — 26 August 2026
 
 ### Changed

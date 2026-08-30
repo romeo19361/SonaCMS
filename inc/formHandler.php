@@ -3,7 +3,10 @@
 //
 // Generic form handler for SonaCMS. Works with ANY form that posts here —
 // it doesn't expect specific field names. It:
-//   1. Drops submissions where the honeypot field ("contact_time") is filled.
+//   1. Applies portable anti-spam defences (see /inc/form-guard.php):
+//        - per-IP rate limit (always on)
+//        - signed-token + time-trap (on when 'form_protection' is enabled)
+//        - the original honeypot ("contact_time")
 //   2. Emails all submitted fields to the configured recipient.
 //   3. Redirects to the form's "redirect" value (or "/" as a fallback).
 //
@@ -16,6 +19,7 @@
 //   subject       — the email subject line
 //   redirect      — where to send the visitor after submitting
 //   contact_time  — honeypot (a hidden checkbox; must stay unticked)
+//   form_token    — anti-spam signed token (verified, never emailed)
 //
 // NOTE ON THE HONEYPOT: the hidden anti-spam field is a CHECKBOX, not a text
 // input. Browser autofill and password managers fill hidden TEXT fields with
@@ -23,6 +27,11 @@
 // make genuine human submissions look like bots and be silently dropped. They
 // do NOT tick hidden checkboxes, so a checkbox honeypot avoids that false
 // positive while still catching bots that blindly tick every field.
+//
+// NOTE ON THE TOKEN: the honeypot only catches bots that fill every field. It
+// cannot catch a bot that POSTs straight to this endpoint without loading the
+// form (which shows up as spam that never appears in client-side analytics).
+// The signed token defeats that: no page load => no valid token => dropped.
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -39,6 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Load CMS config. config.php lives in /SonaCMS (sibling of /inc).
 $config = require __DIR__ . '/../SonaCMS/config.php';
 
+// Load portable anti-spam helpers.
+require_once __DIR__ . '/form-guard.php';
+
 // Recipient: prefer form_recipient, fall back to admin_email.
 $recipient = !empty($config['form_recipient'])
     ? $config['form_recipient']
@@ -50,14 +62,35 @@ if (!preg_match('#^/[^/]#', $redirect)) {
     $redirect = '/';
 }
 
-// Honeypot — silently redirect bots without sending.
-// This is a hidden CHECKBOX (see the form). Real users never tick it; browser
-// autofill won't tick it either (unlike hidden text fields, which autofill may
-// populate with stray values). An unticked box isn't sent in POST at all, so
-// genuine submissions pass; bots that tick everything are dropped here.
+// ─── Anti-spam layer 1: per-IP rate limit ────────────────────────────────
+// Always on. Blunts sustained/volume attacks. The limit is generous enough
+// that a genuine visitor filling in one form never trips it.
+$clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
+if (!sona_form_rate_ok($clientIp, 5, 600)) {   // > 5 posts / 10 min / IP
+    header('Location: ' . $redirect);
+    exit;
+}
+
+// ─── Anti-spam layer 2: honeypot ─────────────────────────────────────────
+// Hidden CHECKBOX (see the form). Real users never tick it; autofill won't tick
+// it either. An unticked box isn't sent in POST at all, so genuine submissions
+// pass; bots that tick everything are dropped here.
 if (!empty($_POST['contact_time'])) {
     header('Location: ' . $redirect);
     exit;
+}
+
+// ─── Anti-spam layer 3: signed token + time-trap ─────────────────────────
+// Enforced only when 'form_protection' is enabled in config.php, so sites that
+// have updated this handler but not yet wired token minting keep working. Once
+// minting is in place (server-rendered field or the bundled form-guard.js),
+// set 'form_protection' => true in config.php to turn this on.
+if (!empty($config['form_protection'])) {
+    $token = (string) ($_POST['form_token'] ?? '');
+    if (!sona_form_token_valid($token, $config)) {
+        header('Location: ' . $redirect);
+        exit;
+    }
 }
 
 // No recipient configured — fail safe
@@ -68,7 +101,7 @@ if ($recipient === '') {
 
 // ─── Build the email content ─────────────────────────────────────────────
 
-$reserved = ['subject', 'redirect', 'contact_time'];
+$reserved = ['subject', 'redirect', 'contact_time', 'form_token'];
 $subject  = str_replace(["\r", "\n"], '', $_POST['subject'] ?? 'Website Form Submission');
 
 $lines = [];
@@ -114,6 +147,12 @@ if ($smtpConfigured) {
         $mail->Username   = $config['smtp_user'] ?? '';
         $mail->Password   = $config['smtp_pass'] ?? '';
         $mail->Port       = (int)($config['smtp_port'] ?? 587);
+
+        // Ensure UTF-8 so non-ASCII (accents, macrons, ʻokina, etc.) arrive
+        // intact. Without this PHPMailer defaults to ISO-8859-1 and mangles
+        // multibyte characters into mojibake.
+        $mail->CharSet  = 'UTF-8';
+        $mail->Encoding = 'base64';
 
         // STARTTLS for port 587, implicit TLS for 465
         $mail->SMTPSecure = ((int)($config['smtp_port'] ?? 587) === 465)
