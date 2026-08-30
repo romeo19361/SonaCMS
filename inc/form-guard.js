@@ -1,75 +1,143 @@
-// /inc/form-guard.js
+<?php
+// /inc/form-guard.php
 //
-// Portable, same-origin spam guard for SonaCMS forms.
+// Portable, dependency-free anti-spam helpers for SonaCMS forms.
+// No external services, no accounts, no database — works on any PHP host,
+// which is the whole point: a spam defence that required a Cloudflare (or
+// similar) account would break SonaCMS's runs-anywhere premise.
 //
-// On load it finds every form that posts to the SonaCMS form handler and
-// injects a freshly minted token (fetched from /inc/form-token.php) as a hidden
-// field. No third-party services, no external accounts — same-origin only.
+// Provides:
+//   sona_form_secret($config)        — the HMAC signing key (explicit or derived)
+//   sona_form_token($config)         — mint a signed, timestamped token
+//   sona_form_token_field($config)   — the hidden <input> to drop into a form
+//   sona_form_token_valid($t,$c,...) — verify signature + submission timing
+//   sona_form_rate_ok($ip,$max,$win) — flat-file per-IP rate limit
 //
-// WHY THIS WORKS: automated spam bots overwhelmingly do NOT execute JavaScript
-// (which is exactly why direct-POST spam never appears in client-side analytics
-// like StatCounter). A token minted by JS is therefore present for real
-// browsers and absent for those bots — so the server drops them.
-//
-// Use this route only if your forms are served as static HTML. If they render
-// through PHP, embed the token server-side with sona_form_token_field() and you
-// don't need this file at all.
-//
-// TRADE-OFF: visitors with JavaScript disabled won't get a token and, once
-// 'form_protection' is enabled, their submissions will be rejected. For most
-// public sites under active spam this is an acceptable exchange; if you must
-// support no-JS visitors, use the server-rendered token route instead.
+// Guarded against double-include (same pattern as paths.php / functions.php).
 
-(function () {
-    'use strict';
+if (!defined('SONA_FORM_GUARD_LOADED')) {
+    define('SONA_FORM_GUARD_LOADED', true);
 
-    var HANDLER = '/inc/formHandler.php';
-    var TOKEN_URL = '/inc/form-token.php';
-
-    function handlerForms() {
-        return Array.prototype.filter.call(
-            document.querySelectorAll('form[action]'),
-            function (f) {
-                var action = f.getAttribute('action') || '';
-                return action === HANDLER || action.indexOf(HANDLER) !== -1;
-            }
-        );
+    /**
+     * Signing key for form tokens.
+     *
+     * Prefers an explicit config value ('form_secret') so a site can rotate it
+     * independently. If absent, DERIVES a stable key from secrets already in
+     * config.php — so existing sites gain protection with ZERO config edits and
+     * the 2.5 "rebuild config" flow stays unchanged. The derived key rotates if
+     * the admin password is reset, which merely invalidates outstanding
+     * (unsubmitted) tokens — harmless.
+     */
+    function sona_form_secret(array $config): string
+    {
+        if (!empty($config['form_secret'])) {
+            return (string) $config['form_secret'];
+        }
+        $material = ($config['admin_password_hash'] ?? '')
+            . '|' . ($config['site_url'] ?? '')
+        . '|sona-form-guard-v1';
+        return hash('sha256', $material);
     }
 
-    function init() {
-        var targets = handlerForms();
-        if (!targets.length) {
-            return;
+    /** Mint a token: "<issued_ts>.<hex_hmac>". Stateless — nothing stored. */
+    function sona_form_token(array $config): string
+    {
+        $ts  = time();
+        $sig = hash_hmac('sha256', (string) $ts, sona_form_secret($config));
+        return $ts . '.' . $sig;
+    }
+
+    /** The hidden field to place inside a <form> when rendering server-side. */
+    function sona_form_token_field(array $config): string
+    {
+        $t = htmlspecialchars(sona_form_token($config), ENT_QUOTES, 'UTF-8');
+        return '<input type="hidden" name="form_token" value="' . $t . '">';
+    }
+
+    /**
+     * Validate a submitted token.
+     *   - signature must verify (constant-time compare)
+     *   - age <= $maxAge : reject stale / replayed tokens
+     *
+     * $minAge is a floor on how soon after issue a token may be used. It
+     * defaults to 0 (disabled) on purpose: the real defence is that a token
+     * only exists if the form was actually loaded, and a genuine visitor using
+     * browser autofill can legitimately submit in well under a second — a
+     * non-zero floor would drop them for no security gain (the direct-POST bots
+     * this guards against carry no token at all and are already rejected above).
+     * Raise it only if you specifically want to also catch page-loading bots
+     * that submit instantly, accepting that fast autofill users may be dropped.
+     */
+    function sona_form_token_valid(
+        string $token,
+        array $config,
+        int $minAge = 0,
+        int $maxAge = 7200
+): bool {
+        if (strpos($token, '.') === false) {
+            return false;
+        }
+        [$ts, $sig] = explode('.', $token, 2);
+        if ($ts === '' || $sig === '' || !ctype_digit($ts)) {
+            return false;
+        }
+        $expected = hash_hmac('sha256', $ts, sona_form_secret($config));
+        if (!hash_equals($expected, $sig)) {
+            return false;
+        }
+        $age = time() - (int) $ts;
+        return $age >= $minAge && $age <= $maxAge;
+    }
+
+    /**
+     * Writable directory for the rate-limit store. Prefers a dedicated,
+     * web-denied folder under assets/; falls back to the system temp dir if
+     * assets/ isn't writable. On first create it drops a deny-all .htaccess so
+     * the store is never web-readable (Apache; harmless on nginx).
+     */
+    function sona_form_store_dir(): string
+    {
+        $dir = __DIR__ . '/../assets/formguard';
+        if (!is_dir($dir)) {
+        @mkdir($dir, 0775, true);
+        @file_put_contents($dir . '/.htaccess', "Require all denied\n");
+        }
+        if (is_dir($dir) && is_writable($dir)) {
+            return $dir;
+        }
+        return rtrim(sys_get_temp_dir(), '/\\');
+    }
+
+    /**
+     * Flat-file per-IP rate limit. Returns true if this hit is allowed (and
+     * records it), false if the IP is over $max hits in the last $window secs.
+     * Self-pruning; no database. Keyed by a hash of the IP, not the IP itself.
+     */
+    function sona_form_rate_ok(string $ip, int $max = 5, int $window = 600): bool
+    {
+        $ip   = $ip !== '' ? $ip : 'unknown';
+        $file = sona_form_store_dir() . '/rl_' . hash('sha256', $ip) . '.json';
+
+        $now  = time();
+        $hits = [];
+        if (is_file($file)) {
+            $raw  = @file_get_contents($file);
+            $data = $raw !== false ? json_decode($raw, true) : [];
+            if (is_array($data)) {
+                foreach ($data as $t) {
+                    if (is_int($t) && ($now - $t) < $window) {
+                        $hits[] = $t;
+                    }
+                }
+            }
         }
 
-        fetch(TOKEN_URL, { credentials: 'same-origin', cache: 'no-store' })
-            .then(function (res) {
-                return res.ok ? res.text() : '';
-            })
-            .then(function (token) {
-                token = (token || '').trim();
-                if (!token) {
-                    return;
-                }
-                targets.forEach(function (form) {
-                    if (form.querySelector('input[name="form_token"]')) {
-                        return;
-                    }
-                    var input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'form_token';
-                    input.value = token;
-                    form.appendChild(input);
-                });
-            })
-            .catch(function () {
-                // Fail quietly — the server still enforces its own defences.
-            });
-    }
+        if (count($hits) >= $max) {
+            return false;
+        }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+        $hits[] = $now;
+    @file_put_contents($file, json_encode($hits), LOCK_EX);
+        return true;
     }
-})();
+}
