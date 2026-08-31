@@ -105,6 +105,5 @@ if (!$page) {
 </div>
 <script src="/js/lightbox.js"></script>
 
-<script src="/inc/form-guard.js" defer></script>
 </body>
 </html>
