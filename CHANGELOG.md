@@ -4,7 +4,32 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
-## [2.6] — 30 August 2026
+## [2.6.1] — 26 August 2026
+
+### Fixed
+
+- **Form Guard: fast and mobile submissions could be dropped.** The 2.6 token
+  was minted client-side and fetched over the network after page load, which
+  left a race: a quick submit — common with browser autofill, and routine on
+  slower mobile connections — could post before the token arrived and be
+  rejected as tokenless. The token is now injected **server-side**, printed
+  into the form's HTML before it reaches the browser, so there is no JavaScript
+  and no fetch to lose the race to. Genuine submissions are no longer dropped;
+  bots that POST without loading the form still carry no token and are still
+  rejected. Any form posting to the handler is protected automatically — form
+  templates need no changes.
+
+### Upgrade notes
+
+Replace `SonaCMS/app/functions.php`. The JS token route is retired: delete
+`inc/form-token.php` and `inc/form-guard.js`, and remove the
+`<script src="/inc/form-guard.js">` tag from your template. No config changes,
+no form-template changes — `form_protection` stays as you have it. `formHandler.php`
+and `inc/form-guard.php` are unchanged from 2.6.
+
+---
+
+## [2.6] — 26 August 2026
 
 ### Added
 
