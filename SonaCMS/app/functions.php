@@ -921,7 +921,38 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
 
         ob_start();
         include $path;
-        return ob_get_clean();
+        $html = ob_get_clean();
+
+        // Form Guard (2.6.1): inject the signed spam-protection token directly
+        // into the rendered form, server-side. Because the token is printed into
+        // the HTML before it reaches the browser, there is NO JavaScript and NO
+        // network fetch — nothing to race — so fast, autofilled, or mobile
+        // submissions are never dropped. Any form that posts to the handler is
+        // covered automatically; form templates need no changes. Replaces the
+        // earlier JS token-minting route (inc/form-token.php + inc/form-guard.js).
+        if (stripos($html, 'formHandler.php') !== false) {
+            $guard   = SITE_ROOT . '/inc/form-guard.php';
+            $cfgPath = SONACMS_DIR . '/config.php';
+            if (is_file($guard) && is_file($cfgPath)) {
+                require_once $guard;
+                $cfg = require $cfgPath;
+                if (is_array($cfg) && function_exists('sona_form_token_field')) {
+                    $field = sona_form_token_field($cfg);
+                    // Insert right after the opening <form> tag. Callback form
+                    // avoids any backreference interpretation of the token.
+                    $html = preg_replace_callback(
+                        '/<form\b[^>]*>/i',
+                        function ($m) use ($field) {
+                            return $m[0] . "\n" . $field;
+                        },
+                        $html,
+                        1
+                    );
+                }
+            }
+        }
+
+        return $html;
     }
 
     /**
