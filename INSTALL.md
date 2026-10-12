@@ -47,7 +47,7 @@ your-web-root/
 │   └── SonaCMS_logo.png
 ├── inc/                   ← developer-editable frontend files
 │   ├── nav.php            ← navigation markup/logic
-│   ├── footer.php         ← frontend footer (licensing notice)
+│   ├── footer.php         ← frontend footer (optional "Powered by" credit)
 │   ├── 404.php            ← "page not found" page
 │   └── formHandler.php    ← generic form processor
 ├── forms/                 ← drop-in form files (appear in the editor)
@@ -59,7 +59,7 @@ your-web-root/
     │   ├── admin.php      ← page list / dashboard
     │   ├── editor.php     ← page editor
     │   ├── authors.php    ← author management
-    │   ├── footer.php     ← admin footer (licensing notice)
+    │   ├── footer.php     ← admin footer
     │   ├── functions.php  ← core functions
     │   ├── paths.php      ← path definitions
     │   ├── auth.php, logout.php, upload.php
@@ -149,9 +149,6 @@ the sample is never used directly.
 
 ```php
 return [
-    'licensed'            => false, // true once you hold a commercial license
-    'licensee_name'       => '',    // shown in the admin footer when licensed
-
     // Your site's canonical address, no trailing slash. Used for canonical
     // URLs, the sitemap, and social image tags so search engines always
     // attribute content to the correct domain.
@@ -189,13 +186,15 @@ Copy the resulting string (it starts with `$2y$...`) into
 `admin_password_hash`. Delete the script afterwards if you made one on the
 server.
 
-### Licensing
+### License
 
-- `licensed => false` (the default) shows an evaluation notice in the site
-  footer and admin. Use this for evaluation, education, or not-for-profit use.
-- `licensed => true` with a `licensee_name` removes the public footer notice
-  and shows your license record in the admin only. Requires a commercial
-  license from www.SonaCMS.com.
+SonaCMS is free and open source under the [MIT License](LICENSE). Use it for
+anything, commercial sites included, with no license fee and nothing to
+register. Third-party components keep their own licenses — see
+[THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md).
+
+Upgrading from 2.x? Any old `licensed` / `licensee_name` lines in your
+`config.php` are simply ignored now; you can delete them or leave them.
 
 ---
 

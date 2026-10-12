@@ -1,5 +1,8 @@
 <?php
 // /public_html/index.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Frontend entry point — front controller for all public pages.
 // Reads the URL path, maps it to a page slug, and renders the matching page.

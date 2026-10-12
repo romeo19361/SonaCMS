@@ -1,24 +1,17 @@
 <?php
 // /inc/footer.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Frontend footer for SonaCMS public pages. Included by index.php inside
 // the <footer class="site-footer"> region.
 //
-// Shows the licensing notice. Developers can add their own footer content
-// around this — but the licensing line should remain per the SonaCMS licence.
+// This file is yours: it lives outside the CMS core and upgrades never touch
+// it. Add your own footer content here.
 //
-// Expects $config to be available (index.php loads it). Falls back to
-// loading it directly if not, so the include is safe to use anywhere.
-
-if (!isset($config) || !is_array($config)) {
-    $config = require __DIR__ . '/../SonaCMS/config.php';
-}
-
-// Frontend licensing notice only appears on UNLICENSED installs.
-// Licensed sites get a completely clean frontend footer — removing the
-// public notice is part of what a commercial license buys. The licensing
-// record still shows in the admin footer either way.
-if (empty($config['licensed'])):
-    ?>
-    <p class="site-footer__license"><?php echo licenseFooterText($config); ?></p>
-<?php endif; ?>
+// The "Powered by SonaCMS" line below is OPTIONAL. SonaCMS is MIT-licensed,
+// so nothing requires it to be shown. If you keep it, thank you — it's how
+// other people find SonaCMS. Delete the line to remove it.
+?>
+<p class="site-footer__license"><?php echo licenseFooterText(); ?></p>

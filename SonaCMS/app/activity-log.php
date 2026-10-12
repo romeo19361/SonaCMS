@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/activity-log.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Manager-only view of the activity log: who changed which page, and when.
 

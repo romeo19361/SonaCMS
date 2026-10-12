@@ -37,7 +37,7 @@ you have a complete, editable website.
 - Hierarchical pages with clean URLs, ordering, and draft/published states
 - Optional hero banners per page
 - Reusable author profiles
-- Blog/news listings from any parent page, with pagination
+- Blog/news listings from any parent page, with pagination and pinned posts
 
 **Multi-user (2.0+)**
 - A manager account (set in config) plus named editor accounts managed in-app
@@ -46,7 +46,8 @@ you have a complete, editable website.
 - A non-blocking warning if two people open the same page at once
 
 **Delivery & SEO**
-- Drop-in forms with spam protection and email delivery (PHP mail or SMTP)
+- Drop-in forms with layered spam protection (honeypot, signed tokens, rate
+  limiting, optional blocklist) and email delivery (PHP mail or SMTP)
 - Automatic XML sitemap and canonical URLs
 - Per-page SEO fields and social share (Open Graph) images
 - Configurable site timezone
@@ -90,15 +91,19 @@ Full instructions are in [INSTALL.md](INSTALL.md).
 
 ## License
 
-SonaCMS is free to download and use for **evaluation, education, and
-not-for-profit** websites. A commercial license is required to use it for
-commercial projects — see [www.SonaCMS.com](https://www.sonacms.com). A license
-also gets you direct support from the developer.
+SonaCMS is free and open source under the **MIT License**. Use it for anything,
+commercial sites included: change it, fork it, build on it. The only condition
+is keeping the copyright notice. No license fee, nothing to register.
 
-See [LICENSE.md](LICENSE.md) for full terms.
+See [LICENSE](LICENSE) for the full text, and
+[THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md) for the components SonaCMS
+uses, which keep their own licenses.
+
+Want a hand building, hosting or supporting a SonaCMS site? That's what
+[Tecky](https://www.tecky.au) does.
 
 ---
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release history. Latest: **2.2**.
+See [CHANGELOG.md](CHANGELOG.md) for release history. Latest: **3.0**.

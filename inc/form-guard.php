@@ -1,5 +1,8 @@
 <?php
 // /inc/form-guard.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Portable, dependency-free anti-spam helpers for SonaCMS forms.
 // No external services, no accounts, no database — works on any PHP host,

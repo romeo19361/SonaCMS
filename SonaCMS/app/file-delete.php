@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/file-delete.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Deletes a single uploaded file (image or document) on behalf of the file
 // manager. Security is the whole job here:

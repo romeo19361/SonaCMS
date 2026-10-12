@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/users-admin.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Manager-only screen to manage EDITOR accounts (stored in users.json).
 // The site MANAGER account itself lives in config.php and is NOT editable here

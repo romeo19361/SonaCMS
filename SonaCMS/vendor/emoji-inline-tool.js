@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * EmojiInlineTool — a custom Editor.js *inline* tool that adds an emoji
  * button to the inline toolbar. Clicking it opens a small palette of common

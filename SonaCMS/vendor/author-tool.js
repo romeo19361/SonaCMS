@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * AuthorTool — custom Editor.js Block Tool for inserting an author tile
  * into page content.

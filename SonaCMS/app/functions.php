@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/functions.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Core helper functions for reading and writing page content.
 // Relies on constants defined in paths.php — require that first.
@@ -324,8 +327,14 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
      * @param string $json  The raw JSON string stored in the 'content' field
      * @return string
      */
-    function renderContent(string $json): string
+    function renderContent(string|array $json): string
     {
+        // The editor stores content as a JSON *string*. Accept an already-decoded
+        // array too (e.g. a hand-written page file), rather than fatally erroring.
+        if (is_array($json)) {
+            $json = json_encode($json);
+        }
+
         if (empty($json)) {
             return '';
         }
@@ -979,29 +988,23 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
     }
 
     /**
-     * Return the SonaCMS licensing footer text as an HTML string.
+     * Return the "Powered by SonaCMS" credit line as an HTML string.
      *
-     * Reads the CMS config: if 'licensed' is true, shows the registered
-     * licensee's name; otherwise shows the evaluation/purchase notice.
+     * Since 3.0 SonaCMS is MIT-licensed free software, so this is a plain
+     * credit, not a licensing notice — showing it is entirely optional.
      *
-     * The returned string contains a link to www.SonaCMS.com and is safe to
-     * echo directly. The licensee name is escaped.
+     * The name is kept from earlier versions on purpose: developer-owned
+     * footers in /inc/ call licenseFooterText(), and renaming it would break
+     * those sites on upgrade. The old 'licensed' / 'licensee_name' config keys
+     * are ignored if still present.
      *
-     * @param array $config The config array (from config.php).
+     * @param array $config The config array (accepted for compatibility; unused).
      * @return string
      */
-    function licenseFooterText(array $config): string
+    function licenseFooterText(array $config = []): string
     {
-        $site = '<a href="https://www.SonaCMS.com" rel="noopener">www.SonaCMS.com</a>';
-
-        if (!empty($config['licensed'])) {
-            $name = htmlspecialchars($config['licensee_name'] ?? '', ENT_QUOTES);
-            return 'This is a licensed version of ' . $site
-                . ' registered to ' . $name . '.';
-        }
-
-        return 'This version of SonaCMS is for evaluation, education or '
-            . 'not-for-profit use. Purchase a commercial license at ' . $site . '.';
+        return 'Powered by <a href="https://www.sonacms.com" rel="noopener">SonaCMS</a>'
+            . ' &mdash; free and open source under the MIT License.';
     }
 
     /**
@@ -1273,8 +1276,16 @@ if (!defined('SONA_FUNCTIONS_LOADED')) {
             return '<p class="cms-bloglist__empty">No posts yet.</p>';
         }
 
-        // Sort newest-first by date (fall back to 0 for missing/invalid dates)
+        // Sort order: pinned posts float to the top, then everything else.
+        // Within the pinned group AND within the unpinned group, newest-first
+        // by date (fall back to 0 for missing/invalid dates). A post is pinned
+        // when its 'pinned' field is truthy (set by the editor checkbox).
         usort($posts, function ($a, $b) {
+            $pa = !empty($a['pinned']) ? 1 : 0;
+            $pb = !empty($b['pinned']) ? 1 : 0;
+            if ($pa !== $pb) {
+                return $pb <=> $pa; // pinned (1) sorts before unpinned (0)
+            }
             $da = !empty($a['date']) ? strtotime($a['date']) : 0;
             $db = !empty($b['date']) ? strtotime($b['date']) : 0;
             return $db <=> $da;

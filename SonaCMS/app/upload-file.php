@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/upload-file.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Handles DOCUMENT uploads for the Download block (PDFs and common office
 // files). Kept separate from upload.php (which stays image-only) so the image

@@ -4,6 +4,76 @@ All notable changes to SonaCMS are documented here.
 
 ---
 
+## [3.0] — 12 October 2026
+
+SonaCMS is now free and open source under the MIT License. Use it for
+anything, commercial sites included. There is nothing to buy and nothing to
+register.
+
+### Changed
+
+- **License: MIT.** SonaCMS and all its plugins and modules are released under
+  the MIT License (see `LICENSE`). The previous commercial license
+  (`LICENSE.md`) and its $49 / $199 tiers are retired. Copies downloaded under
+  the earlier terms stay under those terms; every release from 3.0 on is MIT.
+- **The admin license notice is gone.** No more evaluation banner on the
+  dashboard.
+- **Footer credit, not a licensing notice.** `licenseFooterText()` now returns
+  a plain "Powered by SonaCMS" credit. The function keeps its name so custom
+  footers that call it keep working. The default frontend footer
+  (`inc/footer.php`) shows the credit; it's optional, and deleting the line is
+  fine.
+- **`licensed` and `licensee_name` are no longer used** and have been removed
+  from `config-sample.php`. If they're still in your `config.php` they are
+  simply ignored.
+- `THIRD-PARTY-LICENCES.md` is now `THIRD-PARTY-LICENSES.md` and lists every
+  component SonaCMS uses, with its license and version.
+
+### Added
+
+- **Pinned blog posts.** A "Pin to top of blog lists" checkbox under "Show
+  publish date" keeps a post at the top of its blog/news list — on both the
+  homepage feed and the full index. Pinned posts sort newest-first among
+  themselves, followed by the rest in date order.
+- **Form blocklist.** An optional `form_blocklist` array in `config.php` drops
+  any form submission containing a listed term (case-insensitive, checked
+  across every field). Useful against a spam campaign with a stable give-away
+  value; it works regardless of the sender's IP, so it catches distributed
+  floods the rate limit can't.
+- PHPMailer's own license file (LGPL-2.1) now ships in
+  `SonaCMS/vendor/PHPMailer/LICENSE`, as its license requires.
+
+### Fixed
+
+- **Fresh installs crashed on the homepage.** The sample `home.json` stored its
+  content in a form the page renderer couldn't read, so a brand-new install
+  showed a server error until the homepage was re-saved. The sample is fixed,
+  and `renderContent()` now accepts either form rather than failing.
+- **`assets/content/.htaccess` had a stray closing tag** in the repository copy,
+  which some Apache configurations reject. Corrected.
+- **Upload folders now ship their hardening `.htaccess` files**
+  (`assets/files/` and `assets/images/uploads/`), which stop the server from
+  ever executing an uploaded file. These were documented but missing from the
+  package.
+- The `form_protection` comment in `config-sample.php` now reflects that forms
+  added with the editor's Form block receive the token automatically.
+
+### Upgrade notes
+
+Replace `SonaCMS/app/` and `SonaCMS/vendor/` together, as always, plus
+`inc/formHandler.php`. Delete `LICENSE.md` and `THIRD-PARTY-LICENCES.md`, and
+add `LICENSE` and `THIRD-PARTY-LICENSES.md`. If `assets/files/.htaccess` or
+`assets/images/uploads/.htaccess` is missing on your site, add them from the
+package.
+
+No config changes are required. Your own `inc/footer.php` is untouched by
+upgrades: on a site that was set to `'licensed' => false` it will now show the
+"Powered by SonaCMS" credit instead of the evaluation notice; on a site set to
+`'licensed' => true` it shows nothing, as before. Use the new
+`inc/footer.php` if you'd like the credit shown everywhere, or remove it.
+
+---
+
 ## [2.6.1] — 26 August 2026
 
 ### Fixed

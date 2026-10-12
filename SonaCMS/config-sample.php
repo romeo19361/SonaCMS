@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/config-sample.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  SETUP: Rename this file to  config.php  and fill in your own values.    │
@@ -11,24 +14,6 @@
 // This is the ONLY file you need to edit to get SonaCMS running.
 
 return [
-
-    // ── Licensing ────────────────────────────────────────────────────────
-    // Leave 'licensed' => false for evaluation, education, or not-for-profit
-    // use. While false, a small notice appears in the admin and the footer.
-    //
-    // If you're using SonaCMS commercially, please purchase a license at
-    // www.sonacms.com. A license isn't just about removing the notice — it's
-    // what keeps SonaCMS being actively developed and supported, and it gets
-    // you direct WhatsApp access to Peter, the developer (you're talking to
-    // the person who built it, not a support queue).
-    //
-    // Using SonaCMS for education or a not-for-profit? That's free — contact
-    // Peter and he'll clear the notice for you.
-    //
-    // Once you hold a license, set 'licensed' => true and put your name (or
-    // your organisation's) in 'licensee_name'.
-    'licensed'            => false,
-    'licensee_name'       => '',
 
     // ── Site URL ─────────────────────────────────────────────────────────
     // Your site's canonical address, with NO trailing slash. Used for
@@ -80,13 +65,14 @@ return [
     'smtp_from'           => 'noreply@example.com',   // From address for SMTP sends
     'smtp_from_name'      => 'Your Website',           // From name shown to recipients
 
-    // ─── Form spam protection (2.6) ──────────────────────────────────────
+    // ─── Form spam protection ────────────────────────────────────────────
     // When true, form submissions must carry a valid, freshly minted token.
-    // This is what stops bots that POST straight to the handler without ever
-    // loading the form (the spam the honeypot can't catch).
+    // This stops bots that POST straight to the handler without ever loading
+    // the form (the spam the honeypot can't catch).
     //
-    // IMPORTANT: only set this true once your forms actually inject the token
-    // — otherwise genuine submissions will be dropped too. See below.
+    // Forms added with the editor's Form block get the token automatically.
+    // If you have a hand-coded form that posts to /inc/formHandler.php some
+    // other way, test it before turning this on, or it will be dropped too.
     'form_protection' => false,
 
     // Optional: a dedicated signing key. If omitted, a stable key is derived
@@ -94,4 +80,10 @@ return [
     // this out. Set it only to rotate the form key independently; use a long
     // random string.
     // 'form_secret' => 'change-me-to-a-long-random-string',
+
+    // Optional: drop any form submission containing one of these terms
+    // (case-insensitive, checked across every field). Useful against a spam
+    // campaign with a stable give-away value. Keep terms distinctive to avoid
+    // catching real messages.
+    // 'form_blocklist' => ['robertrip'],
 ];

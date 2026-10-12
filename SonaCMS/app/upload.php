@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/upload.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Handles image uploads from the Editor.js Image tool ("byFile" endpoint).
 // Expects a multipart/form-data POST with the file under the field name

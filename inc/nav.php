@@ -1,5 +1,8 @@
 <?php
 // /inc/nav.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Site navigation functions — this is the developer's space to customise
 // how menus are rendered. Edit freely; it lives outside /SonaCMS so it

@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/files.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // File manager: lists all uploaded images (with thumbnails) and documents,
 // each with a delete button. There is NO usage scanner — deleting a file that

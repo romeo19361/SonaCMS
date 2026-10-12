@@ -1,5 +1,8 @@
 <?php
 // /sitemap.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Generates an XML sitemap dynamically from SonaCMS's published pages.
 // Served at /sitemap.xml via a rewrite rule in .htaccess.

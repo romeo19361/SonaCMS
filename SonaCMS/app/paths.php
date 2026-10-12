@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/paths.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Centralised path definitions for SonaCMS.
 // This file ONLY defines paths/constants — no logic, no file I/O.

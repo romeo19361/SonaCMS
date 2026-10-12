@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/editor.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -32,6 +35,7 @@ $page = [
     'hero_subtitle' => '',
     'date' => date('Y-m-d'),
     'show_date' => false,
+    'pinned' => false,
     'status' => 'draft',
 ];
 
@@ -131,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $page['hero_subtitle'] = trim($_POST['hero_subtitle'] ?? '');
         $page['date'] = trim($_POST['date'] ?? date('Y-m-d'));
         $page['show_date'] = isset($_POST['show_date']);
+        $page['pinned'] = isset($_POST['pinned']);
         $page['status'] = ($_POST['status'] ?? 'draft') === 'published' ? 'published' : 'draft';
         $page['filename'] = $filename;
 
@@ -314,6 +319,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Show publish date on the page
         </label>
         <p class="sona-hint">Displays the date above the content — useful for blog posts and news. Off by default.</p>
+
+        <label class="sona-checkbox-row" for="pinned">
+            <input type="checkbox" id="pinned" name="pinned" value="1" <?php echo !empty($page['pinned']) ? 'checked' : ''; ?>>
+            Pin to top of blog lists
+        </label>
+        <p class="sona-hint">Keeps this post at the top of its blog/news list — on both the homepage feed and the full index — above the date-ordered posts. Only affects pages shown in a blog list (child pages of a blog parent); pinned posts are still ordered newest-first among themselves.</p>
 
         <label class="sona-label" for="status">Status</label>
         <select class="sona-select" id="status" name="status">

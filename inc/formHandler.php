@@ -1,5 +1,8 @@
 <?php
 // /inc/formHandler.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Generic form handler for SonaCMS. Works with ANY form that posts here —
 // it doesn't expect specific field names. It:
@@ -90,6 +93,31 @@ if (!empty($config['form_protection'])) {
     if (!sona_form_token_valid($token, $config)) {
         header('Location: ' . $redirect);
         exit;
+    }
+}
+
+// ─── Anti-spam layer 4: content blocklist ────────────────────────────────
+// Optional, config-driven. Drops any submission containing a listed term
+// (case-insensitive substring, checked across every field). A crude but
+// effective swat for a campaign with a stable fingerprint — e.g. a bot that
+// loads the page (so it carries a valid token) but always submits the same
+// give-away value. Works regardless of source IP, so it catches a distributed
+// flood the rate limit can't. Keep the list tight and distinctive to avoid
+// false positives; leave it unset to skip this layer.
+//   config.php:  'form_blocklist' => ['robertrip'],
+$blocklist = $config['form_blocklist'] ?? [];
+if (is_array($blocklist) && $blocklist) {
+    $haystack = '';
+    foreach ($_POST as $v) {
+        $haystack .= ' ' . (is_array($v) ? implode(' ', $v) : (string) $v);
+    }
+    $haystack = strtolower($haystack);
+    foreach ($blocklist as $bad) {
+        $bad = strtolower(trim((string) $bad));
+        if ($bad !== '' && strpos($haystack, $bad) !== false) {
+            header('Location: ' . $redirect);
+            exit;
+        }
     }
 }
 

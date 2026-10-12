@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/backup.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // One-click full-site backup. Builds a zip of the entire site (everything needed
 // to restore on any PHP host) and streams it to the browser as a download.
@@ -272,6 +275,7 @@ NOTES
 
 This backup was produced by SonaCMS's built-in one-click backup. You are never
 locked in: the whole site is just files, restorable by hand on any PHP host.
+SonaCMS is free and open source under the MIT License.
 
 www.SonaCMS.com
 TXT;

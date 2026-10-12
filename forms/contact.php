@@ -1,3 +1,4 @@
+<?php /* SonaCMS — https://www.sonacms.com | Copyright (c) 2026 Peter Bishop / Tecky | SPDX-License-Identifier: MIT */ ?>
 <form action="/inc/formHandler.php" method="POST">
     <input type="hidden" name="subject" value="SonaCMS Contact Form Submission">
     <input type="hidden" name="redirect" value="/thank-you">

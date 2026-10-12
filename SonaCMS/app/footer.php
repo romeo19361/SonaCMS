@@ -1,16 +1,16 @@
 <?php
 // /SonaCMS/app/footer.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Admin footer for SonaCMS backend pages (admin.php, editor.php).
-// Shows the licensing notice at the bottom of admin screens.
+// Shows the "Powered by SonaCMS" credit at the bottom of admin screens.
 //
-// Loads config directly (admin pages don't always have $config in scope).
 // paths/functions are already loaded by the including page.
-
-$__cfg = require __DIR__ . '/../config.php';
 ?>
 <footer class="sona-footer">
     <div class="sona-wrap">
-        <p class="sona-footer__license"><?php echo licenseFooterText($__cfg); ?></p>
+        <p class="sona-footer__license"><?php echo licenseFooterText(); ?></p>
     </div>
 </footer>

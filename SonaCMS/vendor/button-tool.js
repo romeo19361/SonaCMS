@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * ButtonTool — custom Editor.js Block Tool for inserting a call-to-action
  * button with editable text, URL, and a primary/secondary style.

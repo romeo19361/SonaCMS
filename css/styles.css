@@ -1,3 +1,5 @@
+/* SonaCMS — https://www.sonacms.com | Copyright (c) 2026 Peter Bishop / Tecky | SPDX-License-Identifier: MIT */
+
 /* /css/styles.css
  *
  * Frontend stylesheet for SonaCMS public-facing pages.
@@ -332,7 +334,7 @@ p {
     }
 }
 
-/* Frontend licensing footer line */
+/* Frontend "Powered by SonaCMS" credit line (optional, see inc/footer.php) */
 .site-footer__license {
     font-size: 0.85em;
     color: #888;

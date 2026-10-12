@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * AlignmentTune — a custom Editor.js Block Tune that adds text-alignment
  * options (left, center, right, justify) to a block's settings menu (the

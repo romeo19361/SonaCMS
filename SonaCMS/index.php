@@ -1,5 +1,8 @@
 <?php
 // /public_html/SonaCMS/index.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 
 // Error handling as per constraints
 error_reporting(E_ALL);

@@ -1,5 +1,8 @@
 <?php
 // /inc/404.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // The "page not found" fallback, shown by index.php when no published page
 // matches the requested URL. Lives in /inc so developers can restyle it

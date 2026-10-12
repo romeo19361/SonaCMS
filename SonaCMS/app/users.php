@@ -1,5 +1,8 @@
 <?php
 // /SonaCMS/app/users.php
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
 //
 // Multi-user support (2.0).
 //

@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * FileLinkTool — an Editor.js INLINE tool that links the selected text to a
  * PDF (or other document). The author selects text, clicks the toolbar button,

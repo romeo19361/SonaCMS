@@ -1,3 +1,7 @@
+// SonaCMS — https://www.sonacms.com
+// Copyright (c) 2026 Peter Bishop / Tecky
+// SPDX-License-Identifier: MIT
+
 /**
  * VideoEmbedTool — custom Editor.js Block Tool for embedding YouTube and
  * Vimeo videos via a manual URL input, rather than relying on Editor.js's
